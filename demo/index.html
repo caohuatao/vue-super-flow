@@ -1,0 +1,35 @@
+<!--
+ * User: CHT
+ * Date: 2020/5/8
+ * Time: 12:24
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>demo</title>
+  <link rel="stylesheet" href="../lib/index.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.staticfile.org/vue/2.6.11/vue.min.js"></script>
+<script src="../lib/index.js"></script>
+<script>
+  Vue.use(SuperFlow)
+
+  new Vue({
+    data: function () {
+      return {}
+    },
+    created: function () {
+      console.log(this.ff)
+    },
+    render: function (h) {
+      return h('div', {
+        staticClass: 'flow-node'
+      }, this.ff)
+    }
+  }).$mount('#app')
+</script>
+</body>
+</html>

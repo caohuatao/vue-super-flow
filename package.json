@@ -1,10 +1,28 @@
 {
-  "name": "super-flow",
-  "version": "1.0.0",
-  "description": "vue flow components",
-  "main": "index.js",
+  "name": "super-flow-control",
+  "version": "1.0.0-beta",
+  "keywords": ["vue", "flow", "vue flow", "vue flow component", "form flow"],
+  "description": "vue super flow components",
+  "main": "./lib/index.js",
   "repository": "https://github.com/ZhexuanCao/super-flow.git",
+  "scripts": {
+    "build": "webpack --config webpcak.conf.js",
+    "update": "npm run build && npm publish  --access=public",
+    "update-test": "npm run build && npm publish --tag=beta"
+  },
   "author": "caohuatao <351995664@qq.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.3",
+    "less": "^3.11.1",
+    "less-loader": "^6.1.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
 }
