@@ -1,0 +1,10 @@
+{
+  "name": "super-flow",
+  "version": "1.0.0",
+  "description": "vue flow components",
+  "main": "index.js",
+  "repository": "https://github.com/ZhexuanCao/super-flow.git",
+  "author": "caohuatao <351995664@qq.com>",
+  "license": "MIT",
+  "private": false
+}
