@@ -1,0 +1,1 @@
+export const prefixCls = 'super-flow'

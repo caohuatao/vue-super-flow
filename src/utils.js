@@ -14,13 +14,31 @@ export function uuid(prefix = '') {
   const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
   const charsLen = chars.length
   let uuid = []
-  const len = 24
+  const len = 12
   for (let i = 0; i < len; i++) {
     uuid[i] = chars[0 | Math.random() * charsLen]
   }
   return prefix + uuid.join('')
 }
 
+
+export function getOffset(evt) {
+  const {
+    clientX,
+    clientY,
+    currentTarget
+  } = evt
+
+  const {
+    left,
+    top
+  } = currentTarget.getBoundingClientRect()
+
+  return {
+    x: clientX - left,
+    y: clientY - top
+  }
+}
 
 /**
  * 向量相加 或者 向量与坐标相加

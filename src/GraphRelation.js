@@ -9,11 +9,11 @@ class GraphRelation {
     const {
       start,
       end = null,
-      startOffset = {
+      startAt = {
         x: 0,
         y: 0
       },
-      endOffset = {
+      endAt = {
         x: 0,
         y: 0
       }

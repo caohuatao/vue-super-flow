@@ -1,19 +1,39 @@
 @charset "UTF-8";
 
-@prefix : super-flow;
+@prefix   : super-flow;
+@bg-color : #ffffff;
+@color    : #333333;
 
-// 关系线
-.@{prefix}__line {
-
+.shadow(@dep: 1) {
+  box-shadow : 1px 2px 8px rgba(0, 0, 0,.1 * @dep);
 }
 
-// 节点
-.@{prefix}__node {
+.@{prefix} {
+
+  width  : 100%;
+  height : 100%;
+
+
+  // 关系线
+  &__line {
+
+  }
+
+  // 节点
+  &__node {
+    .shadow();
+
+    position         : absolute;
+    background-color : @bg-color;
+
+    &:hover {
+      .shadow(2)
+    }
+  }
+
+  // 菜单
+  &__menu {
+
+  }
 
 }
-
-// 菜单
-.@{prefix}__menu {
-
-}
-
