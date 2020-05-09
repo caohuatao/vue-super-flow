@@ -16,7 +16,8 @@ class GraphNode {
       width = 180,
       height = 100,
       x = 0,
-      y = 0
+      y = 0,
+      meta = null
     } = props
     
     this.id = id
@@ -24,6 +25,7 @@ class GraphNode {
     this.height = height
     this.x = x
     this.y = y
+    this.meta = meta
   }
   
   

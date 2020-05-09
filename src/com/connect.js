@@ -6,8 +6,6 @@
 
 class ConnectStraight {
   
-  
-  
   // 向量相加 或者 向量与坐标相加
   static add(vectorA, vectorB) {
     return [vectorA[0] + vectorB[0], vectorA[1] + vectorB[1]]
@@ -55,4 +53,5 @@ class ConnectStraight {
   static equals(vector, target) {
     return vector[0] === target [0] && vector[1] === target[1]
   }
+
 }

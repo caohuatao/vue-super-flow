@@ -3,8 +3,8 @@
  * Date: 2020/5/8
  * Time: 13:59
  */
-import { prefixCls } from './types'
-import { getOffset } from './utils'
+import {prefixCls} from './types'
+import {getOffset} from './utils'
 
 export default {
   props: {
@@ -27,7 +27,12 @@ export default {
   },
   methods: {
     mousedown(evt) {
-      this.$emit('nodeMouseDown',  getOffset(evt))
+      this.$emit('nodeMouseDown', getOffset(evt))
+    },
+    contextmenu(evt) {
+  
+      evt.stopPropagation()
+      evt.preventDefault()
     }
   },
   render(h) {
@@ -40,7 +45,8 @@ export default {
         left: this.x + 'px'
       },
       on: {
-        mousedown: this.mousedown
+        mousedown: this.mousedown,
+        contextmenu: this.contextmenu
       }
     }, this.$slots.default)
   }

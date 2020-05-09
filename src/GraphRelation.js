@@ -21,8 +21,8 @@ class GraphRelation {
     
     this.start = start
     this.end = end
-    this.startOffset = startOffset
-    this.endOffset = endOffset
+    this.startAt = startAt
+    this.endAt = endAt
     this.moveInfo = {
       x: 0,
       y: 0

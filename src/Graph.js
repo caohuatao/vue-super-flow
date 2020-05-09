@@ -14,7 +14,7 @@ class Graph {
     this.relationList = []
     this.init(options)
   }
-
+  
   nodeMap() {
     const map = {}
     this.nodeList.forEach(node => {
@@ -22,7 +22,7 @@ class Graph {
     })
     return map
   }
-
+  
   relationMap() {
     const map = {}
     this.relationList.forEach(relation => {
@@ -30,28 +30,37 @@ class Graph {
     })
     return map
   }
-
+  
+  appendNode(options) {
+    this.nodeList.push(this.createNode(options))
+  }
+  
+  appendRelation(options) {
+    this.relationList.push(this.createRelation(options))
+  }
+  
   createNode(options) {
     return new GraphNode(options)
   }
-
+  
   createRelation(options) {
     return new GraphRelation(options)
   }
-
+  
   init(options = {}) {
     const {
       nodeList,
       relationList
     } = options
-
+    
     nodeList.forEach(node => {
       this.nodeList.push(this.createNode(node))
     })
-
+    
     const nodeMap = this.nodeMap()
-
+    
     relationList.forEach(relation => {
+      
       const {
         startId = '',
         endId = '',
@@ -59,8 +68,10 @@ class Graph {
         startAt = [],
         endAt = []
       } = relation
+      
       const start = nodeMap[startId]
       const end = nodeMap[endId]
+      
       if (start && end) {
         this.relationList.push(
           this.createRelation({

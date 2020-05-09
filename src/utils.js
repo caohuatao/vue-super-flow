@@ -21,7 +21,10 @@ export function uuid(prefix = '') {
   return prefix + uuid.join('')
 }
 
-
+/**
+ * @param evt
+ * @returns {{x: number, y: number}}
+ */
 export function getOffset(evt) {
   const {
     clientX,
@@ -39,6 +42,8 @@ export function getOffset(evt) {
     y: clientY - top
   }
 }
+
+
 
 /**
  * 向量相加 或者 向量与坐标相加
