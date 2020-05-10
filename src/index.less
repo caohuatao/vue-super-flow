@@ -1,9 +1,13 @@
 @charset "UTF-8";
 
-@prefix       : super-flow;
-@bg-color     : #ffffff;
-@color        : #333333;
-@border-color : rgb(180, 180, 180); // outside
+@prefix        : super-flow;
+@bg-color      : #ffffff;
+@color         : #333333;
+@border-color  : rgb(180, 180, 180); // outside
+@z-index-base  : 0;
+@z-index-node  : 1;
+@z-index-focus : 2;
+@z-index-menu  : 10;
 
 .shadow(@dep: 1) {
   box-shadow : 1px 2px 8px rgba(0, 0, 0,.1 * @dep);
@@ -21,6 +25,19 @@
   -moz-box-sizing    : @val;
   -ms-box-sizing     : @val;
   box-sizing         : @val;
+}
+
+.scrollBar(@width:10px, @bg: rgba(0, 0, 0, 0.3), @shadow: inset 6px rgba(0, 0, 0, 0.2)) {
+  &::-webkit-scrollbar {
+    width: @width;
+    height: @width;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background: @bg;
+    box-shadow: @shadow;
+  }
 }
 
 .@{prefix} {
@@ -42,10 +59,23 @@
   width            : 100%;
   height           : 100%;
   background-color : #F4F4F4;
+  overflow         : auto;
+  .scrollBar(8px);
+
+  > div {
+    width    : 3000px;
+    height   : 4000px;
+    position : relative;
+  }
 
   // 关系线
   &__line {
+    position : absolute;
+    z-index  : @z-index-base;
 
+    &.inPath {
+      cursor : pointer;
+    }
   }
 
   // 节点
@@ -57,6 +87,8 @@
     background-color : @bg-color;
     border           : 1px solid @border-color;
     cursor           : move;
+    z-index          : @z-index-node;
+    outline          : none;
 
     &-header {
       background-color : green;
@@ -66,24 +98,69 @@
 
     }
 
+    .node-side {
+      @size    : 10px;
+      position : absolute;
+      cursor   : crosshair;
+
+      &-top {
+        top    : -@size/2;
+        right  : 0;
+        left   : 0;
+
+        height : @size;
+      }
+
+      &-right {
+        top    : 0;
+        right  : -@size/2;
+        bottom : 0;
+
+        width  : @size;
+      }
+
+      &-bottom {
+        right  : 0;
+        bottom : -@size/2;
+        left   : 0;
+
+        height : @size;
+      }
+
+      &-left {
+        top    : 0;
+        bottom : 0;
+        left   : -@size/2;
+
+        width  : @size;
+      }
+    }
+
     &:hover {
       .shadow(4)
+    }
+
+    &.isSelect {
+      z-index : @z-index-focus;
     }
   }
 
   // 菜单
   &__menu {
-    @menu-width   : 180px;
-    @height       : 26px;
+    @menu-width      : 180px;
+    @height          : 26px;
 
-    position      : absolute;
-    outline       : none;
-    width         : @menu-width;
-    padding       : 4px 0;
-    border        : 1px solid @border-color;
-    box-shadow    : 0 8px 16px 0 rgba(0, 0, 0, 0.3);
-    overflow      : hidden;
-    border-radius : 3px;
+    position         : absolute;
+    outline          : none;
+    width            : @menu-width;
+    padding          : 4px 0;
+    border           : 1px solid @border-color;
+    box-shadow       : 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+    overflow         : hidden;
+    border-radius    : 3px;
+    z-index          : @z-index-menu;
+    background-color : @bg-color;
+    margin           : 0;
 
 
     &-item {
@@ -137,6 +214,7 @@
       width         : 100%;
       margin        : 4px 0;
       border-bottom : 1px solid @border-color;
+      height        : 0;
 
       &:last-child {
         display : none;

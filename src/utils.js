@@ -43,6 +43,18 @@ export function getOffset(evt) {
   }
 }
 
+export function find(arr, callback) {
+  if (Array.prototype.find) {
+    return arr.find(callback)
+  } else {
+    for (let i = 0; i < arr.length; i++) {
+      if (callback(arr[i], i)) {
+        return arr[i]
+      }
+    }
+    return undefined
+  }
+}
 
 
 /**
@@ -51,46 +63,87 @@ export function getOffset(evt) {
  * @param vectorB {array}
  * @returns {*[]}
  */
-export const add = function (vectorA, vectorB) {
+export const addVector = function (vectorA, vectorB) {
   return [vectorA[0] + vectorB[0], vectorA[1] + vectorB[1]]
 }
 
-// 向量乘以常量系数
+/**
+ * 向量乘以常量系数
+ * @param vector
+ * @param k
+ * @returns {number[]}
+ */
 export const multiply = function (vector, k) {
   return [vector[0] * k, vector[1] * k]
 }
 
-// 两点之间的向量，a点指向b点
+/**
+ * 两点之间的向量，a点指向b点
+ * @param pointA
+ * @param pointB
+ * @returns {number[]}
+ */
 export const vectorFromPoints = function (pointA, pointB) {
   return [pointB[0] - pointA[0], pointB[1] - pointA[1]]
 }
 
-// 判断向量是否平行
+/**
+ * 判断向量是否平行
+ * @param vectorA
+ * @param vectorB
+ * @returns {boolean}
+ */
 export const isParallel = function (vectorA, vectorB) {
   return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0] === 0
 }
 
-//向量点积
-export const dot = function (vectorA, vectorB) {
+/**
+ * 向量点积
+ * @param vectorA
+ * @param vectorB
+ * @returns {number}
+ */
+export const dotProduct = function (vectorA, vectorB) {
   return vectorA[0] * vectorB[0] + vectorA[1] * vectorB[1]
 }
-// 向量叉乘
+
+/**
+ * 向量叉乘
+ * @param vectorA
+ * @param vectorB
+ * @returns {number}
+ */
 export const cross = function (vectorA, vectorB) {
   return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]
 }
 
-// 向量夹角
-export const angleFrom = function (vector) {
-  return Math.acos(vector[0] / Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]))
+
+/**
+ * 向量夹角
+ * @param vector
+ * @returns {number}
+ */
+export const angle = function (vector) {
+  return Math.round(180 / Math.PI * Math.atan2(vector[1], vector[0])) + 180
 }
 
 // 获取向量的单位向量
+/**
+ * 获取向量的单位向量
+ * @param vector
+ * @returns {number[]}
+ */
 export const getUnitVector = function (vector) {
   const m = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1])
   return [vector[0] / m, vector[1] / m]
 }
 
-// 判断向量 x,y 坐标相等
+/**
+ * 判断向量 x,y 坐标相等
+ * @param vector
+ * @param target
+ * @returns {boolean|boolean}
+ */
 export const equals = function (vector, target) {
   return vector[0] === target [0] && vector[1] === target[1]
 }

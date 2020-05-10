@@ -7,6 +7,7 @@
 
 import GraphNode from './GraphNode'
 import GraphRelation from './GraphRelation'
+import { find } from './utils'
 
 class Graph {
   constructor(options) {
@@ -14,7 +15,7 @@ class Graph {
     this.relationList = []
     this.init(options)
   }
-  
+
   nodeMap() {
     const map = {}
     this.nodeList.forEach(node => {
@@ -22,7 +23,7 @@ class Graph {
     })
     return map
   }
-  
+
   relationMap() {
     const map = {}
     this.relationList.forEach(relation => {
@@ -30,37 +31,55 @@ class Graph {
     })
     return map
   }
-  
+
   appendNode(options) {
-    this.nodeList.push(this.createNode(options))
+    const node = options.constructor === GraphNode
+      ? options
+      : this.createNode(options)
+
+    this.nodeList.push(node)
   }
-  
+
   appendRelation(options) {
-    this.relationList.push(this.createRelation(options))
+    const relation = options.constructor === GraphRelation
+      ? options
+      : this.createRelation(options)
+
+    const currentRelation = find(this.relationList, item=> {
+      return item.start === relation.start && item.end === relation.end
+    })
+
+    if(currentRelation) {
+      currentRelation.startAt = relation.startAt
+      currentRelation.endAt = relation.endAt
+    } else {
+      this.relationList.push(relation)
+    }
+
   }
-  
+
   createNode(options) {
     return new GraphNode(options)
   }
-  
+
   createRelation(options) {
     return new GraphRelation(options)
   }
-  
+
   init(options = {}) {
     const {
       nodeList,
       relationList
     } = options
-    
+
     nodeList.forEach(node => {
       this.nodeList.push(this.createNode(node))
     })
-    
+
     const nodeMap = this.nodeMap()
-    
+
     relationList.forEach(relation => {
-      
+
       const {
         startId = '',
         endId = '',
@@ -68,10 +87,10 @@ class Graph {
         startAt = [],
         endAt = []
       } = relation
-      
+
       const start = nodeMap[startId]
       const end = nodeMap[endId]
-      
+
       if (start && end) {
         this.relationList.push(
           this.createRelation({

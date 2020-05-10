@@ -15,7 +15,6 @@
 <script src="https://cdn.staticfile.org/vue/2.6.11/vue.min.js"></script>
 <script src="../lib/index.js"></script>
 <script>
-  Vue.use(SuperFlow)
 
   new Vue({
     data: function () {
@@ -24,10 +23,9 @@
     created: function () {
       console.log(this.ff)
     },
+    components: {SuperFlow},
     render: function (h) {
-      return h('div', {
-        staticClass: 'flow-node'
-      }, this.ff)
+      return h(SuperFlow)
     }
   }).$mount('#app')
 </script>

@@ -38,13 +38,17 @@ export default {
             staticClass: prefixCls + '__menu-item',
             on: {
               click: () => {
-                this.$emit('item-click', {
-                  meta: item,
-                  x: this.x,
-                  y: this.y,
-                  width: item.width,
-                  height: item.height
-                })
+                if(item.isHandler) {
+                  this.$emit('handler', item)
+                } else {
+                  this.$emit('item-click', {
+                    meta: item,
+                    x: this.x,
+                    y: this.y,
+                    width: item.width,
+                    height: item.height
+                  })
+                }
                 this.$emit('update:visible', false)
               }
             }

@@ -1,9 +1,10 @@
 {
-  "name": "super-flow-control",
+  "name": "vue-super-flow",
   "version": "1.0.0-beta",
   "keywords": ["vue", "flow", "vue flow", "vue flow component", "form flow"],
   "description": "vue super flow components",
   "main": "./lib/index.js",
+  "files": [    "/lib"  ],
   "repository": "https://github.com/ZhexuanCao/super-flow.git",
   "scripts": {
     "build": "webpack --config webpcak.conf.js",
