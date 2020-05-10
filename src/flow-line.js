@@ -31,12 +31,12 @@ export default {
   mounted() {
     this.ctx = this.$el.getContext('2d')
     this.draw()
-    document.addEventListener('mousemove', this.mousemove)
-    document.addEventListener('mouseleave', this.mouseleave)
+    // document.addEventListener('mousemove', this.mousemove)
+    // document.addEventListener('mouseleave', this.mouseleave)
   },
   beforeDestroy() {
-    document.removeEventListener('mousemove', this.mousemove)
-    document.removeEventListener('mouseleave', this.mouseleave)
+    // document.removeEventListener('mousemove', this.mousemove)
+    // document.removeEventListener('mouseleave', this.mouseleave)
   },
 
   methods: {
@@ -129,18 +129,18 @@ export default {
       return [clientX - left, clientY - top]
     },
 
-    isPointInStroke(evt) {
-      const [x, y] = this.getCoordinates(evt)
-      return this.ctx.isPointInStroke(x, y)
-    },
+    // isPointInStroke(evt) {
+    //   const [x, y] = this.getCoordinates(evt)
+    //   // return this.ctx.isPointInStroke(x, y)
+    // },
 
-    mousemove(evt) {
-      this.inPath = this.isPointInStroke(evt)
-    },
-
-    mouseleave() {
-      this.inPath = false
-    }
+    // mousemove(evt) {
+    //   this.inPath = this.isPointInStroke(evt)
+    // },
+    //
+    // mouseleave() {
+    //   this.inPath = false
+    // }
   },
   watch: {
     pointList() {
