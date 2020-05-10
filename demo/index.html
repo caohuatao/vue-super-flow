@@ -9,6 +9,15 @@
   <meta charset="UTF-8">
   <title>demo</title>
   <link rel="stylesheet" href="../lib/index.css">
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
 <div id="app"></div>
@@ -19,9 +28,6 @@
   new Vue({
     data: function () {
       return {}
-    },
-    created: function () {
-      console.log(this.ff)
     },
     components: {SuperFlow},
     render: function (h) {
