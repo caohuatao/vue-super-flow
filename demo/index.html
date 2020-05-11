@@ -12,29 +12,260 @@
   <style>
     html,
     body {
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      height: 100%;
+      padding : 0;
+      margin  : 0;
+      width   : 100%;
+      height  : 100%;
     }
+
+    .container {
+      width  : 100%;
+      height : 100%;
+    }
+
+    .container > header {
+      height : 50px;
+    }
+
+    .container > header > button {
+      height    : 40px;
+      font-size : 14px;
+      margin    : 5px 10px;
+    }
+
+    .container > section {
+      height : calc(100% - 50px);
+    }
+
+    .container > section > pre {
+      width    : 500px;
+      height   : 100%;
+      float    : left;
+      overflow : auto;
+      margin   : 0;
+    }
+
+    .container > section > .flow_container {
+      width  : calc(100% - 500px);
+      height : 100%;
+      float  : left;
+    }
+
   </style>
 </head>
 <body>
 <div id="app"></div>
 <script src="https://cdn.staticfile.org/vue/2.6.11/vue.min.js"></script>
 <script src="../lib/index.js"></script>
+
 <script>
 
   new Vue({
     data: function () {
-      return {}
+      return {
+        flowInfo: {},
+        nodeList: [],
+        relationList: []
+      }
     },
-    components: {SuperFlow: SuperFlow},
+    components: {
+      SuperFlow: SuperFlow
+    },
+    methods: {
+      consoleFlowInfo: function () {
+        this.flowInfo = this.$refs['super-flow'].getGraphData()
+      },
+      setFlowInfo: function () {
+        const data = {
+          "nodeList": [
+            {
+              "id": "oqOWADU95Y3x",
+              "width": 180,
+              "height": 100,
+              "x": 1283,
+              "y": 1615,
+              "meta": {
+                "type": "start",
+                "label": "开始节点"
+              }
+            },
+            {
+              "id": "yysNXGzr3O0g",
+              "width": 180,
+              "height": 100,
+              "x": 1284,
+              "y": 1738,
+              "meta": {
+                "type": "end",
+                "label": "结束节点"
+              }
+            },
+            {
+              "id": "xNJEQPtoXevi",
+              "width": 180,
+              "height": 100,
+              "x": 1286,
+              "y": 1864,
+              "meta": {
+                "type": "start",
+                "label": "开始节点"
+              }
+            },
+            {
+              "id": "gbmYBVweEZpf",
+              "width": 180,
+              "height": 100,
+              "x": 1286,
+              "y": 1986,
+              "meta": {
+                "type": "start",
+                "label": "开始节点"
+              }
+            },
+            {
+              "id": "0XsMMMpMyUHS",
+              "width": 180,
+              "height": 100,
+              "x": 1288,
+              "y": 2110,
+              "meta": {
+                "type": "start",
+                "label": "开始节点"
+              }
+            }
+          ],
+          "relationList": [
+            {
+              "startId": "yysNXGzr3O0g",
+              "endId": "xNJEQPtoXevi",
+              "meta": null,
+              "startAt": {
+                "x": 180,
+                "y": 84,
+                "direction": [
+                  1,
+                  0
+                ]
+              },
+              "endAt": {
+                "x": 180,
+                "y": 39,
+                "direction": [
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "startId": "oqOWADU95Y3x",
+              "endId": "yysNXGzr3O0g",
+              "meta": null,
+              "startAt": {
+                "x": 180,
+                "y": 72,
+                "direction": [
+                  1,
+                  0
+                ]
+              },
+              "endAt": {
+                "x": 180,
+                "y": 31,
+                "direction": [
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "startId": "xNJEQPtoXevi",
+              "endId": "gbmYBVweEZpf",
+              "meta": null,
+              "startAt": {
+                "x": 180,
+                "y": 86,
+                "direction": [
+                  1,
+                  0
+                ]
+              },
+              "endAt": {
+                "x": 180,
+                "y": 41,
+                "direction": [
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "startId": "gbmYBVweEZpf",
+              "endId": "0XsMMMpMyUHS",
+              "meta": null,
+              "startAt": {
+                "x": 180,
+                "y": 79,
+                "direction": [
+                  1,
+                  0
+                ]
+              },
+              "endAt": {
+                "x": 180,
+                "y": 39,
+                "direction": [
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        }
+
+        this.nodeList = data.nodeList
+        this.relationList = data.relationList
+      }
+    },
     render: function (h) {
-      return h(SuperFlow)
+      return h('div', {
+        staticClass: 'container'
+      }, [
+        h('header', [
+          h('button', {
+            on: {
+              click: this.consoleFlowInfo
+            }
+          }, 'console flow info'),
+          h('button', {
+            on: {
+              click: this.setFlowInfo
+            }
+          }, 'set flow info')
+        ]),
+        h('section', [
+          h('div', {
+            staticClass: 'flow_container'
+          }, [
+            h(SuperFlow, {
+              ref: 'super-flow',
+              props: {
+                nodeList: this.nodeList,
+                relationList: this.relationList
+              },
+              scopedSlots: {
+                node: function (props) {
+                  return h('div', props.node.meta)
+                }
+              }
+            }),
+          ]),
+          h('pre', JSON.stringify(this.flowInfo, null, 2)),
+        ])
+      ])
     }
   }).$mount('#app')
 
 </script>
+
 </body>
 </html>

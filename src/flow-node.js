@@ -47,7 +47,7 @@ export default {
     }
   },
   methods: {
-    
+
     nodeMousedown(evt) {
       const nodeList = this.graph.nodeList
       const conf = this.moveNodeConf
@@ -62,43 +62,14 @@ export default {
       this.$emit('updateMousemoveFun', this.moveNode)
       pauseEvent(evt)
     },
-  
+
     moveNode(evt) {
       const {x, y} = getOffset(evt)
       const {node, offset} = this.moveNodeConf
       node.x = x - offset.x
       node.y = y - offset.y
     },
-  
-    nodeMouseEnter(evt) {
-      const conf = this.temRelationConf
-      if (conf.isMove) {
-        conf.relation.end = this.node
-        conf.relation.endAt = this.node.getEndAt(getOffset(evt))
-      }
-    },
-  
-    nodeMouseLeave() {
-      const conf = this.temRelationConf
-      if (conf.isMove) {
-        conf.relation.end = null
-      }
-    },
-  
-    nodeMouseup() {
-      const conf = this.temRelationConf
-      if (conf.isMove && conf.relation.start !== this.node) {
-        this.graph.appendRelation(conf.relation)
-      }
-    },
-    
-    showNodeMenu(evt) {
-      this.menuConf.list = this.nodeMenuList
-      this.menuConf.data = this.node
-      this.menuConf.open(evt)
-      pauseEvent(evt)
-    },
-    
+
     moveRelation(evt) {
       const {x, y} = getOffset(evt)
       const {relation} = this.temRelationConf
@@ -106,11 +77,40 @@ export default {
       relation.moveInfo.x = x
       relation.moveInfo.y = y
     },
-    
+
+    nodeMouseEnter(evt) {
+      const conf = this.temRelationConf
+      if (conf.isMove) {
+        conf.relation.end = this.node
+        conf.relation.endAt = this.node.getEndAt(getOffset(evt))
+      }
+    },
+
+    nodeMouseLeave() {
+      const conf = this.temRelationConf
+      if (conf.isMove) {
+        conf.relation.end = null
+      }
+    },
+
+    nodeMouseup() {
+      const conf = this.temRelationConf
+      if (conf.isMove && conf.relation.start !== this.node) {
+        this.graph.appendRelation(conf.relation)
+      }
+    },
+
+    showNodeMenu(evt) {
+      this.menuConf.list = this.nodeMenuList
+      this.menuConf.data = this.node
+      this.menuConf.open(evt)
+      pauseEvent(evt)
+    },
+
     sideMousedown(evt, dir) {
       const offset = getOffset(evt)
       const conf = this.temRelationConf
-      
+
       offset.direction = directionVector[dir]
       switch (dir) {
         case direction.top:
@@ -126,7 +126,7 @@ export default {
           offset.x = 0
           break
       }
-      
+
       conf.visible = true
       conf.relation = this.graph.createRelation({
         start: this.node,

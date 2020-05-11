@@ -132,13 +132,6 @@ export default {
       pauseEvent(evt)
     },
     
-    showNodeMenu(evt, node) {
-      const {x, y} = getOffset(evt, this.$refs['flow-canvas'])
-      this.menuConf.list = this.nodeMenuList
-      this.menuConf.data = node
-      this.menuConf.open(x, y)
-    },
-    
     docMouseup() {
       this.mousemoveFun = () => null
       this.moveNodeConf.reset()

@@ -3,7 +3,7 @@
  * Date: 2020/5/8
  * Time: 14:18
  */
-import {prefixCls} from './types'
+import { prefixCls } from './types'
 
 export default {
   props: {
@@ -26,46 +26,51 @@ export default {
   },
   computed: {
     position() {
-    
+
     }
   },
   methods: {
+
+    menuItemClick(item) {
+      if (item.isHandler) {
+        this.$emit('handler', item)
+      } else {
+        this.$emit('item-click', {
+          meta: item,
+          x: this.x,
+          y: this.y,
+          width: item.width,
+          height: item.height
+        })
+      }
+      this.$emit('update:visible', false)
+    },
+
     renderItem(h) {
       const list = []
       this.menuList.forEach(subList => {
         subList.forEach(item => {
           list.push(h('li', {
             staticClass: prefixCls + '__menu-item',
-            on: {
-              mousedown: () => {
-                if(item.isHandler) {
-                  this.$emit('handler', item)
-                } else {
-                  this.$emit('item-click', {
-                    meta: item,
-                    x: this.x,
-                    y: this.y,
-                    width: item.width,
-                    height: item.height
-                  })
-                }
-                this.$emit('update:visible', false)
-              }
-            }
           }, this.$slots.default || [
             h('span', {
-              staticClass: prefixCls + '__menu-item-icon'
+              staticClass: prefixCls + '__menu-item-icon',
             }),
             h('span', {
-              staticClass: prefixCls + '__menu-item-content'
-            }, item.label)
+              staticClass: prefixCls + '__menu-item-content',
+            }, item.label),
+            h('div', {
+              on: {
+                click: () => this.menuItemClick(item)
+              }
+            })
           ]))
         })
         list.push(h('li', {
           staticClass: prefixCls + '__menu-line'
         }))
       })
-      
+
       return list
     }
   },
