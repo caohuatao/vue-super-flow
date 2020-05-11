@@ -7,7 +7,7 @@
 import {
   uuid,
   vectorFromPoints,
-  angle
+  angle, addVector
 } from './utils'
 
 import {
@@ -26,99 +26,119 @@ class GraphNode {
       y = 0,
       meta = null
     } = props
-
+    
     this.id = id
     this.width = width
     this.height = height
     this.x = x
     this.y = y
     this.meta = meta
+    
+    this.parent = null
+    
+    this.angle()
   }
-
+  
   get center() {
     return [
       this.x + this.width / 2,
       this.y + this.height / 2
     ]
   }
-
-  get topLeftAngle() {
-    return angle(vectorFromPoints(
-      this.center,
-      [this.x, this.y],
+  
+  get width() {
+    return this._width
+  }
+  
+  set width(w) {
+    this._width = Math.floor(w)
+    this.angle()
+  }
+  
+  get height() {
+    return this._height
+  }
+  
+  set height(h) {
+    this._height = Math.floor(h)
+    this.angle()
+  }
+  
+  angle() {
+    const {
+      center,
+      x,
+      y,
+      width,
+      height
+    } = this
+    this.topLeftAngle = angle(vectorFromPoints(
+      center, [x, y]
+    ))
+    this.topRightAngle = angle(vectorFromPoints(
+      center, addVector([x, y], [width, 0])
+    ))
+    this.bottomRightAngle = angle(vectorFromPoints(
+      center, addVector([x, y], [width, height])
+    ))
+    this.bottomLeftAngle = angle(vectorFromPoints(
+      center, addVector([x, y], [0, height])
     ))
   }
-
-  get topRightAngle() {
-    return angle(vectorFromPoints(
-      this.center,
-      [this.x + this.width, this.y],
-    ))
-  }
-
-  get bottomRightAngle() {
-    return angle(vectorFromPoints(
-      this.center,
-      [this.x + this.width, this.y + this.height],
-    ))
-  }
-
-  get bottomLeftAngle() {
-    return angle(vectorFromPoints(
-      this.center,
-      [this.x, this.y + this.height]
-    ))
-  }
-
-  pointDirectionVector(x, y) {
+  
+  pointDirection(x, y) {
+    
     const pointAngle = angle(vectorFromPoints(
       this.center,
       [x, y]
     ))
+    
     if (
       pointAngle >= this.topLeftAngle
       && pointAngle < this.topRightAngle
     ) {
-      return directionVector[direction.top]()
+      return direction.top
     } else if (
       pointAngle >= this.topRightAngle
       && pointAngle < this.bottomRightAngle
     ) {
-      return directionVector[direction.right]()
+      return direction.right
     } else if (
       pointAngle >= this.bottomRightAngle
       && pointAngle < this.bottomLeftAngle
     ) {
-      return directionVector[direction.bottom]()
+      return direction.bottom
     } else if (
       pointAngle >= this.bottomLeftAngle
       || pointAngle < this.topLeftAngle
     ) {
-      return directionVector[direction.left]()
+      return direction.left
     }
   }
-
+  
   getEndAt(offset) {
-    offset.direction = this.pointDirectionVector(
+    const dir = this.pointDirection(
       this.x + offset.x,
       this.y + offset.y
     )
-
-    switch (direction.toString()) {
-      case '0,-1':
+    
+    offset.direction = directionVector[dir]
+    
+    switch (dir) {
+      case direction.top:
         offset.y = 0
         break
-      case '1,0':
+      case direction.right:
         offset.x = this.width
         break
-      case '0,1':
+      case direction.bottom:
         offset.y = this.height
         break
-      case '-1,0':
+      case direction.left:
         offset.x = 0
         break
     }
-
+    
     return offset
   }
 }

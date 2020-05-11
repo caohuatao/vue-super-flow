@@ -10,16 +10,16 @@ export const direction = Object.freeze({
 // [0,-1] 右：[1,0] 下 [1,1] 左 [-1,0]
 
 export const directionVector = Object.freeze({
-  [direction.top]() {
-    return [0, -1]
-  },
-  [direction.right]() {
-    return [1, 0]
-  },
-  [direction.bottom]() {
-    return [0, 1]
-  },
-  [direction.left]() {
-    return [-1, 0]
-  }
+  [direction.top]: [0, -1],
+  [direction.right]: [1, 0],
+  [direction.bottom]: [0, 1],
+  [direction.left]: [-1, 0]
+})
+
+export const menuHandler = Object.freeze({
+  nodeDelete: 0,
+  nodeConnection: 1,
+  
+  verticalAlign: 2,
+  HorizontalAlign: 3,
 })

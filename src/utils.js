@@ -23,19 +23,22 @@ export function uuid(prefix = '') {
 
 /**
  * @param evt
+ * @param target
  * @returns {{x: number, y: number}}
  */
-export function getOffset(evt) {
+export function getOffset(evt, target = null) {
   const {
     clientX,
     clientY,
     currentTarget
   } = evt
-
+  
+  const current = target || currentTarget
+  
   const {
     left,
     top
-  } = currentTarget.getBoundingClientRect()
+  } = current.getBoundingClientRect()
 
   return {
     x: clientX - left,
@@ -56,6 +59,13 @@ export function find(arr, callback) {
   }
 }
 
+export function  pauseEvent(e){
+  if(e.stopPropagation) e.stopPropagation();
+  if(e.preventDefault) e.preventDefault();
+  e.cancelBubble=true;
+  e.returnValue=false;
+  return false;
+}
 
 /**
  * 向量相加 或者 向量与坐标相加
@@ -117,7 +127,6 @@ export const cross = function (vectorA, vectorB) {
   return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]
 }
 
-
 /**
  * 向量夹角
  * @param vector
@@ -127,7 +136,6 @@ export const angle = function (vector) {
   return Math.round(180 / Math.PI * Math.atan2(vector[1], vector[0])) + 180
 }
 
-// 获取向量的单位向量
 /**
  * 获取向量的单位向量
  * @param vector

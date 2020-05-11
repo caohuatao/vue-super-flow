@@ -5,7 +5,8 @@
   "description": "vue super flow components",
   "main": "./lib/index.js",
   "files": [    "/lib"  ],
-  "repository": "https://github.com/ZhexuanCao/super-flow.git",
+  "homepage": "",
+  "repository": "https://github.com/caohuatao/super-flow.git",
   "scripts": {
     "build": "webpack --config webpcak.conf.js",
     "update": "npm run build && npm publish  --access=public",

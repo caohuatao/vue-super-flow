@@ -37,7 +37,7 @@ export default {
           list.push(h('li', {
             staticClass: prefixCls + '__menu-item',
             on: {
-              click: () => {
+              mousedown: () => {
                 if(item.isHandler) {
                   this.$emit('handler', item)
                 } else {

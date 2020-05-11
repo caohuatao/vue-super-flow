@@ -10,8 +10,15 @@ import flowNode from './src/flow-node'
 import flowLine from './src/flow-line'
 import flowMenu from './src/flow-menu'
 
-import { prefixCls } from './src/types'
-import { getOffset } from './src/utils'
+import {
+  prefixCls,
+  menuHandler
+} from './src/types'
+
+import {
+  getOffset,
+  pauseEvent
+} from './src/utils'
 
 export default {
   props: {
@@ -20,11 +27,11 @@ export default {
       default: () => [
         {
           type: 'start',
-          label: '开始节点',
+          label: '开始节点'
         },
         {
           type: 'end',
-          label: '结束节点',
+          label: '结束节点'
         }
       ]
     },
@@ -35,12 +42,6 @@ export default {
     relationList: {
       type: Array,
       default: () => []
-    },
-    menuList: {
-      type: Array,
-      default: () => [
-        []
-      ]
     }
   },
   data() {
@@ -56,25 +57,33 @@ export default {
           this.moveNodeConf.isDown = false
         }
       },
+      pageMenuList: [
+        this.nodeProto,
+        [
+          {
+            label: '竖向对齐',
+            type: menuHandler.verticalAlign,
+            isHandler: true
+          },
+          {
+            label: '横向对齐',
+            type: menuHandler.HorizontalAlign,
+            isHandler: true
+          }
+        ]
+      ],
       menuConf: {
-        list: [
-          this.nodeProto,
-          [
-            {
-              label: '竖向对齐',
-              type: '',
-              isHandler: true
-            },
-            {
-              label: '横向对齐',
-              type: '',
-              isHandler: true
-            }
-          ]
-        ],
+        list: [],
         visible: false,
+        data: null,
         x: 0,
-        y: 0
+        y: 0,
+        open: (evt) => {
+          const {x, y} = getOffset(evt, this.$refs['flow-canvas'])
+          this.menuConf.visible = true
+          this.menuConf.x = x
+          this.menuConf.y = y
+        }
       },
       temRelationConf: {
         isMove: false,
@@ -90,7 +99,8 @@ export default {
       graph: new Graph({
         nodeList: this.nodeList,
         relationList: this.relationList
-      })
+      }),
+      mousemoveFun: () => null
     }
   },
   mounted() {
@@ -109,103 +119,55 @@ export default {
           scrollHeight,
           scrollWidth
         } = this.$el
-
+        
         this.$el.scrollTop = Math.ceil((scrollHeight - clientHeight) / 2)
         this.$el.scrollLeft = Math.ceil((scrollWidth - clientWidth) / 2)
       }
     },
-
+    
     menuOpen(evt) {
-      const {x, y} = getOffset(evt)
-
-      this.menuConf.visible = true
-      this.menuConf.x = x
-      this.menuConf.y = y
-      evt.preventDefault()
+      this.menuConf.list = this.pageMenuList
+      this.menuConf.data = null
+      this.menuConf.open(evt)
+      pauseEvent(evt)
     },
-
+    
+    showNodeMenu(evt, node) {
+      const {x, y} = getOffset(evt, this.$refs['flow-canvas'])
+      this.menuConf.list = this.nodeMenuList
+      this.menuConf.data = node
+      this.menuConf.open(x, y)
+    },
+    
     docMouseup() {
+      this.mousemoveFun = () => null
       this.moveNodeConf.reset()
       this.temRelationConf.reset()
     },
-
-    viewMousemove(evt) {
-      const {x, y} = getOffset(evt)
-      if (this.moveNodeConf.isDown) {
-        this.moveNode(x, y)
-      } else if (this.temRelationConf.visible) {
-        this.moveRelation(x, y)
-      }
-    },
-
-    nodeMouseDown(offset, node, idx) {
-      const nodeList = this.graph.nodeList
-      const conf = this.moveNodeConf
-      nodeList.splice(nodeList.length - 1,
-        0,
-        nodeList.splice(idx, 1)[0]
-      )
-      conf.isDown = true
-      conf.offset = offset
-      conf.node = node
-    },
-
-    nodeMouseEnter(offset, node) {
-      const conf = this.temRelationConf
-      if (conf.isMove) {
-        conf.relation.end = node
-        conf.relation.endAt = node.getEndAt(offset)
-      }
-    },
-
-    nodeMouseLeave() {
-      const conf = this.temRelationConf
-      if (conf.isMove) {
-        conf.relation.end = null
-      }
-    },
-
-    nodeMouseup(node) {
-      const conf = this.temRelationConf
-      if (conf.isMove && conf.relation.start !== node) {
-        this.graph.appendRelation(conf.relation)
-      }
-    },
-
-    nodeSideMousedown(node, offset) {
-      const conf = this.temRelationConf
-      conf.visible = true
-      conf.relation = this.graph.createRelation({
-        start: node,
-        startAt: offset
-      })
-    },
-
-    moveNode(x, y) {
-      const {node, offset} = this.moveNodeConf
-      node.x = x - offset.x
-      node.y = y - offset.y
-    },
-
-    moveRelation(x, y) {
-      const {relation} = this.temRelationConf
-      this.temRelationConf.isMove = true
-      relation.moveInfo.x = x
-      relation.moveInfo.y = y
-    },
-
+    
     handler(info) {
-
+      switch (info.type) {
+        case menuHandler.verticalAlign:
+          break
+        case menuHandler.HorizontalAlign:
+          break
+        case menuHandler.nodeDelete:
+          this.graph.removeNode(this.menuConf.data)
+          break
+        default:
+          break
+      }
     },
-
+    
     renderNode(h) {
       return this.graph.nodeList.map((node, idx) =>
         h(flowNode, {
             props: {
-              x: node.x,
-              y: node.y,
-              width: node.width,
-              height: node.height
+              node: node,
+              index: idx,
+              menuConf: this.menuConf,
+              temRelationConf: this.temRelationConf,
+              moveNodeConf: this.moveNodeConf
             },
             class: {
               isSelect: this.moveNodeConf.node === node
@@ -214,11 +176,7 @@ export default {
               'data-node-type': node.meta.type
             },
             on: {
-              nodeMouseDown: offset => this.nodeMouseDown(offset, node, idx),
-              nodeMouseEnter: offset => this.nodeMouseEnter(offset, node),
-              nodeMouseLeave: this.nodeMouseLeave,
-              nodeMouseup: ()=> this.nodeMouseup(node),
-              nodeSideMousedown: offset => this.nodeSideMousedown(node, offset)
+              updateMousemoveFun: fun => this.mousemoveFun = fun
             }
           },
           this.$scopedSlots.node
@@ -226,7 +184,7 @@ export default {
             : h('div', {})
         ))
     },
-
+    
     renderLine(h) {
       const conf = this.temRelationConf
       const relationList = [
@@ -250,7 +208,7 @@ export default {
       })
       return relationList
     },
-
+    
     renderMenu(h) {
       const conf = this.menuConf
       return h(flowMenu, {
@@ -267,18 +225,23 @@ export default {
         }
       })
     },
+    
+    getGraphData() {
+      return this.graph.toJson()
+    }
   },
   render(h) {
     return h('div',
       {
-        staticClass: prefixCls,
+        staticClass: prefixCls
       },
       [
         h('div',
           {
+            ref: 'flow-canvas',
             on: {
               contextmenu: this.menuOpen,
-              mousemove: this.viewMousemove
+              mousemove: this.mousemoveFun
             }
           },
           [
@@ -289,5 +252,13 @@ export default {
         )
       ]
     )
+  },
+  watch: {
+    nodeList() {
+      this.graph.initNode(this.nodeList)
+    },
+    relationList() {
+      this.graph.initRelation(this.relationList)
+    }
   }
 }
