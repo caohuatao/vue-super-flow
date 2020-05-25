@@ -1,4 +1,3 @@
-export const prefixCls = 'super-flow'
 
 export const direction = Object.freeze({
   top: 1,

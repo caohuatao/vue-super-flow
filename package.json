@@ -1,38 +1,41 @@
 {
-  "name": "vue-super-flow",
+  "name": "vue-super-form",
   "version": "1.0.0-beta",
   "keywords": [
     "vue",
-    "flow",
-    "vue flow",
-    "vue flow component",
-    "form flow"
+    "form",
+    "super form",
+    "vue form",
+    "vue form component",
+    "form"
   ],
-  "description": "vue super flow components",
-  "main": "./lib/index.js",
-  "files": [
-    "/lib"
-  ],
-  "homepage": "",
-  "repository": "https://github.com/caohuatao/super-flow.git",
-  "scripts": {
-    "build": "webpack --config webpcak.conf.js",
-    "update": "npm run build && npm publish  --access=public",
-    "update-test": "npm run build && npm publish --tag=beta"
-  },
+  "main": "lib/index.umd.min.js",
   "author": "caohuatao <351995664@qq.com>",
-  "license": "MIT",
-  "private": false,
+  "files": [
+    "/lib/index.umd.min.js"
+  ],
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lib": "vue-cli-service build --target lib --name index --dest lib packages/index.vue",
+    "update": "npm run lib && npm publish",
+    "update-test": "npm run lib && npm publish --tag=beta"
+  },
+  "dependencies": {
+    "core-js": "^3.6.4",
+    "vue": "^2.6.11"
+  },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "babel-loader": "^8.1.0",
-    "css-loader": "^3.5.3",
-    "less": "^3.11.1",
-    "less-loader": "^6.1.0",
-    "mini-css-extract-plugin": "^0.9.0",
-    "style-loader": "^1.2.1",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
-  }
+    "@vue/cli-plugin-babel": "~4.3.0",
+    "@vue/cli-service": "~4.3.0",
+    "element-ui": "^2.13.1",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
