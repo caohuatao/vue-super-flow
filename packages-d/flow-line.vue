@@ -150,5 +150,12 @@
 </script>
 
 <style lang="less">
+  .super-flow__line {
+    position : absolute;
+    z-index  : 0;
 
+    &.inPath {
+      cursor : pointer;
+    }
+  }
 </style>

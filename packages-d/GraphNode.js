@@ -17,6 +17,8 @@ import {
 
 // 节点
 class GraphNode {
+  static prefixId = ''
+  
   constructor(props) {
     const {
       id = uuid(GraphNode.prefixId),
@@ -87,31 +89,18 @@ class GraphNode {
   }
   
   pointDirection(x, y) {
-    
     const pointAngle = angle(vectorFromPoints(
       this.center,
       [x, y]
     ))
     
-    if (
-      pointAngle >= this.topLeftAngle
-      && pointAngle < this.topRightAngle
-    ) {
+    if (pointAngle >= this.topLeftAngle && pointAngle < this.topRightAngle) {
       return direction.top
-    } else if (
-      pointAngle >= this.topRightAngle
-      && pointAngle < this.bottomRightAngle
-    ) {
+    } else if (pointAngle >= this.topRightAngle && pointAngle < this.bottomRightAngle) {
       return direction.right
-    } else if (
-      pointAngle >= this.bottomRightAngle
-      && pointAngle < this.bottomLeftAngle
-    ) {
+    } else if (pointAngle >= this.bottomRightAngle && pointAngle < this.bottomLeftAngle) {
       return direction.bottom
-    } else if (
-      pointAngle >= this.bottomLeftAngle
-      || pointAngle < this.topLeftAngle
-    ) {
+    } else if (pointAngle >= this.bottomLeftAngle || pointAngle < this.topLeftAngle) {
       return direction.left
     }
   }
@@ -142,7 +131,5 @@ class GraphNode {
     return offset
   }
 }
-
-GraphNode.prefixId = ''
 
 export default GraphNode

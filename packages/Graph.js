@@ -5,108 +5,106 @@
  */
 
 
-import GraphNode from './GraphNode'
-import GraphRelation from './GraphRelation'
-import {find} from './utils'
+import GraphPoint from './GraphPoint'
+import GraphEdge from './GraphEdge'
 import {direction} from './types'
 
 class Graph {
   constructor(options) {
-    this.nodeList = []
-    this.relationList = []
+    this.pointList = []
+    this.edgeList = []
     this.init(options)
   }
   
-  nodeMap() {
+  pointMap() {
     const map = {}
-    this.nodeList.forEach(node => {
-      map[node.id] = node
+    this.pointList.forEach(point => {
+      map[point.id] = point
     })
     return map
   }
   
-  relationMap() {
+  edgeMap() {
     const map = {}
-    this.relationList.forEach(relation => {
-      map[relation.id] = relation
+    this.edgeList.forEach(edge => {
+      map[edge.id] = edge
     })
     return map
   }
   
-  removeNode(node) {
-    const idx = this.nodeList.indexOf(node)
-    this.relationList.filter(relation => {
-      return relation.start === node || relation.end === node
-    }).forEach(relation => {
-      this.removeRelation(relation)
+  removePoint(node) {
+    const idx = this.pointList.indexOf(node)
+    this.edgeList.filter(edge => {
+      return edge.start === node || edge.end === node
+    }).forEach(edge => {
+      this.removeEdge(edge)
     })
-    this.nodeList.splice(idx, 1)
+    this.pointList.splice(idx, 1)
   }
   
-  removeRelation(relation) {
-    const idx = this.relationList.indexOf(relation)
-    this.relationList.splice(idx, 1)
+  removeEdge(edge) {
+    const idx = this.edgeList.indexOf(edge)
+    this.edgeList.splice(idx, 1)
   }
   
-  appendNode(options) {
-    const node = options.constructor === GraphNode
+  insertPoint(options) {
+    const node = options.constructor === GraphPoint
       ? options
-      : this.createNode(options)
+      : this.createPoint(options)
     
-    this.nodeList.push(node)
+    this.pointList.push(node)
   }
   
-  appendRelation(options) {
-    const relation = options.constructor === GraphRelation
+  insertEdge(options) {
+    const edge = options.constructor === GraphEdge
       ? options
-      : this.createRelation(options)
+      : this.createEdge(options)
     
-    const currentRelation = find(this.relationList, item => {
-      return item.start === relation.start && item.end === relation.end
+    const currentEdge = this.edgeList.find(item => {
+      return item.start === edge.start && item.end === edge.end
     })
     
-    if (currentRelation) {
-      currentRelation.startAt = relation.startAt
-      currentRelation.endAt = relation.endAt
+    if (currentEdge) {
+      currentEdge.startAt = edge.startAt
+      currentEdge.endAt = edge.endAt
     } else {
-      this.relationList.push(relation)
+      this.edgeList.push(edge)
     }
-    
   }
   
-  createNode(options) {
-    const node = new GraphNode(options)
-    node.parent = this
-    return node
+  createPoint(options) {
+    const point = new GraphPoint(options)
+    point.parent = this
+    return point
   }
   
-  createRelation(options) {
-    const relation = new GraphRelation(options)
-    relation.parent = this
-    return relation
+  createEdge(options) {
+    const edge = new GraphEdge(options)
+    edge.parent = this
+    return edge
   }
   
   init(options = {}) {
     const {
-      nodeList = [],
-      relationList = []
+      pointList = [],
+      edgeList = []
     } = options
     
-    this.initNode(nodeList)
-    this.initRelation(relationList)
+    this.initPoint(pointList)
+    this.initEdge(edgeList)
   }
   
-  initNode(nodeList) {
+  initPoint(pointList) {
     const list = []
-    nodeList.forEach(node => {
-      list.push(this.createNode(node))
+    pointList.forEach(node => {
+      list.push(this.createPoint(node))
     })
-    this.nodeList.splice(0, this.nodeList.length, ...list)
+    this.pointList.splice(0, this.pointList.length, ...list)
   }
   
-  initRelation(relationList) {
+  initEdge(edgeList) {
     const list = []
-    relationList.forEach(relation => {
+    edgeList.forEach(relation => {
       
       const {
         startId = '',
@@ -123,10 +121,10 @@ class Graph {
           direction: direction.top
         }
       } = relation
-      const nodeMap = this.nodeMap()
+      const pointMap = this.pointMap()
       
-      const start = nodeMap[startId]
-      const end = nodeMap[endId]
+      const start = pointMap[startId]
+      const end = pointMap[endId]
       
       if (start && end) {
         list.push(
@@ -140,28 +138,28 @@ class Graph {
         )
       }
     })
-    this.relationList.splice(0, this.relationList.length, ...list)
+    this.edgeList.splice(0, this.edgeList.length, ...list)
   }
   
   toJson() {
     return {
-      nodeList: this.nodeList.map(node => {
+      pointList: this.pointList.map(point => {
         return {
-          id: node.id,
-          width: node.width,
-          height: node.height,
-          x: node.x,
-          y: node.y,
-          meta: node.meta
+          id: point.id,
+          width: point.width,
+          height: point.height,
+          x: point.x,
+          y: point.y,
+          meta: point.meta
         }
       }),
-      relationList: this.relationList.map(relation => {
+      edgeList: this.edgeList.map(edge => {
         return {
-          startId: relation.start.id,
-          endId: relation.end.id,
-          meta: relation.meta,
-          startAt: relation.startAt,
-          endAt: relation.endAt
+          startId: edge.start.id,
+          endId: edge.end.id,
+          meta: edge.meta,
+          startAt: edge.startAt,
+          endAt: edge.endAt
         }
       })
     }

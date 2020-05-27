@@ -4,19 +4,16 @@
  * Time: 14:01
  */
 
-import {
-  addVector,
-  dotProduct,
-  isParallel,
-  multiply,
-} from './utils'
+import {vector} from './utils'
 
 import {
   direction,
   directionVector
 } from './types'
 
-class GraphRelation {
+export default class GraphEdge {
+  static distance = 15
+  
   constructor(options) {
     const {
       start,
@@ -91,7 +88,8 @@ class GraphRelation {
         this.moveInfo.x,
         this.moveInfo.y
       )
-      return multiply(directionVector[direction], -1)
+      
+      return vector(directionVector[direction]).multiply(-1).end
     }
   }
   
@@ -106,17 +104,23 @@ class GraphRelation {
     let exitDirection = this.endDirectionVector()
     
     // 路径起点
-    const startPoint = addVector(entryPoint,
-      multiply(entryDirection, GraphRelation.distance)
-    )
+    const startPoint = vector(entryDirection)
+      .multiply(GraphEdge.distance)
+      .add(entryPoint)
+      .end
+    
     
     // 路径终点
-    const endPoint = addVector(exitPoint,
-      multiply(exitDirection, GraphRelation.distance)
-    )
+    const endPoint = vector(exitDirection)
+      .multiply(GraphEdge.distance)
+      .add(exitPoint)
+      .end
+    
     
     // 入口方向取反
-    exitDirection = multiply(exitDirection, -1)
+    exitDirection = vector(exitDirection)
+      .multiply(-1)
+      .end
     
     // 终点 - 起点  垂直 水平向量
     const pathHorizontalVec = [endPoint[0] - startPoint[0], 0]
@@ -133,10 +137,9 @@ class GraphRelation {
       exitDirection
     )
     
-    const splitNum = dotProduct(
-      startDirection,
-      endDirection
-    ) > 0 ? 2 : 1
+    const splitNum = vector(startDirection)
+      .dotProduct(endDirection)
+      .end > 0 ? 2 : 1
     
     const pathMiddle =
       endDirection === pathHorizontalVec
@@ -147,24 +150,31 @@ class GraphRelation {
     points.push(entryPoint, startPoint)
     
     if (splitNum === 1) {
-      const point1 = addVector(startPoint, startDirection)
-      const point2 = addVector(point1, endDirection)
+      
+      const point1 = vector(startPoint)
+        .add(startDirection)
+        .end
+      
+      const point2 = vector(point1)
+        .add(endDirection)
+        .end
       
       points.push(point1, point2)
       
     } else {
-      const point1 = addVector(
-        startPoint,
-        multiply(startDirection, turnRatio)
-      )
-      const point2 = addVector(
-        point1,
-        pathMiddle
-      )
-      const point3 = addVector(
-        point2,
-        multiply(endDirection, 1 - turnRatio)
-      )
+      const point1 = vector(startDirection)
+        .multiply(turnRatio)
+        .add(startPoint)
+        .end
+      
+      const point2 = vector(point1)
+        .add(pathMiddle)
+        .end
+      
+      const point3 = vector(endDirection)
+        .multiply(0 - turnRatio)
+        .add(point2)
+        .end
       
       points.push(point1, point2, point3)
     }
@@ -175,14 +185,15 @@ class GraphRelation {
   }
   
   pathDirection(vertical, horizontal, direction) {
-    if (isParallel(horizontal, direction)) {
-      if (dotProduct(horizontal, direction) > 0) {
+    
+    if ( vector(horizontal).parallel(direction).end) {
+      if (vector(horizontal).dotProduct(direction).end > 0) {
         return horizontal
       } else {
         return vertical
       }
     } else {
-      if (dotProduct(vertical, direction) > 0) {
+      if (vector(vertical).dotProduct(direction).end > 0) {
         return vertical
       } else {
         return horizontal
@@ -191,7 +202,3 @@ class GraphRelation {
   }
   
 }
-
-GraphRelation.distance = 15
-
-export default GraphRelation

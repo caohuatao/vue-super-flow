@@ -1,174 +1,78 @@
 <!--
  * User: CHT
- * Date: 2020/5/25
- * Time: 11:21
+ * Date: 2020/5/27
+ * Time: 9:52
 -->
 <template>
-  <div class="super-flow">
+  <div
+    class="super-flow">
     <div
       ref="flow-canvas"
-      @contextmenu="menuOpen"
-      @mousemove="mousemoveFun">
+      :style="{width: width + 'px', height: height + 'px'}"
+      @contextmenu.prevent.stop="contextmenu">
 
-      <flow-node
-        v-for="(node, idx) in graph.nodeList"
-        :key="node.id"
-        :class="{isSelect: moveNodeConf.node === node}"
-        :node="node"
-        :index="idx"
-        :menu-conf="menuConf"
-        :tem-relation-conf="temRelationConf"
-        :move-node-conf="moveNodeConf"
-        :data-node-type="node.meta.type"
-        @updateMousemoveFun="changeMousemoveFun">
-        <slot
-          name="node"
-          :node="node">
-        </slot>
-      </flow-node>
-
-      <flow-line
-        v-show="temRelationConf.isMove"
-        :point-list="temRelationConf.relation ? temRelationConf.relation.pathPointList : []">
-      </flow-line>
-
-      <flow-line
-        v-for="relation in graph.relationList"
-        :key="relation.key"
-        :point-list="relation.pathPointList">
-      </flow-line>
-
-      <flow-menu
+      <graph-menu
         :visible.sync="menuConf.visible"
-        :menu-list="menuConf.list"
-        :x="menuConf.x"
-        :y="menuConf.y"
-        @item-click="opt => graph.appendNode(opt)"
-        @handler="handler">
-      </flow-menu>
+        :position="menuConf.position"
+        :list="menuConf.list"
+        @select="menuSelect">
+      </graph-menu>
 
     </div>
+
   </div>
 </template>
 
 <script>
 
   import Graph from './Graph'
-  import flowNode from './flow-node'
-  import flowLine from './flow-line'
-  import flowMenu from './flow-menu'
-
-  import {
-    menuHandler
-  } from './types'
-
-  import {
-    getOffset,
-    pauseEvent
-  } from './utils'
+  import GraphMenu from './menu'
+  import {getOffset} from '../packages/utils'
 
   export default {
     props: {
-      nodeProto: {
-        type: Array,
-        default: () => [
-          {
-            type: 'start',
-            label: '开始节点'
-          },
-          {
-            type: 'end',
-            label: '结束节点'
-          }
-        ]
-      },
-      nodeList: {
+      menuList: {
         type: Array,
         default: () => []
       },
-      relationList: {
+      pointList: {
         type: Array,
         default: () => []
+      },
+      edgeList: {
+        type: Array,
+        default: () => []
+      },
+      width: {
+        type: Number,
+        default: 4000
+      },
+      height: {
+        type: Number,
+        default: 3000
       }
     },
     data() {
       return {
-
-        moveNodeConf: {
-          isDown: false,
-          offset: {
-            x: 0,
-            y: 0
-          },
-          node: null,
-          reset: () => this.moveNodeConf.isDown = false
-        },
-
-        pageMenuList: [
-          this.nodeProto,
-          [
-            {
-              label: '竖向对齐',
-              type: menuHandler.verticalAlign,
-              isHandler: true
-            },
-            {
-              label: '横向对齐',
-              type: menuHandler.HorizontalAlign,
-              isHandler: true
-            }
-          ]
-        ],
-
-        menuConf: {
-          list: [],
-          visible: false,
-          data: null,
-          x: 0,
-          y: 0,
-          open: (evt) => {
-            const {x, y} = getOffset(evt, this.$refs['flow-canvas'])
-            this.menuConf.visible = true
-            this.menuConf.x = x
-            this.menuConf.y = y
-          }
-        },
-
-        temRelationConf: {
-          isMove: false,
-          visible: false,
-          relation: null,
-          reset: () => {
-            const that = this.temRelationConf
-            that.isMove = false
-            that.visible = false
-            that.relation = null
-          }
-        },
-
         graph: new Graph({
-          nodeList: this.nodeList,
-          relationList: this.relationList
+          nodeList: this.pointList,
+          edgeList: this.edgeList
         }),
-
-        mousemoveFun: () => null
-
+        menuConf: {
+          visible: false,
+          position: [0, 0],
+          list: []
+        }
       }
     },
+    components: {GraphMenu},
+    created() {
+    },
     mounted() {
-      document.addEventListener('mouseup', this.docMouseup)
-      this.$nextTick(this.scrollBy)
-    },
-    components: {
-      flowNode,
-      flowLine,
-      flowMenu
-    },
-    beforeDestroy() {
-      document.removeEventListener('mouseup', this.docMouseup)
+      this.scrollCenter()
     },
     methods: {
-      scrollBy() {
+      scrollCenter() {
         if (this.$el) {
           const {
             clientHeight,
@@ -181,81 +85,70 @@
           this.$el.scrollLeft = Math.ceil((scrollWidth - clientWidth) / 2)
         }
       },
-
-      menuOpen(evt) {
-        this.menuConf.list = this.pageMenuList
-        this.menuConf.data = null
-        this.menuConf.open(evt)
-        pauseEvent(evt)
+      contextmenu(evt) {
+        const {
+          position,
+          list
+        } = this.menuConf
+        position.splice(0, position.length, ...getOffset(evt, this.$refs['flow-canvas']))
+        list.splice(0, list.length, ...this.menuList.map(subList => {
+          return subList.map(item => {
+            let disable
+            switch (typeof item.disable) {
+              case 'boolean':
+                disable = item.disable
+                break
+              case 'function':
+                disable = item.disable(this.graph)
+                break
+              case 'number':
+                disable = Boolean(item.disable)
+                break
+              default:
+                disable = false
+                break
+            }
+            return {
+              ...item,
+              disable
+            }
+          })
+        }))
+        this.menuConf.visible = true
       },
 
-      docMouseup() {
-        this.mousemoveFun = () => null
-        this.moveNodeConf.reset()
-        this.temRelationConf.reset()
+      menuSelect(opts) {
+        const {
+          meta,
+          position
+        } = opts
+
+        this.$emit('menu-item-select', {
+          meta,
+          position,
+          createPoint: this.createPoint
+        })
+
+        this.menuConf.visible = false
       },
 
-      handler(info) {
-        switch (info.type) {
-          case menuHandler.verticalAlign:
-            break
-          case menuHandler.HorizontalAlign:
-            break
-          case menuHandler.nodeDelete:
-            this.graph.removeNode(this.menuConf.data)
-            break
-          default:
-            break
-        }
-      },
-
-      getGraphData() {
-        return this.graph.toJson()
-      },
-
-      changeMousemoveFun(fun) {
-        this.mousemoveFun = fun
+      createPoint() {
+        console.log(this)
+        this.graph.createPoint()
       }
     },
     watch: {
-      nodeList() {
-        this.graph.initNode(this.nodeList)
+      pointList() {
+        this.graph.initPoint(this.pointList)
       },
-      relationList() {
-        this.graph.initRelation(this.relationList)
+      edgeList() {
+        this.graph.initEdge(this.edgeList)
       }
     }
   }
 </script>
 
 <style lang="less">
-  @prefix        : super-flow;
-  @bg-color      : #ffffff;
-  @color         : #333333;
-  @border-color  : rgb(180, 180, 180); // outside
-  @z-index-base  : 0;
-  @z-index-node  : 1;
-  @z-index-focus : 2;
-  @z-index-menu  : 10;
-
-  .shadow(@dep: 1) {
-    box-shadow : 1px 2px 8px rgba(0, 0, 0,.1 * @dep);
-  }
-
-  .useSelect(@val: none) {
-    -webkit-user-select : @val;
-    -moz-user-select    : @val;
-    -ms-user-select     : @val;
-    user-select         : @val;
-  }
-
-  .boxSizing(@val: content-box) {
-    -webkit-box-sizing : @val;
-    -moz-box-sizing    : @val;
-    -ms-box-sizing     : @val;
-    box-sizing         : @val;
-  }
-
   .scrollBar(@width:10px, @bg: rgba(0, 0, 0, 0.3), @shadow: inset 6px rgba(0, 0, 0, 0.2)) {
     &::-webkit-scrollbar {
       width  : @width;
@@ -269,7 +162,7 @@
     }
   }
 
-  .@{prefix} {
+  .super-flow {
     font-family      : Apple System,
     'SF Pro SC',
     'SF Pro Display',
@@ -292,173 +185,7 @@
     .scrollBar(8px);
 
     > div {
-      width    : 3000px;
-      height   : 4000px;
       position : relative;
     }
-
-    // 关系线
-    &__line {
-      position : absolute;
-      z-index  : @z-index-base;
-
-      &.inPath {
-        cursor : pointer;
-      }
-    }
-
-    // 节点
-    &__node {
-      .shadow(2);
-      user-select      : none;
-
-      position         : absolute;
-      background-color : @bg-color;
-      border           : 1px solid @border-color;
-      cursor           : move;
-      z-index          : @z-index-node;
-      outline          : none;
-
-      &-header {
-        background-color : green;
-      }
-
-      &-body {
-
-      }
-
-      .node-side {
-        @size    : 10px;
-        position : absolute;
-        cursor   : crosshair;
-
-        &-top {
-          top    : -@size/2;
-          right  : 0;
-          left   : 0;
-
-          height : @size;
-        }
-
-        &-right {
-          top    : 0;
-          right  : -@size/2;
-          bottom : 0;
-
-          width  : @size;
-        }
-
-        &-bottom {
-          right  : 0;
-          bottom : -@size/2;
-          left   : 0;
-
-          height : @size;
-        }
-
-        &-left {
-          top    : 0;
-          bottom : 0;
-          left   : -@size/2;
-
-          width  : @size;
-        }
-      }
-
-      &:hover {
-        .shadow(4)
-      }
-
-      &.isSelect {
-        z-index : @z-index-focus;
-      }
-    }
-
-    // 菜单
-    &__menu {
-      @menu-width      : 180px;
-      @height          : 26px;
-
-      position         : absolute;
-      outline          : none;
-      width            : @menu-width;
-      padding          : 4px 0;
-      border           : 1px solid @border-color;
-      box-shadow       : 0 8px 16px 0 rgba(0, 0, 0, 0.3);
-      overflow         : hidden;
-      border-radius    : 3px;
-      z-index          : @z-index-menu;
-      background-color : @bg-color;
-      margin           : 0;
-
-
-      &-item {
-        @padding    : 4px;
-        @width      : @menu-width - 2px - @padding * 2;
-        @icon-size  : @height;
-
-
-        user-select : none;
-        box-sizing  : content-box;
-
-        width       : @width;
-        min-height  : @height;
-
-        cursor      : pointer;
-        font-size   : 0;
-        position    : relative;
-        padding     : 0 @padding;
-
-        display     : flex;
-
-        &:last-child {
-          margin : 0;
-
-          &:after {
-            display : none;
-          }
-        }
-
-        &:hover {
-          background-color : #eeeeee;
-        }
-
-        &-icon {
-          float  : left;
-          width  : @icon-size;
-          height : @icon-size;
-        }
-
-        &-content {
-          float       : left;
-          display     : inline-block;
-          color       : #333333;
-          font-size   : 14px;
-          line-height : @height;
-          width       : @width - @icon-size;
-        }
-
-        > div {
-          position : absolute;
-          top      : 0;
-          left     : 0;
-          right    : 0;
-          bottom   : 0;
-        }
-      }
-
-      &-line {
-        width         : 100%;
-        margin        : 4px 0;
-        border-bottom : 1px solid @border-color;
-        height        : 0;
-
-        &:last-child {
-          display : none;
-        }
-      }
-    }
-
   }
-
 </style>

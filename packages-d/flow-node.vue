@@ -9,10 +9,10 @@
     class="super-flow__node"
     :style="style"
     @mousedown="nodeMousedown"
-    @contextmenu="showNodeMenu"
     @mouseenter="nodeMouseEnter"
     @mouseleave="nodeMouseLeave"
-    @mouseup="nodeMouseup">
+    @mouseup="nodeMouseup"
+    @contextmenu.prevent.stop>
     <slot>
       <div
         v-for="(dir, key) in direction"
@@ -27,8 +27,7 @@
 
   import {
     direction,
-    directionVector,
-    menuHandler
+    directionVector
   } from './types'
 
   import {
@@ -47,23 +46,7 @@
     data() {
       return {
         direction,
-        graph: this.node.parent,
-        nodeMenuList: [
-          [
-            {
-              label: '创建连线',
-              type: menuHandler.nodeConnection,
-              isHandler: true
-            }
-          ],
-          [
-            {
-              label: '删除',
-              type: menuHandler.nodeDelete,
-              isHandler: true
-            }
-          ]
-        ]
+        graph: this.node.parent
       }
     },
     computed: {
@@ -80,10 +63,7 @@
       nodeMousedown(evt) {
         const nodeList = this.graph.nodeList
         const conf = this.moveNodeConf
-        nodeList.splice(nodeList.length - 1,
-          0,
-          nodeList.splice(this.index, 1)[0]
-        )
+        nodeList.splice(nodeList.length - 1, 0, ...nodeList.splice(this.index, 1))
         conf.isDown = true
         conf.offset = getOffset(evt)
         conf.node = this.node
@@ -129,13 +109,6 @@
         }
       },
 
-      showNodeMenu(evt) {
-        this.menuConf.list = this.nodeMenuList
-        this.menuConf.data = this.node
-        this.menuConf.open(evt)
-        pauseEvent(evt)
-      },
-
       sideMousedown(evt, dir) {
         const offset = getOffset(evt)
         const conf = this.temRelationConf
@@ -169,5 +142,69 @@
 </script>
 
 <style lang="less">
+  .super-flow__node {
+    box-shadow       : 1px 2px 8px rgba(0, 0, 0, .2);
+    user-select      : none;
 
+    position         : absolute;
+    background-color : #ffffff;
+    border           : 1px solid rgb(180, 180, 180);
+    cursor           : move;
+    z-index          : 1;
+    outline          : none;
+
+    &-header {
+      background-color : green;
+    }
+
+    &-body {
+
+    }
+
+    .node-side {
+      @size    : 10px;
+      position : absolute;
+      cursor   : crosshair;
+
+      &-top {
+        top    : -@size/2;
+        right  : 0;
+        left   : 0;
+
+        height : @size;
+      }
+
+      &-right {
+        top    : 0;
+        right  : -@size/2;
+        bottom : 0;
+
+        width  : @size;
+      }
+
+      &-bottom {
+        right  : 0;
+        bottom : -@size/2;
+        left   : 0;
+
+        height : @size;
+      }
+
+      &-left {
+        top    : 0;
+        bottom : 0;
+        left   : -@size/2;
+
+        width  : @size;
+      }
+    }
+
+    &:hover {
+      box-shadow : 1px 2px 8px rgba(0, 0, 0, .4);
+    }
+
+    &.isSelect {
+      z-index : 2;
+    }
+  }
 </style>

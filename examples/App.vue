@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <super-flow
-      :menu="menuList">
+      :menu-list="superFlowConf.menuList"
+      @menu-item-select="menuItemSelect">
     </super-flow>
   </div>
 </template>
@@ -13,31 +14,44 @@
   export default {
     data() {
       return {
-        menuList: [
-          [
-            {
-              type: 'start',
-              label: '开始节点'
-            },
-            {
-              type: 'end',
-              label: '结束节点'
-            }
-          ],
-          [
-            {
-              type: '',
-              label: '竖向对齐'
-            },
-            {
-              type: '',
-              label: '横向对齐'
-            }
+        superFlowConf: {
+          menuList: [
+            [
+              {
+                prop: 'start',
+                label: '开始节点',
+                disable(graph) {
+                 return  Boolean(graph.pointList.find(point => point.meta.prop === 'start'))
+                }
+              },
+              {
+                prop: 'end',
+                label: '结束节点',
+                disable(graph) {
+                  return  Boolean(graph.pointList.find(point => point.meta.prop === 'end'))
+                }
+              }
+            ],
+            [
+              {
+                prop: 'vertical',
+                label: '竖向对齐'
+              },
+              {
+                type: 'horizontal',
+                label: '横向对齐'
+              }
+            ]
           ]
-        ]
+        }
       }
     },
     mounted() {
+    },
+    methods: {
+      menuItemSelect({meta, position, createPoint}) {
+        createPoint()
+      }
     },
     components: {
       SuperFlow
