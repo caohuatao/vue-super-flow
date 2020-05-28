@@ -93,3 +93,13 @@ export function vector(point) {
     }
   })
 }
+
+export function debounce(fn, timestamp) {
+  let timeout = null
+  return function () {
+    if (timeout)
+      clearTimeout(timeout)
+    timeout = setTimeout(fn, timestamp)
+  }
+}
+

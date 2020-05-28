@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <super-flow
-      :menu-list="superFlowConf.menuList"
-      @menu-item-select="menuItemSelect">
+      :graph-menu="graphMenuList">
     </super-flow>
   </div>
 </template>
@@ -10,48 +9,73 @@
 <script>
   import SuperFlow from '../packages/index'
 
-
   export default {
     data() {
       return {
-        superFlowConf: {
-          menuList: [
-            [
-              {
-                prop: 'start',
-                label: '开始节点',
-                disable(graph) {
-                 return  Boolean(graph.pointList.find(point => point.meta.prop === 'start'))
-                }
+        graphMenuList: [
+          [
+            {
+              prop: 'start',
+              label: '开始节点',
+              disable(graph) {
+                return  Boolean(
+                  graph.pointList.find(point => point.meta.prop === 'start')
+                )
               },
-              {
-                prop: 'end',
-                label: '结束节点',
-                disable(graph) {
-                  return  Boolean(graph.pointList.find(point => point.meta.prop === 'end'))
-                }
+              selected(graph, position) {
+                graph.insertPoint({
+                  id: Math.random().toString(32),
+                  width: 180,
+                  height: 100,
+                  position: position,
+                  meta: {
+                    prop: 'start'
+                  }
+                })
               }
-            ],
-            [
-              {
-                prop: 'vertical',
-                label: '竖向对齐'
+            },
+            {
+              prop: 'end',
+              label: '结束节点',
+              disable(graph) {
+                return  Boolean(
+                  graph.pointList.find(point => point.meta.prop === 'end')
+                )
               },
-              {
-                type: 'horizontal',
-                label: '横向对齐'
+              selected(graph, position) {
+                graph.insertPoint({
+                  id: Math.random().toString(32),
+                  width: 180,
+                  height: 100,
+                  position: position,
+                  meta: {
+                    prop: 'end'
+                  }
+                })
               }
-            ]
+            }
+          ],
+          [
+            {
+              prop: 'vertical',
+              label: '竖向对齐',
+              disable: false,
+              selected(graph, position) {}
+            },
+            {
+              type: 'horizontal',
+              label: '横向对齐',
+              disable: false,
+              selected(graph, position) {}
+            }
           ]
-        }
+        ],
+        nodeMenuList: []
       }
     },
     mounted() {
     },
     methods: {
-      menuItemSelect({meta, position, createPoint}) {
-        createPoint()
-      }
     },
     components: {
       SuperFlow

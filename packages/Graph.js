@@ -6,8 +6,15 @@
 
 
 import GraphPoint from './GraphPoint'
+
 import GraphEdge from './GraphEdge'
-import {direction} from './types'
+
+import {
+  direction
+} from './types'
+
+const initPoint = Symbol('initPoint')
+const initEdge = Symbol('initEdge')
 
 class Graph {
   constructor(options) {
@@ -47,12 +54,17 @@ class Graph {
     this.edgeList.splice(idx, 1)
   }
   
-  insertPoint(options) {
+  
+  insertPoint(options, idx = -1) {
     const node = options.constructor === GraphPoint
       ? options
       : this.createPoint(options)
     
-    this.pointList.push(node)
+    if(idx > -1) {
+      this.pointList.splice(idx, 0, node)
+    } else {
+      this.pointList.push(node)
+    }
   }
   
   insertEdge(options) {
@@ -66,22 +78,21 @@ class Graph {
     
     if (currentEdge) {
       currentEdge.startAt = edge.startAt
+      currentEdge.startDirection = edge.startDirection
       currentEdge.endAt = edge.endAt
+      currentEdge.endDirection = edge.endDirection
     } else {
       this.edgeList.push(edge)
     }
   }
   
+  
   createPoint(options) {
-    const point = new GraphPoint(options)
-    point.parent = this
-    return point
+    return new GraphPoint(options)
   }
   
   createEdge(options) {
-    const edge = new GraphEdge(options)
-    edge.parent = this
-    return edge
+    return new GraphEdge(options)
   }
   
   init(options = {}) {
@@ -90,11 +101,11 @@ class Graph {
       edgeList = []
     } = options
     
-    this.initPoint(pointList)
-    this.initEdge(edgeList)
+    this[initPoint](pointList)
+    this[initEdge](edgeList)
   }
   
-  initPoint(pointList) {
+  [initPoint](pointList) {
     const list = []
     pointList.forEach(node => {
       list.push(this.createPoint(node))
@@ -102,7 +113,7 @@ class Graph {
     this.pointList.splice(0, this.pointList.length, ...list)
   }
   
-  initEdge(edgeList) {
+  [initEdge](edgeList) {
     const list = []
     edgeList.forEach(relation => {
       

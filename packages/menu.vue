@@ -14,7 +14,7 @@
       <li
         class="super-flow__menu-item"
         v-for="subItem in subList"
-        :class="{'is-disabled': subItem.disable}"
+        :class="{'is-disabled': subItem.disable(source)}"
         @click="select(subItem)">
         <slot>
           <span class="super-flow__menu-item-icon"></span>
@@ -42,6 +42,10 @@
       position: {
         type: Array,
         default: () => [0, 0]
+      },
+      source: {
+        type: Object,
+        default: () => ({})
       }
     },
     computed: {
@@ -54,12 +58,10 @@
       }
     },
     methods: {
-      select(item) {
-        if (item.disable) return
-        this.$emit('select', {
-          meta: item,
-          position: this.position
-        })
+      select(subItem) {
+        if (subItem.disable(this.source)) return
+        this.$emit('update:visible', false)
+        subItem.selected(this.source, this.position)
       }
     },
     watch: {

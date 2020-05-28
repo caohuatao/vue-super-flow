@@ -18,29 +18,24 @@ export default class GraphEdge {
     const {
       start,
       end = null,
-      startAt = {
-        x: 0,
-        y: 0,
-        direction: direction.top
-      },
-      endAt = {
-        x: 0,
-        y: 0,
-        direction: direction.top
-      },
+      startAt = [0, 0],
+      startDirection = direction.top,
+      endAt = [0, 0],
+      endDirection = direction.top,
       meta = null
     } = options
+    this.key = Symbol('edge')
+    this.parent = null
     
     this.start = start
-    this.end = end
     this.startAt = startAt
+    this.startDirection = startDirection
     this.endAt = endAt
-    this.moveInfo = {
-      x: 0,
-      y: 0
-    }
-    this.meta = null
-    this.parent = null
+    this.endDirection = endDirection
+    
+    this.movePosition = [0, 0]
+    this.meta = meta
+    this.end = end
   }
   
   get end() {
@@ -60,35 +55,26 @@ export default class GraphEdge {
   }
   
   startCoordinate() {
-    return [
-      this.start.x + this.startAt.x,
-      this.start.y + this.startAt.y
-    ]
+    return vector(this.start.position)
+      .add(this.startAt)
+      .end
   }
   
   endCoordinate() {
     if (this.end) {
-      return [
-        this.end.x + this.endAt.x,
-        this.end.y + this.endAt.y
-      ]
+      return vector(this.end.position)
+        .add(this.endAt)
+        .end
     } else {
-      return [
-        this.moveInfo.x,
-        this.moveInfo.y
-      ]
+      return this.movePosition
     }
   }
   
   endDirectionVector() {
     if (this.end) {
-      return this.endAt.direction
+      return this.endDirection
     } else {
-      const direction = this.start.pointDirection(
-        this.moveInfo.x,
-        this.moveInfo.y
-      )
-      
+      const direction = this.start.pointDirection(this.movePosition)
       return vector(directionVector[direction]).multiply(-1).end
     }
   }
@@ -96,11 +82,9 @@ export default class GraphEdge {
   coordinateList(turnRatio = 0.5) {
     
     const entryPoint = this.startCoordinate()
-    
     const exitPoint = this.endCoordinate()
     
-    
-    const entryDirection = this.startAt.direction
+    const entryDirection = this.startDirection
     let exitDirection = this.endDirectionVector()
     
     // 路径起点
@@ -109,13 +93,11 @@ export default class GraphEdge {
       .add(entryPoint)
       .end
     
-    
     // 路径终点
     const endPoint = vector(exitDirection)
       .multiply(GraphEdge.distance)
       .add(exitPoint)
       .end
-    
     
     // 入口方向取反
     exitDirection = vector(exitDirection)
@@ -141,9 +123,9 @@ export default class GraphEdge {
       .dotProduct(endDirection)
       .end > 0 ? 2 : 1
     
-    const pathMiddle =
-      endDirection === pathHorizontalVec
-        ? pathVerticalVec : pathHorizontalVec
+    const pathMiddle = endDirection === pathHorizontalVec
+      ? pathVerticalVec
+      : pathHorizontalVec
     
     let points = []
     
@@ -172,11 +154,12 @@ export default class GraphEdge {
         .end
       
       const point3 = vector(endDirection)
-        .multiply(0 - turnRatio)
+        .multiply(1 - turnRatio)
         .add(point2)
         .end
       
       points.push(point1, point2, point3)
+      
     }
     
     points.push(exitPoint)
@@ -185,8 +168,7 @@ export default class GraphEdge {
   }
   
   pathDirection(vertical, horizontal, direction) {
-    
-    if ( vector(horizontal).parallel(direction).end) {
+    if (vector(horizontal).parallel(direction).end) {
       if (vector(horizontal).dotProduct(direction).end > 0) {
         return horizontal
       } else {
@@ -200,5 +182,4 @@ export default class GraphEdge {
       }
     }
   }
-  
 }

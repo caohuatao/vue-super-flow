@@ -11,11 +11,37 @@
       :style="{width: width + 'px', height: height + 'px'}"
       @contextmenu.prevent.stop="contextmenu">
 
+      <graph-line
+        v-if="temEdgeConf.visible"
+        :point-list="temEdgeConf.edge.pathPointList">
+      </graph-line>
+
+      <graph-line
+        v-for="(edge, idx) in graph.edgeList"
+        :index="idx"
+        :key="edge.key"
+        :point-list="edge.pathPointList">
+      </graph-line>
+
+      <graph-node
+        v-for="(node, idx) in graph.pointList"
+        :index="idx"
+        :node="node"
+        :graph="graph"
+        :is-move="node === moveNodeConf.node"
+        :is-tem-edge="temEdgeConf.visible"
+        @node-mousedown="nodeMousedown"
+        @node-mouseenter="nodeMouseenter"
+        @node-mouseleave="nodeMouseleave"
+        @node-mouseup="nodeMouseup"
+        @side-mousedown="sideMousedown">
+      </graph-node>
+
       <graph-menu
         :visible.sync="menuConf.visible"
         :position="menuConf.position"
         :list="menuConf.list"
-        @select="menuSelect">
+        :source="menuConf.source">
       </graph-menu>
 
     </div>
@@ -27,11 +53,13 @@
 
   import Graph from './Graph'
   import GraphMenu from './menu'
-  import {getOffset} from '../packages/utils'
+  import GraphNode from './node'
+  import GraphLine from './line'
+  import {getOffset, vector} from '../packages/utils'
 
   export default {
     props: {
-      menuList: {
+      graphMenu: {
         type: Array,
         default: () => []
       },
@@ -58,20 +86,75 @@
           nodeList: this.pointList,
           edgeList: this.edgeList
         }),
+        nodeMenu: [],
         menuConf: {
           visible: false,
           position: [0, 0],
+          source: null,
           list: []
+        },
+        moveNodeConf: {
+          node: null,
+          offset: null
+        },
+        temEdgeConf: {
+          visible: false,
+          edge: null
         }
       }
     },
-    components: {GraphMenu},
+    components: {
+      GraphMenu,
+      GraphNode,
+      GraphLine
+    },
     created() {
+      this.resetGraphMenu()
     },
     mounted() {
+      document.addEventListener('mouseup', this.docMouseup)
+      document.addEventListener('mousemove', this.docMousemove)
       this.scrollCenter()
     },
+    beforeDestroy() {
+      document.removeEventListener('mouseup', this.docMouseup)
+      document.removeEventListener('mousemove', this.docMousemove)
+    },
     methods: {
+      resetGraphMenu() {
+        this.graphMenu.forEach(subList => subList.forEach(item => {
+          const type = typeof item.disable
+          if (type === 'boolean') {
+            const bol = item.disable
+            item.disable = () => bol
+          }
+        }))
+      },
+
+      docMouseup() {
+        this.moveNodeConf.isMove = false
+        this.moveNodeConf.node = null
+        this.moveNodeConf.offset = null
+
+        this.temEdgeConf.visible = false
+        this.temEdgeConf.edge = null
+      },
+
+      docMousemove(evt) {
+        if (this.moveNodeConf.isMove) {
+          this.moveNodeConf.node.position =
+            vector(this.moveNodeConf.offset)
+              .differ(getOffset(evt, this.$refs['flow-canvas']))
+              .end
+        }
+
+        if(this.temEdgeConf.visible) {
+          this.temEdgeConf.edge.movePosition
+            = getOffset(evt, this.$refs['flow-canvas'])
+        }
+
+      },
+
       scrollCenter() {
         if (this.$el) {
           const {
@@ -85,58 +168,51 @@
           this.$el.scrollLeft = Math.ceil((scrollWidth - clientWidth) / 2)
         }
       },
+
       contextmenu(evt) {
-        const {
-          position,
-          list
-        } = this.menuConf
-        position.splice(0, position.length, ...getOffset(evt, this.$refs['flow-canvas']))
-        list.splice(0, list.length, ...this.menuList.map(subList => {
-          return subList.map(item => {
-            let disable
-            switch (typeof item.disable) {
-              case 'boolean':
-                disable = item.disable
-                break
-              case 'function':
-                disable = item.disable(this.graph)
-                break
-              case 'number':
-                disable = Boolean(item.disable)
-                break
-              default:
-                disable = false
-                break
-            }
-            return {
-              ...item,
-              disable
-            }
-          })
-        }))
+        this.$set(this.menuConf, 'position', getOffset(evt, this.$refs['flow-canvas']))
+        this.$set(this.menuConf, 'list', this.graphMenu)
+        this.$set(this.menuConf, 'source', this.graph)
         this.menuConf.visible = true
       },
 
-      menuSelect(opts) {
-        const {
-          meta,
-          position
-        } = opts
-
-        this.$emit('menu-item-select', {
-          meta,
-          position,
-          createPoint: this.createPoint
-        })
-
-        this.menuConf.visible = false
+      nodeMousedown(node, offset) {
+        this.moveNodeConf.isMove = true
+        this.moveNodeConf.node = node
+        this.moveNodeConf.offset = offset
       },
 
-      createPoint() {
-        console.log(this)
-        this.graph.createPoint()
+      nodeMouseenter(evt, node, endAt, endDirection) {
+        const edge = this.temEdgeConf.edge
+        edge.end = node
+        edge.endAt = endAt
+        edge.endDirection = endDirection
+      },
+
+      nodeMouseleave() {
+        this.temEdgeConf.edge.end = null
+      },
+
+      nodeMouseup() {
+        this.graph.insertEdge(this.temEdgeConf.edge)
+      },
+
+      sideMousedown(evt, node, startAt, startDirection) {
+        const edge = this.graph.createEdge({
+          start: node,
+          startDirection,
+          startAt
+        })
+        edge.movePosition = getOffset(evt, this.$refs['flow-canvas'])
+        this.$set(this.temEdgeConf, 'edge', edge)
+        this.temEdgeConf.visible = true
+      },
+
+      menuItemSelect() {
+        this.menuConf.visible = false
       }
     },
+
     watch: {
       pointList() {
         this.graph.initPoint(this.pointList)

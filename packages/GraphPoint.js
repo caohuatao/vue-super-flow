@@ -14,10 +14,10 @@ import {
 } from './types'
 
 export default class GraphPoint {
-  static prefixId = ''
   
   constructor(props) {
     const {
+      id,
       width = 180,
       height = 100,
       position = [0, 0],
@@ -25,15 +25,14 @@ export default class GraphPoint {
     } = props
     
     this.key = Symbol('point')
+    this.parent = null
+    
+    this.id = id
+    this.position = [...position]
+    this.meta = meta
     
     this.width = width
     this.height = height
-    
-    this.position = position
-    this.meta = meta
-    
-    this.parent = null
-    this.angle()
   }
   
   get center() {
@@ -100,6 +99,7 @@ export default class GraphPoint {
   pointDirection(position) {
     const angle = vector(position)
       .minus(this.center)
+      .angle()
       .end
     
     const angleList = this.angleList
@@ -127,28 +127,31 @@ export default class GraphPoint {
     }
   }
   
-  getEndAt(offset) {
-    const dir = vector(this.position)
-      .add([offset.x, offset.y])
-      .end
-    
-    offset.direction = directionVector[dir]
+  getEndAt(endAt) {
+    const dir = this.pointDirection(
+      vector(this.position)
+        .add(endAt)
+        .end
+    )
     
     switch (dir) {
       case direction.top:
-        offset.y = 0
+        endAt[1] = 0
         break
       case direction.right:
-        offset.x = this.width
+        endAt[0] = this.width
         break
       case direction.bottom:
-        offset.y = this.height
+        endAt[1] = this.height
         break
       case direction.left:
-        offset.x = 0
+        endAt[0] = 0
         break
     }
     
-    return offset
+    return {
+      endAt,
+      direction: directionVector[dir]
+    }
   }
 }
