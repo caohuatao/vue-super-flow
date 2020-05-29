@@ -14,7 +14,7 @@
       <li
         class="super-flow__menu-item"
         v-for="subItem in subList"
-        :class="{'is-disabled': subItem.disable(source)}"
+        :class="{'is-disabled': subItem.disable}"
         @click="select(subItem)">
         <slot>
           <span class="super-flow__menu-item-icon"></span>
@@ -29,11 +29,17 @@
 </template>
 
 <script>
+  import {vector} from './utils'
+
   export default {
     props: {
       visible: {
         type: Boolean,
         default: false
+      },
+      graphPosition: {
+        type: Array,
+        default: [0, 0]
       },
       list: {
         type: Array,
@@ -59,9 +65,15 @@
     },
     methods: {
       select(subItem) {
-        if (subItem.disable(this.source)) return
+        if (subItem.disable) return
         this.$emit('update:visible', false)
-        subItem.selected(this.source, this.position)
+
+        subItem.selected(
+          this.source,
+          vector(this.position)
+            .minus(this.graphPosition)
+            .end
+        )
       }
     },
     watch: {

@@ -17,28 +17,38 @@
       </graph-line>
 
       <graph-line
-        v-for="(edge, idx) in graph.edgeList"
+        v-for="(edge, idx) in graph.linkList"
         :index="idx"
         :key="edge.key"
         :point-list="edge.pathPointList">
       </graph-line>
 
       <graph-node
-        v-for="(node, idx) in graph.pointList"
+        v-for="(node, idx) in graph.nodeList"
         :index="idx"
         :node="node"
         :graph="graph"
+        :key="node.key"
         :is-move="node === moveNodeConf.node"
         :is-tem-edge="temEdgeConf.visible"
         @node-mousedown="nodeMousedown"
         @node-mouseenter="nodeMouseenter"
         @node-mouseleave="nodeMouseleave"
         @node-mouseup="nodeMouseup"
-        @side-mousedown="sideMousedown">
+        @side-mousedown="sideMousedown"
+        @node-contextmenu="nodeContextmenu">
+        <template v-slot="{node}">
+          <slot
+            name="node"
+            :node="node">
+          </slot>
+        </template>
+
       </graph-node>
 
       <graph-menu
         :visible.sync="menuConf.visible"
+        :graph-position="graph.position"
         :position="menuConf.position"
         :list="menuConf.list"
         :source="menuConf.source">
@@ -55,19 +65,28 @@
   import GraphMenu from './menu'
   import GraphNode from './node'
   import GraphLine from './line'
-  import {getOffset, vector} from '../packages/utils'
+  import {
+    getOffset,
+    isBool,
+    isFun,
+    vector
+  } from '../packages/utils'
 
   export default {
     props: {
+      nodeMenu: {
+        type: Array,
+        default: () => []
+      },
       graphMenu: {
         type: Array,
         default: () => []
       },
-      pointList: {
+      nodeList: {
         type: Array,
         default: () => []
       },
-      edgeList: {
+      linkList: {
         type: Array,
         default: () => []
       },
@@ -78,15 +97,22 @@
       height: {
         type: Number,
         default: 3000
+      },
+      origin: {
+        type: [Array],
+        default: null
       }
     },
     data() {
       return {
         graph: new Graph({
           nodeList: this.pointList,
-          edgeList: this.edgeList
+          linkList: this.edgeList,
+          width: this.width,
+          height: this.height,
+          origin: this.origin
         }),
-        nodeMenu: [],
+
         menuConf: {
           visible: false,
           position: [0, 0],
@@ -108,9 +134,6 @@
       GraphNode,
       GraphLine
     },
-    created() {
-      this.resetGraphMenu()
-    },
     mounted() {
       document.addEventListener('mouseup', this.docMouseup)
       document.addEventListener('mousemove', this.docMousemove)
@@ -121,14 +144,38 @@
       document.removeEventListener('mousemove', this.docMousemove)
     },
     methods: {
-      resetGraphMenu() {
-        this.graphMenu.forEach(subList => subList.forEach(item => {
-          const type = typeof item.disable
-          if (type === 'boolean') {
-            const bol = item.disable
-            item.disable = () => bol
-          }
-        }))
+      initMenu(menu, source) {
+        return menu.map(subList => subList
+          .map(item => {
+            const type = typeof item.disable
+
+            let disable
+            let hidden
+
+            if (isFun(item.disable)) {
+              disable = item.disable(source)
+            } else if (isBool(item.disable)) {
+              disable = item.disable
+            } else {
+              disable = Boolean(item.disable)
+            }
+
+            if (isFun(item.hidden)) {
+              hidden = item.hidden(source)
+            } else if (isBool(item.hidden)) {
+              hidden = item.hidden
+            } else {
+              hidden = Boolean(item.hidden)
+            }
+
+            return {
+              ...item,
+              disable,
+              hidden
+            }
+          })
+          .filter(item => !item.hidden)
+        ).filter(sublist => sublist.length)
       },
 
       docMouseup() {
@@ -145,10 +192,11 @@
           this.moveNodeConf.node.position =
             vector(this.moveNodeConf.offset)
               .differ(getOffset(evt, this.$refs['flow-canvas']))
+              .minus(this.graph.position)
               .end
         }
 
-        if(this.temEdgeConf.visible) {
+        if (this.temEdgeConf.visible) {
           this.temEdgeConf.edge.movePosition
             = getOffset(evt, this.$refs['flow-canvas'])
         }
@@ -170,8 +218,9 @@
       },
 
       contextmenu(evt) {
+        const list = this.initMenu(this.graphMenu, this.graph)
         this.$set(this.menuConf, 'position', getOffset(evt, this.$refs['flow-canvas']))
-        this.$set(this.menuConf, 'list', this.graphMenu)
+        this.$set(this.menuConf, 'list', list)
         this.$set(this.menuConf, 'source', this.graph)
         this.menuConf.visible = true
       },
@@ -194,7 +243,16 @@
       },
 
       nodeMouseup() {
-        this.graph.insertEdge(this.temEdgeConf.edge)
+        this.graph.addLink(this.temEdgeConf.edge)
+      },
+
+      nodeContextmenu(evt, node) {
+        const list = this.initMenu(this.nodeMenu, node)
+        if (!list.length) return
+        this.$set(this.menuConf, 'position', getOffset(evt, this.$refs['flow-canvas']))
+        this.$set(this.menuConf, 'list', list)
+        this.$set(this.menuConf, 'source', node)
+        this.menuConf.visible = true
       },
 
       sideMousedown(evt, node, startAt, startDirection) {

@@ -1,7 +1,13 @@
 <template>
   <div id="app">
     <super-flow
-      :graph-menu="graphMenuList">
+      :graph-menu="graphMenuList"
+      :node-menu="nodeMenuList">
+      <template v-slot:node="{node}">
+        <div>{{node.meta.prop}}</div>
+        <div>{{node.width}}</div>
+        <div>{{node.position}}</div>
+      </template>
     </super-flow>
   </div>
 </template>
@@ -18,15 +24,15 @@
               prop: 'start',
               label: '开始节点',
               disable(graph) {
-                return  Boolean(
+                return Boolean(
                   graph.pointList.find(point => point.meta.prop === 'start')
                 )
               },
               selected(graph, position) {
-                graph.insertPoint({
+                graph.addNode({
                   id: Math.random().toString(32),
-                  width: 180,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   position: position,
                   meta: {
                     prop: 'start'
@@ -35,18 +41,34 @@
               }
             },
             {
+              prop: 'approval',
+              label: '审批节点',
+              disable: false,
+              selected(graph, position) {
+                graph.addNode({
+                  id: Math.random().toString(32),
+                  width: 180,
+                  height: 100,
+                  position: position,
+                  meta: {
+                    prop: 'approval'
+                  }
+                })
+              }
+            },
+            {
               prop: 'end',
               label: '结束节点',
               disable(graph) {
-                return  Boolean(
+                return Boolean(
                   graph.pointList.find(point => point.meta.prop === 'end')
                 )
               },
               selected(graph, position) {
-                graph.insertPoint({
+                graph.addNode({
                   id: Math.random().toString(32),
-                  width: 180,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   position: position,
                   meta: {
                     prop: 'end'
@@ -59,24 +81,35 @@
             {
               prop: 'vertical',
               label: '竖向对齐',
-              disable: false,
               selected(graph, position) {}
             },
             {
               type: 'horizontal',
               label: '横向对齐',
-              disable: false,
               selected(graph, position) {}
             }
           ]
         ],
-        nodeMenuList: []
+        nodeMenuList: [
+          [
+            {
+              prop: 'remove',
+              label: '删除',
+              disable: false,
+              hidden(node) {
+                return node.meta.prop === 'start'
+              },
+              selected(node, position) {
+                node.remove()
+              }
+            }
+          ]
+        ]
       }
     },
     mounted() {
     },
-    methods: {
-    },
+    methods: {},
     components: {
       SuperFlow
     }

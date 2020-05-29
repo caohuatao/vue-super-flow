@@ -11,7 +11,7 @@ import {
   directionVector
 } from './types'
 
-export default class GraphEdge {
+export default class GraphLink {
   static distance = 15
   
   constructor(options) {
@@ -19,23 +19,20 @@ export default class GraphEdge {
       start,
       end = null,
       startAt = [0, 0],
-      startDirection = direction.top,
       endAt = [0, 0],
-      endDirection = direction.top,
       meta = null
     } = options
+    
     this.key = Symbol('edge')
-    this.parent = null
+    this.graph = null
     
     this.start = start
     this.startAt = startAt
-    this.startDirection = startDirection
     this.endAt = endAt
-    this.endDirection = endDirection
-    
-    this.movePosition = [0, 0]
     this.meta = meta
     this.end = end
+  
+    this.movePosition = [0, 0]
   }
   
   get end() {
@@ -56,6 +53,7 @@ export default class GraphEdge {
   
   startCoordinate() {
     return vector(this.start.position)
+      .add(this.graph.position)
       .add(this.startAt)
       .end
   }
@@ -89,13 +87,13 @@ export default class GraphEdge {
     
     // 路径起点
     const startPoint = vector(entryDirection)
-      .multiply(GraphEdge.distance)
+      .multiply(GraphLink.distance)
       .add(entryPoint)
       .end
     
     // 路径终点
     const endPoint = vector(exitDirection)
-      .multiply(GraphEdge.distance)
+      .multiply(GraphLink.distance)
       .add(exitPoint)
       .end
     

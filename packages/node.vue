@@ -12,14 +12,13 @@
     @mouseenter="nodeMouseenter"
     @mouseleave="nodeMouseleave"
     @mouseup="nodeMouseup"
-    @contextmenu.prevent.stop>
-    <slot>
-      <div
-        v-for="(dir, key) in direction"
-        :class="`node-side node-side-${key}`"
-        @mousedown.prevent.stop="evt => sideMousedown(evt, dir)">
-      </div>
-    </slot>
+    @contextmenu.prevent.stop="nodeContextmenu">
+    <slot :node="node"></slot>
+    <div
+      v-for="(dir, key) in direction"
+      :class="`node-side node-side-${key}`"
+      @mousedown.prevent.stop="evt => sideMousedown(evt, dir)">
+    </div>
   </div>
 </template>
 
@@ -31,7 +30,8 @@
   } from './types'
 
   import {
-    getOffset
+    getOffset,
+    vector
   } from './utils'
 
   export default {
@@ -44,8 +44,7 @@
     },
     data() {
       return {
-        direction,
-        offset: []
+        direction
       }
     },
     computed: {
@@ -55,6 +54,7 @@
           width,
           height
         } = this.node
+
         return {
           width: width + 'px',
           height: height + 'px',
@@ -65,29 +65,28 @@
     },
     methods: {
       nodeMousedown(evt) {
-        const nodeList = this.graph.pointList
-        nodeList.splice(
-          nodeList.length - 1, 0,
-          ...nodeList.splice(this.index, 1)
-        )
-        this.offset = [...getOffset(evt)]
-        this.$emit('node-mousedown', this.node, this.offset)
+        this.graph.toLastNode(this.index)
+        this.$emit('node-mousedown', this.node, getOffset(evt))
       },
 
       nodeMouseenter(evt) {
-        if(!this.isTemEdge) return
+        if (!this.isTemEdge) return
         const {endAt, direction} = this.node.getEndAt(getOffset(evt))
         this.$emit('node-mouseenter', evt, this.node, endAt, direction)
       },
 
       nodeMouseleave() {
-        if(!this.isTemEdge) return
+        if (!this.isTemEdge) return
         this.$emit('node-mouseleave')
       },
 
       nodeMouseup() {
-        if(!this.isTemEdge) return
+        if (!this.isTemEdge) return
         this.$emit('node-mouseup')
+      },
+
+      nodeContextmenu(evt) {
+        this.$emit('node-contextmenu', evt, this.node)
       },
 
       sideMousedown(evt, dir) {
@@ -108,7 +107,7 @@
             break
         }
 
-        this.$emit('side-mousedown', evt, this.node,  startAt, directionVector[dir])
+        this.$emit('side-mousedown', evt, this.node, startAt, directionVector[dir])
       }
     }
   }

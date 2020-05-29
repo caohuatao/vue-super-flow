@@ -5,133 +5,120 @@
  */
 
 
-import GraphPoint from './GraphPoint'
+import GraphNode from './GraphNode'
 
-import GraphEdge from './GraphEdge'
+import GraphLink from './GraphLink'
 
 import {
   direction
 } from './types'
 
-const initPoint = Symbol('initPoint')
-const initEdge = Symbol('initEdge')
+import {
+  arrayReplace, vector
+} from './utils'
+
 
 class Graph {
   constructor(options) {
-    this.pointList = []
-    this.edgeList = []
-    this.init(options)
+    
+    const {
+      nodeList = [],
+      linkList = [],
+      width,
+      height,
+      origin = null
+    } = options
+    
+    this.nodeList = []
+    this.linkList = []
+    this.width = width
+    this.height = height
+    
+    this.origin = origin || [
+      Math.floor(width / 2),
+      Math.floor(height / 2)
+    ]
+    
+    this.initNode(nodeList)
+    this.initLink(linkList)
   }
   
   pointMap() {
     const map = {}
-    this.pointList.forEach(point => {
+    this.nodeList.forEach(point => {
       map[point.id] = point
     })
     return map
   }
   
-  edgeMap() {
-    const map = {}
-    this.edgeList.forEach(edge => {
-      map[edge.id] = edge
+  removeNode(node) {
+    const idx = this.nodeList.indexOf(node)
+    this.linkList.filter(link => {
+      return link.start === node || link.end === node
+    }).forEach(link => {
+      this.removeLink(link)
     })
-    return map
+    this.nodeList.splice(idx, 1)
   }
   
-  removePoint(node) {
-    const idx = this.pointList.indexOf(node)
-    this.edgeList.filter(edge => {
-      return edge.start === node || edge.end === node
-    }).forEach(edge => {
-      this.removeEdge(edge)
-    })
-    this.pointList.splice(idx, 1)
+  removeLink(link) {
+    const idx = this.linkList.indexOf(link)
+    this.linkList.splice(idx, 1)
   }
   
-  removeEdge(edge) {
-    const idx = this.edgeList.indexOf(edge)
-    this.edgeList.splice(idx, 1)
-  }
-  
-  
-  insertPoint(options, idx = -1) {
-    const node = options.constructor === GraphPoint
+  addNode(options) {
+    const node = options.constructor === GraphNode
       ? options
-      : this.createPoint(options)
+      : this.createNode(options)
     
-    if(idx > -1) {
-      this.pointList.splice(idx, 0, node)
-    } else {
-      this.pointList.push(node)
+    this.nodeList.push(node)
+  }
+  
+  addLink(options) {
+    const newLink = options.constructor === GraphLink
+      ? options
+      : this.createLink(options)
+    
+    const currentLink = this.linkList.find(item => {
+      return item.start === newLink.start && item.end === newLink.end
+    })
+    
+    if (currentLink) {
+      currentLink.startAt = newLink.startAt
+      currentLink.endAt = newLink.endAt
+    } else if (newLink.start && newLink.end) {
+      this.linkList.push(newLink)
     }
   }
   
-  insertEdge(options) {
-    const edge = options.constructor === GraphEdge
-      ? options
-      : this.createEdge(options)
-    
-    const currentEdge = this.edgeList.find(item => {
-      return item.start === edge.start && item.end === edge.end
-    })
-    
-    if (currentEdge) {
-      currentEdge.startAt = edge.startAt
-      currentEdge.startDirection = edge.startDirection
-      currentEdge.endAt = edge.endAt
-      currentEdge.endDirection = edge.endDirection
-    } else {
-      this.edgeList.push(edge)
-    }
+  createNode(options) {
+    const node = new GraphNode(options)
+    node.graph = this
+    return node
   }
   
-  
-  createPoint(options) {
-    return new GraphPoint(options)
+  createLink(options) {
+    const link = new GraphLink(options)
+    link.graph = this
+    return link
   }
   
-  createEdge(options) {
-    return new GraphEdge(options)
+  initNode(nodeList) {
+    arrayReplace(this.nodeList, nodeList.map(node => this.createNode(node)))
   }
   
-  init(options = {}) {
-    const {
-      pointList = [],
-      edgeList = []
-    } = options
-    
-    this[initPoint](pointList)
-    this[initEdge](edgeList)
-  }
-  
-  [initPoint](pointList) {
+  initLink(linkList) {
     const list = []
-    pointList.forEach(node => {
-      list.push(this.createPoint(node))
-    })
-    this.pointList.splice(0, this.pointList.length, ...list)
-  }
-  
-  [initEdge](edgeList) {
-    const list = []
-    edgeList.forEach(relation => {
+    linkList.forEach(link => {
       
       const {
         startId = '',
         endId = '',
-        meta = null,
-        startAt = {
-          x: 0,
-          y: 0,
-          direction: direction.top
-        },
-        endAt = {
-          x: 0,
-          y: 0,
-          direction: direction.top
-        }
-      } = relation
+        startAt = [0, 0],
+        endAt = [0, 0],
+        meta = null
+      } = link
+      
       const pointMap = this.pointMap()
       
       const start = pointMap[startId]
@@ -139,7 +126,7 @@ class Graph {
       
       if (start && end) {
         list.push(
-          this.createRelation({
+          this.createLink({
             start,
             end,
             meta,
@@ -148,13 +135,34 @@ class Graph {
           })
         )
       }
+      
     })
-    this.edgeList.splice(0, this.edgeList.length, ...list)
+    arrayReplace(this.linkList, list)
+  }
+  
+  toLastNode(idx) {
+    const nodeList = this.nodeList
+    nodeList.splice(
+      nodeList.length - 1, 0,
+      ...nodeList.splice(idx, 1)
+    )
+  }
+  
+  originVector(position) {
+    return vector(position)
+      .minus(this.origin)
+      .end
+  }
+  
+  getPosition(vec) {
+    return vector(vec)
+      .add(this.origin)
+      .end
   }
   
   toJson() {
     return {
-      pointList: this.pointList.map(point => {
+      nodeList: this.nodeList.map(point => {
         return {
           id: point.id,
           width: point.width,
@@ -164,7 +172,7 @@ class Graph {
           meta: point.meta
         }
       }),
-      edgeList: this.edgeList.map(edge => {
+      linkList: this.linkList.map(edge => {
         return {
           startId: edge.start.id,
           endId: edge.end.id,
