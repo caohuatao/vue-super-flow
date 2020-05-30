@@ -13,7 +13,7 @@
 
       <graph-line
         v-if="temEdgeConf.visible"
-        :point-list="temEdgeConf.edge.pathPointList">
+        :point-list="temEdgeConf.link.pathPointList">
       </graph-line>
 
       <graph-line
@@ -43,16 +43,17 @@
             :node="node">
           </slot>
         </template>
-
       </graph-node>
 
       <graph-menu
         :visible.sync="menuConf.visible"
-        :graph-position="graph.position"
+        :graph-origin="graph.origin"
         :position="menuConf.position"
         :list="menuConf.list"
         :source="menuConf.source">
       </graph-menu>
+
+
 
     </div>
 
@@ -69,7 +70,8 @@
     getOffset,
     isBool,
     isFun,
-    vector
+    vector,
+    debounce
   } from '../packages/utils'
 
   export default {
@@ -99,8 +101,10 @@
         default: 3000
       },
       origin: {
-        type: [Array],
-        default: null
+        type: Array,
+        default() {
+          return [this.width / 2, this.height / 2]
+        }
       }
     },
     data() {
@@ -112,7 +116,6 @@
           height: this.height,
           origin: this.origin
         }),
-
         menuConf: {
           visible: false,
           position: [0, 0],
@@ -125,8 +128,9 @@
         },
         temEdgeConf: {
           visible: false,
-          edge: null
-        }
+          link: null
+        },
+        scorllCenterFun: debounce(this.scrollCenter, 400)
       }
     },
     components: {
@@ -147,8 +151,6 @@
       initMenu(menu, source) {
         return menu.map(subList => subList
           .map(item => {
-            const type = typeof item.disable
-
             let disable
             let hidden
 
@@ -184,7 +186,7 @@
         this.moveNodeConf.offset = null
 
         this.temEdgeConf.visible = false
-        this.temEdgeConf.edge = null
+        this.temEdgeConf.link = null
       },
 
       docMousemove(evt) {
@@ -192,12 +194,11 @@
           this.moveNodeConf.node.position =
             vector(this.moveNodeConf.offset)
               .differ(getOffset(evt, this.$refs['flow-canvas']))
-              .minus(this.graph.position)
               .end
         }
 
         if (this.temEdgeConf.visible) {
-          this.temEdgeConf.edge.movePosition
+          this.temEdgeConf.link.movePosition
             = getOffset(evt, this.$refs['flow-canvas'])
         }
 
@@ -211,9 +212,10 @@
             scrollHeight,
             scrollWidth
           } = this.$el
+          const [x, y] = this.origin
 
-          this.$el.scrollTop = Math.ceil((scrollHeight - clientHeight) / 2)
-          this.$el.scrollLeft = Math.ceil((scrollWidth - clientWidth) / 2)
+          this.$el.scrollLeft = Math.ceil((x * 2 - clientWidth) / 2)
+          this.$el.scrollTop = Math.ceil((y * 2 - clientHeight) / 2)
         }
       },
 
@@ -231,19 +233,18 @@
         this.moveNodeConf.offset = offset
       },
 
-      nodeMouseenter(evt, node, endAt, endDirection) {
-        const edge = this.temEdgeConf.edge
-        edge.end = node
-        edge.endAt = endAt
-        edge.endDirection = endDirection
+      nodeMouseenter(evt, node, offset) {
+        const link = this.temEdgeConf.link
+        link.end = node
+        link.endAt = offset
       },
 
       nodeMouseleave() {
-        this.temEdgeConf.edge.end = null
+        this.temEdgeConf.link.end = null
       },
 
       nodeMouseup() {
-        this.graph.addLink(this.temEdgeConf.edge)
+        this.graph.addLink(this.temEdgeConf.link)
       },
 
       nodeContextmenu(evt, node) {
@@ -255,28 +256,40 @@
         this.menuConf.visible = true
       },
 
-      sideMousedown(evt, node, startAt, startDirection) {
-        const edge = this.graph.createEdge({
+      sideMousedown(evt, node, startAt) {
+        const link = this.graph.createLink({
           start: node,
-          startDirection,
           startAt
         })
-        edge.movePosition = getOffset(evt, this.$refs['flow-canvas'])
-        this.$set(this.temEdgeConf, 'edge', edge)
+        link.movePosition = getOffset(evt, this.$refs['flow-canvas'])
+        this.$set(this.temEdgeConf, 'link', link)
         this.temEdgeConf.visible = true
       },
 
       menuItemSelect() {
         this.menuConf.visible = false
+      },
+
+      selectAll() {
+
       }
     },
 
     watch: {
-      pointList() {
-        this.graph.initPoint(this.pointList)
+      nodeList() {
+        this.graph.initPoint(this.nodeList)
       },
-      edgeList() {
-        this.graph.initEdge(this.edgeList)
+      linkList() {
+        this.graph.initEdge(this.linkList)
+      },
+      width() {
+        this.scorllCenterFun()
+      },
+      height() {
+        this.scorllCenterFun()
+      },
+      origin() {
+        this.scorllCenterFun()
       }
     }
   }
@@ -316,7 +329,6 @@
     height           : 100%;
     background-color : #F4F4F4;
     overflow         : auto;
-    .scrollBar(8px);
 
     > div {
       position : relative;

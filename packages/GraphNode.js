@@ -15,7 +15,7 @@ import {
 
 export default class GraphNode {
   
-  constructor(props) {
+  constructor(props, graph) {
     const {
       id,
       width = 180,
@@ -25,7 +25,7 @@ export default class GraphNode {
     } = props
     
     this.key = Symbol('point')
-    this.graph = null
+    this.graph = graph
     
     this.id = id
     this.coordinate = [...coordinate]
@@ -36,7 +36,15 @@ export default class GraphNode {
   }
   
   get position() {
-    return this.graph ? this.graph.getPosition() : [0, 0]
+    return vector(this.coordinate)
+      .add(this.graph.origin)
+      .end
+  }
+  
+  set position(position) {
+    this.coordinate = vector(position)
+      .minus(this.graph.origin)
+      .end
   }
   
   get center() {
@@ -50,7 +58,8 @@ export default class GraphNode {
   }
   
   set width(w) {
-    this._width = Math.floor(w)
+    w = Math.floor(w)
+    this._width = w > 50 ? w : 50
     this.angle()
   }
   
@@ -59,16 +68,16 @@ export default class GraphNode {
   }
   
   set height(h) {
-    this._height = Math.floor(h)
+    h = Math.floor(h)
+    this._height = h > 50 ? h : 50
     this.angle()
   }
   
-  
   angle() {
     const
-      center = this.center
-      , w = this.width / 2
+      w = this.width / 2
       , h = this.height / 2
+      , center = [0, 0]
     
     const topLeft = vector(center)
       .minus([w, h])
@@ -100,56 +109,35 @@ export default class GraphNode {
     ]
   }
   
-  pointDirection(position) {
-    const angle = vector(position)
-      .minus(this.center)
+  relative(offset) {
+    const angle = vector(offset)
+      .minus([this.width / 2, this.height / 2])
       .angle()
       .end
-    
     const angleList = this.angleList
+    const directionList = [
+      direction.top,
+      direction.right,
+      direction.bottom,
+      direction.left
+    ]
     
-    if (
-      angle >= angleList[0]
-      && angle < angleList[1]
-    ) {
-      return {
-        type: direction.top,
-        value: directionVector[direction.top]
+    let dir = direction.left
+    
+    angleList.reduce((prev, current, idx) => {
+      if (angle >= prev && angle < current) {
+        dir = directionList[idx - 1]
       }
-    } else if (
-      angle >= angleList[1]
-      && angle < angleList[2]
-    ) {
-      return {
-        type: direction.right,
-        value: directionVector[direction.right]
-      }
-    } else if (
-      angle >= angleList[2]
-      && angle < angleList[3]
-    ) {
-      return {
-        type: direction.bottom,
-        value: directionVector[direction.bottom]
-      }
-    } else if (
-      angle >= angleList[3]
-      || angle < angleList[0]
-    ) {
-      return {
-        type: direction.left,
-        value: directionVector[direction.left]
-      }
+      return current
+    })
+    
+    return {
+      position: this.fixOffset(offset, dir),
+      direction: directionVector[dir]
     }
   }
   
-  changeEndAt(offset) {
-    const dir = this.pointDirection(
-      vector(this.coordinate)
-        .add(offset)
-        .end
-    )
-    
+  fixOffset(offset, dir) {
     switch (dir) {
       case direction.top:
         offset[1] = 0
@@ -161,19 +149,14 @@ export default class GraphNode {
         offset[1] = this.height
         break
       case direction.left:
+      default:
         offset[0] = 0
         break
     }
-    
     return offset
-    
-    return {
-      offset,
-      direction: directionVector[dir]
-    }
   }
   
   remove() {
-    this.parent.removeNode(this)
+    this.graph.removeNode(this)
   }
 }

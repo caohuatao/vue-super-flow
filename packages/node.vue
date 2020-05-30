@@ -8,7 +8,7 @@
     tabindex="-1"
     class="super-flow__node"
     :style="style"
-    @mousedown="nodeMousedown"
+    @mousedown.left="nodeMousedown"
     @mouseenter="nodeMouseenter"
     @mouseleave="nodeMouseleave"
     @mouseup="nodeMouseup"
@@ -25,13 +25,11 @@
 <script>
 
   import {
-    direction,
-    directionVector
+    direction
   } from './types'
 
   import {
-    getOffset,
-    vector
+    getOffset
   } from './utils'
 
   export default {
@@ -71,8 +69,7 @@
 
       nodeMouseenter(evt) {
         if (!this.isTemEdge) return
-        const {endAt, direction} = this.node.getEndAt(getOffset(evt))
-        this.$emit('node-mouseenter', evt, this.node, endAt, direction)
+        this.$emit('node-mouseenter', evt, this.node, getOffset(evt, this.$el))
       },
 
       nodeMouseleave() {
@@ -89,25 +86,8 @@
         this.$emit('node-contextmenu', evt, this.node)
       },
 
-      sideMousedown(evt, dir) {
-        const startAt = getOffset(evt)
-
-        switch (dir) {
-          case direction.top:
-            startAt[1] = 0
-            break
-          case direction.right:
-            startAt[0] = this.node.width
-            break
-          case direction.bottom:
-            startAt[1] = this.node.height
-            break
-          case direction.left:
-            startAt[0] = 0
-            break
-        }
-
-        this.$emit('side-mousedown', evt, this.node, startAt, directionVector[dir])
+      sideMousedown(evt) {
+        this.$emit('side-mousedown', evt, this.node, getOffset(evt, this.$el))
       }
     }
   }

@@ -72,7 +72,7 @@ export function parallel(vectorA, vectorB) {
 }
 
 // Vector operations
-export function vector(point) {
+export function vector(result) {
   const handler = {
     add: addVector,
     multiply,
@@ -89,10 +89,10 @@ export function vector(point) {
   return new Proxy(handler, {
     get(target, p, receiver) {
       if (p === 'end') {
-        return point
+        return result
       } else {
         return function (val) {
-          point = target[p](point, val)
+          result = target[p](result, val)
           return receiver
         }
       }

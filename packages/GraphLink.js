@@ -4,7 +4,7 @@
  * Time: 14:01
  */
 
-import {vector} from './utils'
+import {multiply, vector} from './utils'
 
 import {
   direction,
@@ -14,8 +14,9 @@ import {
 export default class GraphLink {
   static distance = 15
   
-  constructor(options) {
+  constructor(options, graph) {
     const {
+      id = '',
       start,
       end = null,
       startAt = [0, 0],
@@ -24,15 +25,17 @@ export default class GraphLink {
     } = options
     
     this.key = Symbol('edge')
-    this.graph = null
     
+    this.id = id
+    this.graph = graph
     this.start = start
+    this.meta = meta
+    
+    this.end = end
+    this.startDirection = directionVector[direction.top]
+    this.endDirection = directionVector[direction.top]
     this.startAt = startAt
     this.endAt = endAt
-    this.meta = meta
-    this.end = end
-  
-    this.movePosition = [0, 0]
   }
   
   get end() {
@@ -51,9 +54,54 @@ export default class GraphLink {
     return this.coordinateList()
   }
   
+  get startAt() {
+    return this._startAt
+  }
+  
+  set startAt(offset) {
+    const relative = this.start.relative(offset)
+    this._startAt = relative.position
+    this.startDirection = relative.direction
+  }
+  
+  get endAt() {
+    return this._endAt
+  }
+  
+  set endAt(offset) {
+    if (this.end) {
+      const relative = this.end.relative(offset)
+      this._endAt = relative.position
+      this.endDirection = relative.direction
+    } else {
+      this._endAt = offset
+    }
+  }
+  
+  get movePosition() {
+    return this._movePosition
+  }
+  
+  set movePosition(offset) {
+    
+    this._movePosition = offset
+    
+    if (this.end) return
+    
+    const relative = this.start.relative(
+      vector(offset)
+        .minus(this.graph.origin)
+        .minus(this.start.coordinate)
+        .end
+    )
+    
+    this.endDirection = vector(relative.direction)
+      .multiply(-1)
+      .end
+  }
+  
   startCoordinate() {
     return vector(this.start.position)
-      .add(this.graph.position)
       .add(this.startAt)
       .end
   }
@@ -68,22 +116,13 @@ export default class GraphLink {
     }
   }
   
-  endDirectionVector() {
-    if (this.end) {
-      return this.endDirection
-    } else {
-      const direction = this.start.pointDirection(this.movePosition)
-      return vector(directionVector[direction]).multiply(-1).end
-    }
-  }
-  
   coordinateList(turnRatio = 0.5) {
     
     const entryPoint = this.startCoordinate()
     const exitPoint = this.endCoordinate()
     
     const entryDirection = this.startDirection
-    let exitDirection = this.endDirectionVector()
+    let exitDirection = this.endDirection
     
     // 路径起点
     const startPoint = vector(entryDirection)

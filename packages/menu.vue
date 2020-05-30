@@ -37,7 +37,7 @@
         type: Boolean,
         default: false
       },
-      graphPosition: {
+      graphOrigin: {
         type: Array,
         default: [0, 0]
       },
@@ -71,7 +71,7 @@
         subItem.selected(
           this.source,
           vector(this.position)
-            .minus(this.graphPosition)
+            .minus(this.graphOrigin)
             .end
         )
       }

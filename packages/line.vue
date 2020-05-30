@@ -83,7 +83,7 @@
         ctx.save()
       },
 
-      drawArrow(size = 6, fillStyle = '#666666') {
+      drawArrow(size = 4, fillStyle = '#666666') {
         const len = this.pointList.length
 
         if (len < 2) return

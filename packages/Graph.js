@@ -10,11 +10,8 @@ import GraphNode from './GraphNode'
 import GraphLink from './GraphLink'
 
 import {
-  direction
-} from './types'
-
-import {
-  arrayReplace, vector
+  arrayReplace,
+  vector
 } from './utils'
 
 
@@ -43,64 +40,29 @@ class Graph {
     this.initLink(linkList)
   }
   
+  get top() {
+  
+  }
+  
+  get right() {
+  
+  }
+  
+  get bottom() {
+  
+  }
+  
+  get left() {
+  
+  }
+  
+  
   pointMap() {
     const map = {}
     this.nodeList.forEach(point => {
       map[point.id] = point
     })
     return map
-  }
-  
-  removeNode(node) {
-    const idx = this.nodeList.indexOf(node)
-    this.linkList.filter(link => {
-      return link.start === node || link.end === node
-    }).forEach(link => {
-      this.removeLink(link)
-    })
-    this.nodeList.splice(idx, 1)
-  }
-  
-  removeLink(link) {
-    const idx = this.linkList.indexOf(link)
-    this.linkList.splice(idx, 1)
-  }
-  
-  addNode(options) {
-    const node = options.constructor === GraphNode
-      ? options
-      : this.createNode(options)
-    
-    this.nodeList.push(node)
-  }
-  
-  addLink(options) {
-    const newLink = options.constructor === GraphLink
-      ? options
-      : this.createLink(options)
-    
-    const currentLink = this.linkList.find(item => {
-      return item.start === newLink.start && item.end === newLink.end
-    })
-    
-    if (currentLink) {
-      currentLink.startAt = newLink.startAt
-      currentLink.endAt = newLink.endAt
-    } else if (newLink.start && newLink.end) {
-      this.linkList.push(newLink)
-    }
-  }
-  
-  createNode(options) {
-    const node = new GraphNode(options)
-    node.graph = this
-    return node
-  }
-  
-  createLink(options) {
-    const link = new GraphLink(options)
-    link.graph = this
-    return link
   }
   
   initNode(nodeList) {
@@ -140,6 +102,56 @@ class Graph {
     arrayReplace(this.linkList, list)
   }
   
+  
+  createNode(options) {
+    return new GraphNode(options, this)
+  }
+  
+  createLink(options) {
+    return new GraphLink(options, this)
+  }
+  
+  
+  addNode(options) {
+    const node = options.constructor === GraphNode
+      ? options
+      : this.createNode(options)
+    
+    this.nodeList.push(node)
+  }
+  
+  addLink(options) {
+    const newLink = options.constructor === GraphLink
+      ? options
+      : this.createLink(options)
+    
+    const currentLink = this.linkList.find(item => {
+      return item.start === newLink.start && item.end === newLink.end
+    })
+    
+    if (currentLink) {
+      currentLink.startAt = newLink.startAt
+      currentLink.endAt = newLink.endAt
+    } else if (newLink.start && newLink.end) {
+      this.linkList.push(newLink)
+    }
+  }
+  
+  removeNode(node) {
+    const idx = this.nodeList.indexOf(node)
+    this.linkList.filter(link => {
+      return link.start === node || link.end === node
+    }).forEach(link => {
+      this.removeLink(link)
+    })
+    this.nodeList.splice(idx, 1)
+  }
+  
+  removeLink(link) {
+    const idx = this.linkList.indexOf(link)
+    this.linkList.splice(idx, 1)
+  }
+  
   toLastNode(idx) {
     const nodeList = this.nodeList
     nodeList.splice(
@@ -148,37 +160,25 @@ class Graph {
     )
   }
   
-  originVector(position) {
-    return vector(position)
-      .minus(this.origin)
-      .end
-  }
-  
-  getPosition(vec) {
-    return vector(vec)
-      .add(this.origin)
-      .end
-  }
   
   toJson() {
     return {
-      nodeList: this.nodeList.map(point => {
+      nodeList: this.nodeList.map(node => {
         return {
-          id: point.id,
-          width: point.width,
-          height: point.height,
-          x: point.x,
-          y: point.y,
-          meta: point.meta
+          id: node.id,
+          width: node.width,
+          height: node.height,
+          coordinate: node.coordinate,
+          meta: node.meta
         }
       }),
-      linkList: this.linkList.map(edge => {
+      linkList: this.linkList.map(link => {
         return {
-          startId: edge.start.id,
-          endId: edge.end.id,
-          meta: edge.meta,
-          startAt: edge.startAt,
-          endAt: edge.endAt
+          startId: link.start.id,
+          endId: link.end.id,
+          startAt: link.startAt,
+          endAt: link.endAt,
+          meta: link.meta
         }
       })
     }
