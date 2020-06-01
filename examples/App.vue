@@ -32,9 +32,11 @@
           :node-menu="nodeMenuList"
           :width="conf.width"
           :height="conf.height"
-          :origin="conf.origin">
+          :origin="conf.origin"
+          :enter-intercept="enterIntercept"
+          :output-intercept="outputIntercept">
           <template v-slot:node="{node}">
-            <div :class="`flow-node-${node.meta.prop}`">
+            <div :class="`flow-node flow-node-${node.meta.prop}`">
               <header>
                 {{node.meta.name}}
               </header>
@@ -61,8 +63,8 @@
               prop: 'start',
               label: '开始节点',
               disable(graph) {
-                return Boolean(
-                  graph.nodeList.find(point => point.meta.prop === 'start')
+                return !!graph.nodeList.find(
+                  point => point.meta.prop === 'start'
                 )
               },
               selected(graph, coordinate) {
@@ -96,18 +98,33 @@
               }
             },
             {
+              prop: 'cc',
+              label: '抄送节点',
+              disable: false,
+              selected(graph, coordinate) {
+                graph.addNode({
+                  id: Math.random().toString(32),
+                  width: 200,
+                  height: 100,
+                  coordinate: coordinate,
+                  meta: {
+                    prop: 'cc',
+                    name: '抄送节点'
+                  }
+                })
+              }
+            },
+            {
               prop: 'end',
               label: '结束节点',
               disable(graph) {
-                return Boolean(
-                  graph.nodeList.find(point => point.meta.prop === 'end')
-                )
+                return !!graph.nodeList.find(point => point.meta.prop === 'end')
               },
               selected(graph, coordinate) {
                 graph.addNode({
                   id: Math.random().toString(32),
                   width: 80,
-                  height: 80,
+                  height: 50,
                   coordinate: coordinate,
                   meta: {
                     prop: 'end',
@@ -155,9 +172,31 @@
       }
     },
     mounted() {
-
     },
     methods: {
+      enterIntercept(formNode, toNode, graph) {
+        const formType = formNode.meta.prop
+        switch (toNode.meta.prop) {
+          case 'start':
+            return false
+          case 'approval':
+            return [
+              'start',
+              'approval',
+              'cc'
+            ].includes(formType)
+          case 'end':
+            return [
+              'approval',
+              'cc'
+            ].includes(formType)
+          default:
+            return true
+        }
+      },
+      outputIntercept(node, graph) {
+        return true
+      }
     },
     components: {
       SuperFlow
@@ -213,6 +252,45 @@
         float  : left;
         width  : calc(100% - @nav-width);
         height : calc(100% - @header-height);
+      }
+
+      .super-flow__node {
+        .flow-node {
+          > header {
+            font-size        : 14px;
+            height           : 32px;
+            line-height      : 32px;
+            padding          : 0 12px;
+            color            : #ffffff;
+
+          }
+
+          &.flow-node-start {
+            >header {
+              background-color : #55abfc;
+            }
+          }
+
+          &.flow-node-approval {
+            >header {
+              background-color : rgba(188, 181, 58, 0.76);
+            }
+          }
+
+          &.flow-node-cc {
+            >header {
+              background-color : #30b95c;
+            }
+          }
+
+          &.flow-node-end {
+            >header {
+              height: 50px;
+              line-height: 50px;
+              background-color : rgb(0, 0, 0);
+            }
+          }
+        }
       }
     }
   }

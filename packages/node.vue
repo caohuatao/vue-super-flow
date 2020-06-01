@@ -16,6 +16,7 @@
     <slot :node="node"></slot>
     <div
       v-for="(dir, key) in direction"
+      v-show="output"
       :class="`node-side node-side-${key}`"
       @mousedown.prevent.stop="evt => sideMousedown(evt, dir)">
     </div>
@@ -38,7 +39,8 @@
       node: Object,
       index: Number,
       isMove: Boolean,
-      isTemEdge: Boolean
+      isTemEdge: Boolean,
+      nodeIntercept: Function
     },
     data() {
       return {
@@ -59,6 +61,9 @@
           top: position[1] + 'px',
           left: position[0] + 'px'
         }
+      },
+      output() {
+        return this.nodeIntercept()
       }
     },
     methods: {

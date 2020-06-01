@@ -24,7 +24,7 @@ export default class GraphNode {
       meta = null
     } = props
     
-    this.key = Symbol('point')
+    this.key = Symbol('node')
     this.graph = graph
     
     this.id = id

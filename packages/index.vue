@@ -5,6 +5,7 @@
 -->
 <template>
   <div
+    data-super-flow-root
     class="super-flow">
     <div
       ref="flow-canvas"
@@ -31,6 +32,7 @@
         :key="node.key"
         :is-move="node === moveNodeConf.node"
         :is-tem-edge="temEdgeConf.visible"
+        :node-intercept="nodeIntercept(node)"
         @node-mousedown="nodeMousedown"
         @node-mouseenter="nodeMouseenter"
         @node-mouseleave="nodeMouseleave"
@@ -52,8 +54,6 @@
         :list="menuConf.list"
         :source="menuConf.source">
       </graph-menu>
-
-
 
     </div>
 
@@ -91,6 +91,14 @@
       linkList: {
         type: Array,
         default: () => []
+      },
+      enterIntercept: {
+        type: Function,
+        default: () => true
+      },
+      outputIntercept: {
+        type: Function,
+        default: () => true
       },
       width: {
         type: Number,
@@ -235,8 +243,10 @@
 
       nodeMouseenter(evt, node, offset) {
         const link = this.temEdgeConf.link
-        link.end = node
-        link.endAt = offset
+        if (this.enterIntercept(link.start, node, this.graph)) {
+          link.end = node
+          link.endAt = offset
+        }
       },
 
       nodeMouseleave() {
@@ -264,6 +274,10 @@
         link.movePosition = getOffset(evt, this.$refs['flow-canvas'])
         this.$set(this.temEdgeConf, 'link', link)
         this.temEdgeConf.visible = true
+      },
+
+      nodeIntercept(node) {
+        return () => this.outputIntercept(node, this.graph)
       },
 
       menuItemSelect() {

@@ -4,7 +4,10 @@
  * Time: 9:11
 -->
 <template>
-  <canvas class="super-flow__line"></canvas>
+  <canvas
+    @contextmenu="oncontextmenu"
+    class="super-flow__line">
+  </canvas>
 </template>
 
 <script>
@@ -25,18 +28,19 @@
         right: 0,
         bottom: 0,
         left: 0,
-        inPath: false
+        inPath: false,
+        rootDoc: document.querySelector('[data-super-flow-root]')
       }
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
       this.draw()
-      // document.addEventListener('mousemove', this.mousemove)
-      // document.addEventListener('mouseleave', this.mouseleave)
+      this.rootDoc.addEventListener('mousemove', this.docMousemove)
+      this.rootDoc.addEventListener('mouseleave', this.docMouseleave)
     },
     beforeDestroy() {
-      // document.removeEventListener('mousemove', this.mousemove)
-      // document.removeEventListener('mouseleave', this.mouseleave)
+      this.rootDoc.removeEventListener('mousemove', this.docMousemove)
+      this.rootDoc.removeEventListener('mouseleave', this.docMouseleave)
     },
     methods: {
       draw() {
@@ -53,6 +57,8 @@
           point[0] = Math.floor(point[0] - this.left)
           point[1] = Math.floor(point[1] - this.top)
         })
+
+        console.log(JSON.stringify(this.pointList))
 
         this.changeStyle()
         this.drawLine()
@@ -128,24 +134,41 @@
         return [clientX - left, clientY - top]
       },
 
-      // isPointInStroke(evt) {
-      //   const [x, y] = this.getCoordinates(evt)
-      //   // return this.ctx.isPointInStroke(x, y)
-      // },
+      isPointInStroke(evt) {
+        const [x, y] = this.getCoordinates(evt)
+        return this.ctx.isPointInStroke(x, y)
+      },
 
-      // mousemove(evt) {
-      //   this.inPath = this.isPointInStroke(evt)
-      // },
-      //
-      // mouseleave() {
-      //   this.inPath = false
-      // }
+      docMousemove(evt) {
+        this.inPath = this.isPointInStroke(evt)
+        if(this.inPath) {
+          evt.stopPropagation()
+          evt.preventDefault()
+        }
+      },
+
+      docMouseleave() {
+        this.inPath = false
+      },
+      oncontextmenu(evt) {
+        if(this.inPath) {
+          this.drawLine(2, '#FF0000')
+          this.drawArrow(4, `#FF0000`)
+        }
+      }
     },
     watch: {
       pointList() {
         this.draw()
+      },
+      inPath() {
+        if(this.inPath) {
+          document.body.style.cursor = 'pointer'
+        } else {
+          document.body.style.cursor = ''
+        }
       }
-    },
+    }
   }
 </script>
 
