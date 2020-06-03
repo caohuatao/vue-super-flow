@@ -11,21 +11,10 @@
 </head>
 <body>
 <script>
-   function toRawType(val) {
-    return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase()
-  }
-
-  function isBool(val) {
-    return  toRawType(val) === 'boolean'
-  }
-
-  function isFun(val) {
-    return  toRawType(val) === 'function'
-  }
-
-  console.log(isFun(function () {
-
-  }))
+  [1, 2, 3, 4, 5].some(item => {
+    console.log(item)
+    return  item > 2
+  })
 </script>
 </body>
 </html>

@@ -14,14 +14,15 @@
 
       <graph-line
         v-if="temEdgeConf.visible"
-        :point-list="temEdgeConf.link.pathPointList">
+        :graph="graph"
+        :link="temEdgeConf.link">
       </graph-line>
 
       <graph-line
         v-for="(edge, idx) in graph.linkList"
-        :index="idx"
-        :key="edge.key"
-        :point-list="edge.pathPointList">
+        :graph="graph"
+        :link="edge"
+        :key="edge.key">
       </graph-line>
 
       <graph-node
@@ -49,7 +50,7 @@
 
       <graph-menu
         :visible.sync="menuConf.visible"
-        :graph-origin="graph.origin"
+        :graph="graph"
         :position="menuConf.position"
         :list="menuConf.list"
         :source="menuConf.source">
@@ -81,6 +82,10 @@
         default: () => []
       },
       graphMenu: {
+        type: Array,
+        default: () => []
+      },
+      linkMenu: {
         type: Array,
         default: () => []
       },
@@ -188,6 +193,14 @@
         ).filter(sublist => sublist.length)
       },
 
+      showContextMenu(position, list, source) {
+        if (!list.length) return
+        this.$set(this.menuConf, 'position', position)
+        this.$set(this.menuConf, 'list', list)
+        this.$set(this.menuConf, 'source', source)
+        this.menuConf.visible = true
+      },
+
       docMouseup() {
         this.moveNodeConf.isMove = false
         this.moveNodeConf.node = null
@@ -199,17 +212,21 @@
 
       docMousemove(evt) {
         if (this.moveNodeConf.isMove) {
-          this.moveNodeConf.node.position =
+          return this.moveNodeConf.node.position =
             vector(this.moveNodeConf.offset)
               .differ(getOffset(evt, this.$refs['flow-canvas']))
               .end
         }
 
         if (this.temEdgeConf.visible) {
-          this.temEdgeConf.link.movePosition
+          return this.temEdgeConf.link.movePosition
             = getOffset(evt, this.$refs['flow-canvas'])
         }
 
+        return this.graph.dispatch({
+          type: 'mousemove',
+          evt: evt
+        }, true)
       },
 
       scrollCenter() {
@@ -228,11 +245,20 @@
       },
 
       contextmenu(evt) {
-        const list = this.initMenu(this.graphMenu, this.graph)
-        this.$set(this.menuConf, 'position', getOffset(evt, this.$refs['flow-canvas']))
-        this.$set(this.menuConf, 'list', list)
-        this.$set(this.menuConf, 'source', this.graph)
-        this.menuConf.visible = true
+        const mouseonLink = this.graph.mouseonLink
+        let list, source
+        if(mouseonLink ) {
+          list = this.initMenu(this.linkMenu, mouseonLink)
+          source = mouseonLink
+        } else {
+          list = this.initMenu(this.graphMenu, this.graph)
+          source = this.graph
+        }
+        this.showContextMenu(
+          getOffset(evt, this.$refs['flow-canvas']),
+          list,
+          source
+        )
       },
 
       nodeMousedown(node, offset) {
@@ -290,6 +316,13 @@
     },
 
     watch: {
+      'graph.mouseonLink'() {
+        if(this.graph.mouseonLink) {
+          document.body.style.cursor = 'pointer'
+        } else {
+          document.body.style.cursor = ''
+        }
+      },
       nodeList() {
         this.graph.initPoint(this.nodeList)
       },

@@ -18,7 +18,8 @@
       v-for="(dir, key) in direction"
       v-show="output"
       :class="`node-side node-side-${key}`"
-      @mousedown.prevent.stop="evt => sideMousedown(evt, dir)">
+      @contextmenu.stop.prevent
+      @mousedown.left.prevent.stop="evt => sideMousedown(evt, dir)">
     </div>
   </div>
 </template>
@@ -67,17 +68,20 @@
       }
     },
     methods: {
+
       nodeMousedown(evt) {
         this.graph.toLastNode(this.index)
         this.$emit('node-mousedown', this.node, getOffset(evt))
       },
 
       nodeMouseenter(evt) {
+        this.graph.mouseonNode = true
         if (!this.isTemEdge) return
         this.$emit('node-mouseenter', evt, this.node, getOffset(evt, this.$el))
       },
 
       nodeMouseleave() {
+        this.graph.mouseonNode = false
         if (!this.isTemEdge) return
         this.$emit('node-mouseleave')
       },

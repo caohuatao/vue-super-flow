@@ -30,6 +30,7 @@
         <super-flow
           :graph-menu="graphMenuList"
           :node-menu="nodeMenuList"
+          :link-menu="linkMenuList"
           :width="conf.width"
           :height="conf.height"
           :origin="conf.origin"
@@ -160,6 +161,18 @@
               },
               selected(node, coordinate) {
                 node.remove()
+              }
+            }
+          ]
+        ],
+        linkMenuList: [
+          [
+            {
+              prop: 'remove',
+              label: '删除',
+              disable: false,
+              selected(link, coordinate) {
+                link.remove()
               }
             }
           ]

@@ -7,15 +7,21 @@
   <ul
     tabindex="-1"
     class="super-flow__menu"
-    @blur="$emit('update:visible', false)"
+    v-show="visible"
+    @mousemove.stop.prevent
+    @blur="close"
     @contextmenu.prevent.stop
     :style="style">
+    <div
+      class="flow__menu-mask"
+      @mousedown="close">
+    </div>
     <template v-for="subList in list">
       <li
         class="super-flow__menu-item"
         v-for="subItem in subList"
         :class="{'is-disabled': subItem.disable}"
-        @click="select(subItem)">
+        @mousedown="select(subItem)">
         <slot>
           <span class="super-flow__menu-item-icon"></span>
           <span class="super-flow__menu-item-content">
@@ -25,6 +31,7 @@
       </li>
       <li class="super-flow__menu-line"></li>
     </template>
+
   </ul>
 </template>
 
@@ -33,13 +40,10 @@
 
   export default {
     props: {
+      graph: Object,
       visible: {
         type: Boolean,
         default: false
-      },
-      graphOrigin: {
-        type: Array,
-        default: [0, 0]
       },
       list: {
         type: Array,
@@ -55,9 +59,11 @@
       }
     },
     computed: {
+      show() {
+        return
+      },
       style() {
         return {
-          display: this.visible ? 'block' : 'none',
           left: this.position[0] + 'px',
           top: this.position[1] + 'px'
         }
@@ -65,15 +71,19 @@
     },
     methods: {
       select(subItem) {
+        console.log('select')
         if (subItem.disable) return
         this.$emit('update:visible', false)
 
         subItem.selected(
           this.source,
           vector(this.position)
-            .minus(this.graphOrigin)
+            .minus(this.graph.origin)
             .end
         )
+      },
+      close(evt) {
+        this.$emit('update:visible', false)
       }
     },
     watch: {
@@ -87,6 +97,8 @@
 </script>
 
 <style lang="less">
+
+
   .super-flow__menu {
     @menu-width      : 180px;
     @height          : 26px;
@@ -180,6 +192,16 @@
       &:last-child {
         display : none;
       }
+    }
+
+    > .flow__menu-mask {
+      content  : '';
+      position : fixed;
+      top      : 0;
+      bottom   : 0;
+      right    : 0;
+      left     : 0;
+      z-index  : -1;
     }
   }
 </style>

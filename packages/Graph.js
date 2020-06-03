@@ -4,9 +4,8 @@
  * Time: 14:00
  */
 
-
+import GraphEvent from './GraphEvent'
 import GraphNode from './GraphNode'
-
 import GraphLink from './GraphLink'
 
 import {
@@ -15,7 +14,8 @@ import {
 } from './utils'
 
 
-class Graph {
+
+class Graph extends GraphEvent{
   constructor(options) {
     
     const {
@@ -25,6 +25,8 @@ class Graph {
       height,
       origin = null
     } = options
+    
+    super()
     
     this.nodeList = []
     this.linkList = []
@@ -36,6 +38,9 @@ class Graph {
       Math.floor(height / 2)
     ]
     
+    
+    this.mouseonLink = null
+    this.mouseonNode = false
     this.initNode(nodeList)
     this.initLink(linkList)
   }
@@ -150,6 +155,9 @@ class Graph {
   removeLink(link) {
     const idx = this.linkList.indexOf(link)
     this.linkList.splice(idx, 1)
+    if(this.mouseonLink === link) {
+      this.mouseonLink = null
+    }
   }
   
   toLastNode(idx) {

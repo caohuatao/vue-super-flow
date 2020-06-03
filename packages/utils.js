@@ -22,12 +22,12 @@ export function getOffset(evt, target = null) {
   return [clientX - left, clientY - top]
 }
 
-// Vector addition
+// 向量相加
 export function addVector(vectorA, vectorB) {
   return [vectorA[0] + vectorB[0], vectorA[1] + vectorB[1]]
 }
 
-// Vector multiplied by a constant coefficient
+//  向量乘以常量系数
 export function multiply(vector, k) {
   return [vector[0] * k, vector[1] * k]
 }
@@ -40,38 +40,38 @@ export function minus(pointA, pointB) {
   return [pointA[0] - pointB[0], pointA[1] - pointB[1]]
 }
 
-// Vector dot product
+// 向量点积
 export function dotProduct(vectorA, vectorB) {
   return vectorA[0] * vectorB[0] + vectorA[1] * vectorB[1]
 }
 
-// Vector cross product
+// 向量叉乘
 export function cross(vectorA, vectorB) {
   return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]
 }
 
-// Unit vector
-export function  unitVector(vector) {
+// 向量的单位向量
+export function unitVector(vector) {
   const m = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1])
   return [vector[0] / m, vector[1] / m]
 }
 
-// Judgment vectors are equal
-export function  equals(vector, target) {
+// 判断向量 x,y 坐标相等
+export function equals(vector, target) {
   return vector[0] === target[0] && vector[1] === target[1]
 }
 
-// Vector angle deg
+// 向量夹角
 export function angle(vector) {
   return Math.round(180 / Math.PI * Math.atan2(vector[1], vector[0])) + 180
 }
 
-// Determine if vectors are parallel
+// 判断向量是否平行
 export function parallel(vectorA, vectorB) {
   return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0] === 0
 }
 
-// Vector operations
+//
 export function vector(result) {
   const handler = {
     add: addVector,

@@ -50,9 +50,6 @@ export default class GraphLink {
     }
   }
   
-  get pathPointList() {
-    return this.coordinateList()
-  }
   
   get startAt() {
     return this._startAt
@@ -98,6 +95,28 @@ export default class GraphLink {
     this.endDirection = vector(relative.direction)
       .multiply(-1)
       .end
+  }
+  
+  
+  get pathPointList() {
+    const pointList = this.coordinateList()
+      , xList = []
+      , yList = []
+    
+    pointList.forEach(item => {
+      xList.push(item[0])
+      yList.push(item[1])
+    })
+    
+    return {
+      pointList,
+      xList,
+      yList,
+      minX: Math.min(...xList),
+      maxX: Math.max(...xList),
+      minY: Math.min(...yList),
+      maxY: Math.max(...yList)
+    }
   }
   
   startCoordinate() {
@@ -218,5 +237,48 @@ export default class GraphLink {
         return horizontal
       }
     }
+  }
+  
+  isPointInLink(position) {
+    
+    const {
+      pointList,
+      minX,
+      minY,
+      maxX,
+      maxY
+    } = this.pathPointList
+    
+    if (
+      position[0] < minX
+      || position[0] > maxX
+      || position[1] < minY
+      || position[1] > maxY
+    ) {
+      return false
+    }
+    
+    for (let i = 0; i < pointList.length - 2; i++) {
+      const prev = pointList[i]
+      const current = pointList[i + 1]
+      
+      const top = Math.min(prev[1], current[1]) - 5
+      const right = Math.max(prev[0], current[0]) + 5
+      const bottom = Math.max(prev[1], current[1]) + 5
+      const left = Math.min(prev[0], current[0]) - 5
+      
+      
+      const [x, y] = position
+      
+      if (x > left && x < right && y > top && y < bottom) {
+        return true
+      }
+    }
+    
+    return false
+  }
+  
+  remove() {
+    this.graph.removeLink(this)
   }
 }

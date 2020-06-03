@@ -5,7 +5,6 @@
 -->
 <template>
   <canvas
-    @contextmenu="oncontextmenu"
     class="super-flow__line">
   </canvas>
 </template>
@@ -13,10 +12,8 @@
 <script>
   export default {
     props: {
-      pointList: {
-        type: Array,
-        default: () => []
-      },
+      graph: Object,
+      link: Object,
       padding: {
         type: Number,
         default: 20
@@ -28,43 +25,59 @@
         right: 0,
         bottom: 0,
         left: 0,
-        inPath: false,
-        rootDoc: document.querySelector('[data-super-flow-root]')
+        currentPointList: []
       }
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
       this.draw()
-      this.rootDoc.addEventListener('mousemove', this.docMousemove)
-      this.rootDoc.addEventListener('mouseleave', this.docMouseleave)
+      this.graph.add('mousemove', this.rootMousemove)
     },
     beforeDestroy() {
-      this.rootDoc.removeEventListener('mousemove', this.docMousemove)
-      this.rootDoc.removeEventListener('mouseleave', this.docMouseleave)
+      this.graph.remove('mousemove', this.rootMousemove)
+    },
+    computed: {
+      inPath: {
+        get() {
+          return this.graph.mouseonLink === this.link
+        },
+        set(bol) {
+          if (bol && !this.graph.mouseonNode) {
+            this.graph.mouseonLink = this.link
+          } else if (this.inPath) {
+            this.graph.mouseonLink = null
+          }
+        }
+      }
     },
     methods: {
       draw() {
-        const xList = this.pointList.map(item => item[0])
-        const yList = this.pointList.map(item => item[1])
+        const {
+          pointList,
+          minX,
+          minY,
+          maxX,
+          maxY
+        } = this.link.pathPointList
 
 
-        this.top = Math.min(...yList) - this.padding
-        this.right = Math.max(...xList) + this.padding
-        this.bottom = Math.max(...yList) + this.padding
-        this.left = Math.min(...xList) - this.padding
+        this.top = minY - this.padding
+        this.right = maxX + this.padding
+        this.bottom = maxY + this.padding
+        this.left = minX - this.padding
 
-        this.pointList.forEach(point => {
-          point[0] = Math.floor(point[0] - this.left)
-          point[1] = Math.floor(point[1] - this.top)
+
+        this.currentPointList = pointList.map(point => {
+          return [
+            Math.floor(point[0] - this.left),
+            Math.floor(point[1] - this.top)
+          ]
         })
 
-        console.log(JSON.stringify(this.pointList))
-
         this.changeStyle()
-        this.drawLine()
-        this.drawArrow()
-        this.drawLine(10, 'rgba(0,0,0,0)')
+        this.initLine()
       },
+
 
       changeStyle() {
         this.$el.width = this.right - this.left
@@ -73,12 +86,23 @@
         this.$el.style.left = this.left + 'px'
       },
 
+      initLine() {
+        this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
+        if (this.inPath) {
+          this.drawLine(2, '#FF0000')
+          this.drawArrow(4, '#FF0000')
+        } else {
+          this.drawLine()
+          this.drawArrow()
+        }
+      },
+
       drawLine(lineWidth = 2, strokeStyle = '#666666') {
         const ctx = this.ctx
         ctx.beginPath()
         ctx.lineWidth = lineWidth
         ctx.strokeStyle = strokeStyle
-        this.pointList.forEach((point, idx) => {
+        this.currentPointList.forEach((point, idx) => {
           if (idx === 0) {
             ctx.moveTo(...point)
           } else {
@@ -90,12 +114,12 @@
       },
 
       drawArrow(size = 4, fillStyle = '#666666') {
-        const len = this.pointList.length
+        const len = this.currentPointList.length
 
         if (len < 2) return
 
-        const start = this.pointList[len - 2]
-        const end = this.pointList[len - 1]
+        const start = this.currentPointList[len - 2]
+        const end = this.currentPointList[len - 1]
         const ctx = this.ctx
 
         // 移动中心点
@@ -136,37 +160,21 @@
 
       isPointInStroke(evt) {
         const [x, y] = this.getCoordinates(evt)
-        return this.ctx.isPointInStroke(x, y)
+        console.log(x, y)
+        return this.link.isPointInLink([this.left + x, this.top + y])
       },
 
-      docMousemove(evt) {
+      rootMousemove({evt}) {
         this.inPath = this.isPointInStroke(evt)
-        if(this.inPath) {
-          evt.stopPropagation()
-          evt.preventDefault()
-        }
-      },
-
-      docMouseleave() {
-        this.inPath = false
-      },
-      oncontextmenu(evt) {
-        if(this.inPath) {
-          this.drawLine(2, '#FF0000')
-          this.drawArrow(4, `#FF0000`)
-        }
+        return this.inPath
       }
     },
     watch: {
-      pointList() {
+      'link.pathPointList'() {
         this.draw()
       },
       inPath() {
-        if(this.inPath) {
-          document.body.style.cursor = 'pointer'
-        } else {
-          document.body.style.cursor = ''
-        }
+        this.initLine()
       }
     }
   }
