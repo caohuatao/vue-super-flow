@@ -248,24 +248,28 @@ export default class GraphLink {
       maxX,
       maxY
     } = this.pathPointList
-    
+
+    const n = 6
+
     if (
-      position[0] < minX
-      || position[0] > maxX
-      || position[1] < minY
-      || position[1] > maxY
+      position[0] < minX - n
+      || position[0] > maxX + n
+      || position[1] < minY - n
+      || position[1] > maxY + n
     ) {
       return false
     }
-    
+
+
+
     for (let i = 0; i < pointList.length - 2; i++) {
       const prev = pointList[i]
       const current = pointList[i + 1]
       
-      const top = Math.min(prev[1], current[1]) - 5
-      const right = Math.max(prev[0], current[0]) + 5
-      const bottom = Math.max(prev[1], current[1]) + 5
-      const left = Math.min(prev[0], current[0]) - 5
+      const top = Math.min(prev[1], current[1]) - n
+      const right = Math.max(prev[0], current[0]) + n
+      const bottom = Math.max(prev[1], current[1]) + n
+      const left = Math.min(prev[0], current[0]) - n
       
       
       const [x, y] = position

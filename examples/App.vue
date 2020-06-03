@@ -3,7 +3,9 @@
     <div class="container">
 
       <header>
-
+        <div @click="test">
+          <div>111111111111</div>
+        </div>
       </header>
 
       <nav>
@@ -209,6 +211,9 @@
       },
       outputIntercept(node, graph) {
         return true
+      },
+      test() {
+        console.log('test')
       }
     },
     components: {

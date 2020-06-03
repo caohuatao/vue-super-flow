@@ -160,7 +160,6 @@
 
       isPointInStroke(evt) {
         const [x, y] = this.getCoordinates(evt)
-        console.log(x, y)
         return this.link.isPointInLink([this.left + x, this.top + y])
       },
 
