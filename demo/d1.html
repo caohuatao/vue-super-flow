@@ -1,0 +1,292 @@
+<!--
+ * User: CHT
+ * Date: 2020/6/4
+ * Time: 11:01
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<canvas id="canvas" width="1000" height="1000"></canvas>
+<script>
+
+  /**
+   * User: CHT
+   * Date: 2020/5/8
+   * Time: 14:03
+   */
+
+
+  function uuid(before = '', after = '') {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+    const charsLen = chars.length
+    let uuid = []
+    const len = 16
+    for (let i = 0; i < len; i++) {
+      uuid[i] = chars[0 | Math.random() * charsLen]
+    }
+    return before + uuid.join('') + after
+  }
+
+
+  function getOffset(evt, target = null) {
+    const {
+      clientX,
+      clientY,
+      currentTarget
+    } = evt
+
+    const current = target || currentTarget
+
+    const {
+      left,
+      top
+    } = current.getBoundingClientRect()
+
+    return [clientX - left, clientY - top]
+  }
+
+  // 向量相加
+  function addVector(vectorA, vectorB) {
+    return [vectorA[0] + vectorB[0], vectorA[1] + vectorB[1]]
+  }
+
+  //  向量乘以常量系数
+  function multiply(vector, k) {
+    return [vector[0] * k, vector[1] * k]
+  }
+
+  function differ(pointA, pointB) {
+    return [pointB[0] - pointA[0], pointB[1] - pointA[1]]
+  }
+
+  function minus(pointA, pointB) {
+    return [pointA[0] - pointB[0], pointA[1] - pointB[1]]
+  }
+
+  // 向量点积
+  function dotProduct(vectorA, vectorB) {
+    return vectorA[0] * vectorB[0] + vectorA[1] * vectorB[1]
+  }
+
+  // 向量叉积
+  function cross(vectorA, vectorB) {
+    return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]
+  }
+
+  // 向量的单位向量
+  function unitVector(vector) {
+    const m = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1])
+    return [vector[0] / m, vector[1] / m]
+  }
+
+  // 判断向量 x,y 坐标相等
+  function equals(vector, target) {
+    return vector[0] === target[0] && vector[1] === target[1]
+  }
+
+  // 向量夹角
+  function angle(vector) {
+    return Math.round(180 / Math.PI * Math.atan2(vector[1], vector[0])) + 180
+  }
+
+  // 判断向量是否平行
+  function parallel(vectorA, vectorB) {
+    return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0] === 0
+  }
+
+  //
+  function vector(result) {
+    const handler = {
+      add: addVector,
+      multiply,
+      differ,
+      minus,
+      dotProduct,
+      cross,
+      unitVector,
+      equals,
+      angle,
+      parallel
+    }
+    const proxyHandler = {}
+
+    Object.keys(handler).forEach(key => {
+      Object.defineProperty(proxyHandler, key, {
+        get() {
+          return function (val) {
+            result = handler[key](result, val)
+            return proxyHandler
+          }
+        }
+      })
+    })
+    Object.defineProperty(proxyHandler, 'end', {
+      get() {
+        return result
+      }
+    })
+    return proxyHandler
+  }
+
+  function toRawType(val) {
+    return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase()
+  }
+
+  function isFun(val) {
+    return toRawType(val) === 'function'
+  }
+
+  function isBool(val) {
+    return toRawType(val) === 'boolean'
+  }
+
+  function isUndef(val) {
+    return toRawType(val) === 'undefined'
+  }
+
+  function arrayReplace(arr1, arr2) {
+    arr1.splice(0, arr1.length, ...arr2)
+  }
+
+  function debounce(fn, timestamp) {
+    let timeout = null
+    return function () {
+      if (timeout)
+        clearTimeout(timeout)
+      timeout = setTimeout(fn, timestamp)
+    }
+  }
+
+
+</script>
+
+<script>
+
+
+  const canvas = document.getElementById('canvas')
+  const ctx = canvas.getContext('2d')
+  ctx.translate(500, 500)
+
+  ctx.strokeStyle = '#dddddd'
+
+  ctx.beginPath()
+  ctx.moveTo(-500, 0)
+  ctx.lineTo(500, 0)
+  ctx.stroke()
+
+  ctx.beginPath()
+  ctx.moveTo(0, -500)
+  ctx.lineTo(0, 500)
+  ctx.stroke()
+
+  function draw(lineA, lineB, style = '#000000') {
+
+    console.log(`%c ${intersect(lineA, lineB)}`, `color: ${style};`)
+
+    ctx.strokeStyle = style
+
+    ctx.beginPath()
+    ctx.moveTo(...lineA[0])
+    ctx.lineTo(...lineA[1])
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(...lineB[0])
+    ctx.lineTo(...lineB[1])
+    ctx.stroke()
+  }
+
+
+  function intersect(lineA, lineB) {
+    console.log(
+      vector(lineA[0])
+        .cross(lineB[0])
+        .end
+      - vector(lineA[1])
+        .cross(lineA[0])
+        .end
+    )
+
+
+    console.log(a1, a2)
+
+    // console.log(sA, eA, sB, eB)
+    return false
+  }
+
+  function judgeIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+
+    //快速排斥：
+    //两个线段为对角线组成的矩形，如果这两个矩形没有重叠的部分，那么两条线段是不可能出现重叠的
+
+    //这里的确如此，这一步是判定两矩形是否相交
+    //1.线段ab的低点低于cd的最高点（可能重合）
+    //2.cd的最左端小于ab的最右端（可能重合）
+    //3.cd的最低点低于ab的最高点（加上条件1，两线段在竖直方向上重合）
+    //4.ab的最左端小于cd的最右端（加上条件2，两直线在水平方向上重合）
+    //综上4个条件，两条线段组成的矩形是重合的
+    //特别要注意一个矩形含于另一个矩形之内的情况
+
+    if (!(Math.min(x1, x2) <= Math.max(x3, x4) && Math.min(y3, y4) <= Math.max(y1, y2) && Math.min(x3, x4) <= Math.max(x1, x2) && Math.min(y1, y2) <= Math.max(y3, y4)))
+      return false
+
+    //跨立实验：
+    //如果两条线段相交，那么必须跨立，就是以一条线段为标准，另一条线段的两端点一定在这条线段的两段
+    //也就是说a b两点在线段cd的两端，c d两点在线段ab的两端
+    let u, v, w, z
+
+    u = (x3 - x1) * (y2 - y1) - (x2 - x1) * (y3 - y1)
+    v = (x4 - x1) * (y2 - y1) - (x2 - x1) * (y4 - y1)
+    w = (x1 - x3) * (y4 - y3) - (x4 - x3) * (y1 - y3)
+    z = (x2 - x3) * (y4 - y3) - (x4 - x3) * (y2 - y3)
+
+    return (u * v <= 0.00000001 && w * z <= 0.00000001)
+  }
+
+
+  draw(
+    [
+      [-10, -10],
+      [20, 20]
+    ],
+    [
+      [-100, 0],
+      [100, 0]
+    ],
+    '#FF0000'
+  )
+
+  draw(
+    [
+      [50, 10],
+      [80, 80]
+    ],
+    [
+      [100, -100],
+      [60, 60]
+    ],
+    '#00FF00'
+  )
+
+
+  draw(
+    [
+      [150, 150],
+      [80, 180]
+    ],
+    [
+      [100, -100],
+      [60, 60]
+    ],
+    '#00FFFF'
+  )
+
+
+</script>
+
+</body>
+</html>

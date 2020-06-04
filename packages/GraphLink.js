@@ -227,14 +227,26 @@ export default class GraphLink {
   }
   
   pathDirection(vertical, horizontal, direction) {
-    if (vector(horizontal).parallel(direction).end) {
-      if (vector(horizontal).dotProduct(direction).end > 0) {
+    if (
+      vector(horizontal)
+        .parallel(direction)
+        .end
+    ) {
+      if (
+        vector(horizontal)
+          .dotProduct(direction)
+          .end > 0
+      ) {
         return horizontal
       } else {
         return vertical
       }
     } else {
-      if (vector(vertical).dotProduct(direction).end > 0) {
+      if (
+        vector(vertical)
+          .dotProduct(direction)
+          .end > 0
+      ) {
         return vertical
       } else {
         return horizontal
@@ -251,9 +263,9 @@ export default class GraphLink {
       maxX,
       maxY
     } = this.pathPointList
-
-    const n = 6
-
+    
+    const n = 5
+    
     if (
       position[0] < minX - n
       || position[0] > maxX + n
@@ -262,9 +274,8 @@ export default class GraphLink {
     ) {
       return false
     }
-
-
-
+    
+    
     for (let i = 0; i < pointList.length - 2; i++) {
       const prev = pointList[i]
       const current = pointList[i + 1]

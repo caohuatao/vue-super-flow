@@ -10,6 +10,7 @@
     <div
       ref="flow-canvas"
       :style="{width: width + 'px', height: height + 'px'}"
+      @mousemove=""
       @contextmenu.prevent.stop="contextmenu">
 
       <graph-line

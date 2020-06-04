@@ -8,6 +8,7 @@
     <div
       v-show="visible"
       class="flow__menu-mask"
+      @mousemove.stop.prevent
       @mousedown="close">
     </div>
     <ul

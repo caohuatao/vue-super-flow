@@ -38,29 +38,11 @@ class Graph extends GraphEvent{
       Math.floor(height / 2)
     ]
     
-    
     this.mouseonLink = null
-    this.mouseonNode = false
+    this.mouseonNode = null
     this.initNode(nodeList)
     this.initLink(linkList)
   }
-  
-  get top() {
-  
-  }
-  
-  get right() {
-  
-  }
-  
-  get bottom() {
-  
-  }
-  
-  get left() {
-  
-  }
-  
   
   pointMap() {
     const map = {}
@@ -106,7 +88,6 @@ class Graph extends GraphEvent{
     })
     arrayReplace(this.linkList, list)
   }
-  
   
   createNode(options) {
     return new GraphNode(options, this)
@@ -167,7 +148,6 @@ class Graph extends GraphEvent{
       ...nodeList.splice(idx, 1)
     )
   }
-  
   
   toJson() {
     return {

@@ -15,7 +15,6 @@ import {
 } from './types'
 
 export default class GraphNode {
-  
   constructor(props, graph) {
     const {
       id,

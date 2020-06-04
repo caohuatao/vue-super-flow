@@ -146,9 +146,7 @@
             {
               type: 'horizontal',
               label: '横向对齐',
-              selected(graph, coordinate) {
-
-              }
+              selected(graph, coordinate) {}
             }
           ]
         ],

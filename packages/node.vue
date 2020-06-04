@@ -75,13 +75,13 @@
       },
 
       nodeMouseenter(evt) {
-        this.graph.mouseonNode = true
+        this.graph.mouseonNode = this.node
         if (!this.isTemEdge) return
         this.$emit('node-mouseenter', evt, this.node, getOffset(evt, this.$el))
       },
 
       nodeMouseleave() {
-        this.graph.mouseonNode = false
+        this.graph.mouseonNode = null
         if (!this.isTemEdge) return
         this.$emit('node-mouseleave')
       },
