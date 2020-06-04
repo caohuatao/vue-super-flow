@@ -5,6 +5,18 @@
  */
 
 
+export function uuid(before = '', after = '') {
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+  const charsLen = chars.length
+  let uuid = []
+  const len = 16
+  for (let i = 0; i < len; i++) {
+    uuid[i] = chars[0 | Math.random() * charsLen]
+  }
+  return before + uuid.join('') + after
+}
+
+
 export function getOffset(evt, target = null) {
   const {
     clientX,
@@ -85,19 +97,24 @@ export function vector(result) {
     angle,
     parallel
   }
+  const proxyHandler = {}
   
-  return new Proxy(handler, {
-    get(target, p, receiver) {
-      if (p === 'end') {
-        return result
-      } else {
+  Object.keys(handler).forEach(key=> {
+    Object.defineProperty(proxyHandler, key, {
+      get() {
         return function (val) {
-          result = target[p](result, val)
-          return receiver
+          result = handler[key](result, val)
+          return proxyHandler
         }
       }
+    })
+  })
+  Object.defineProperty(proxyHandler, 'end', {
+    get() {
+      return result
     }
   })
+  return proxyHandler
 }
 
 export function toRawType(val) {

@@ -4,7 +4,10 @@
  * Time: 14:01
  */
 
-import {multiply, vector} from './utils'
+import {
+  uuid,
+  vector
+} from './utils'
 
 import {
   direction,
@@ -24,7 +27,7 @@ export default class GraphLink {
       meta = null
     } = options
     
-    this.key = Symbol('edge')
+    this.key = uuid('link')
     
     this.id = id
     this.graph = graph

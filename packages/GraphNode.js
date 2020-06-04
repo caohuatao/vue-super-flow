@@ -5,6 +5,7 @@
  */
 
 import {
+  uuid,
   vector
 } from './utils'
 
@@ -24,7 +25,7 @@ export default class GraphNode {
       meta = null
     } = props
     
-    this.key = Symbol('node')
+    this.key = uuid('node')
     this.graph = graph
     
     this.id = id

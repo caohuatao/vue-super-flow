@@ -4,35 +4,39 @@
  * Time: 9:12
 -->
 <template>
-  <ul
-    tabindex="-1"
-    class="super-flow__menu"
-    v-show="visible"
-    @mousemove.stop.prevent
-    @blur="close"
-    @contextmenu.prevent.stop
-    :style="style">
+  <div>
     <div
+      v-show="visible"
       class="flow__menu-mask"
       @mousedown="close">
     </div>
-    <template v-for="subList in list">
-      <li
-        class="super-flow__menu-item"
-        v-for="subItem in subList"
-        :class="{'is-disabled': subItem.disable}"
-        @mousedown="select(subItem)">
-        <slot>
-          <span class="super-flow__menu-item-icon"></span>
-          <span class="super-flow__menu-item-content">
+    <ul
+      tabindex="-1"
+      class="super-flow__menu"
+      v-show="visible"
+      @mousemove.stop.prevent
+      @blur="close"
+      @contextmenu.prevent.stop
+      :style="style">
+      <template v-for="subList in list">
+        <li
+          class="super-flow__menu-item"
+          v-for="subItem in subList"
+          :class="{'is-disabled': subItem.disable}"
+          @click="select(subItem)">
+          <slot>
+            <span class="super-flow__menu-item-icon"></span>
+            <span class="super-flow__menu-item-content">
             {{subItem.label}}
           </span>
-        </slot>
-      </li>
-      <li class="super-flow__menu-line"></li>
-    </template>
+          </slot>
+        </li>
+        <li class="super-flow__menu-line"></li>
+      </template>
 
-  </ul>
+    </ul>
+  </div>
+
 </template>
 
 <script>
@@ -71,7 +75,6 @@
     },
     methods: {
       select(subItem) {
-        console.log('select')
         if (subItem.disable) return
         this.$emit('update:visible', false)
 
@@ -97,8 +100,7 @@
 </script>
 
 <style lang="less">
-
-
+  @z-index: 10;
   .super-flow__menu {
     @menu-width      : 180px;
     @height          : 26px;
@@ -111,7 +113,7 @@
     box-shadow       : 0 8px 16px 0 rgba(0, 0, 0, 0.3);
     overflow         : hidden;
     border-radius    : 3px;
-    z-index          : 10;
+    z-index          : @z-index;
     background-color : #ffffff;
     margin           : 0;
 
@@ -132,8 +134,6 @@
       font-size   : 0;
       position    : relative;
       padding     : 0 @padding;
-
-      display     : flex;
 
       &:last-child {
         margin : 0;
@@ -193,15 +193,16 @@
         display : none;
       }
     }
+  }
 
-    > .flow__menu-mask {
-      content  : '';
-      position : fixed;
-      top      : 0;
-      bottom   : 0;
-      right    : 0;
-      left     : 0;
-      z-index  : -1;
-    }
+  .flow__menu-mask {
+    content  : '';
+    position : fixed;
+    top      : 0;
+    bottom   : 0;
+    right    : 0;
+    left     : 0;
+    z-index  : @z-index;
+    background-color: transparent;
   }
 </style>
