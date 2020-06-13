@@ -159,4 +159,14 @@ export default class GraphNode {
   remove() {
     this.graph.removeNode(this)
   }
+  
+  interface() {
+    return {
+      width: this.width,
+      height: this.height,
+      coordinate: [...this.coordinate],
+      meta: this.meta,
+      remove: this.remove.bind(this)
+    }
+  }
 }

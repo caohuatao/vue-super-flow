@@ -4,13 +4,10 @@
  * Time: 9:52
 -->
 <template>
-  <div
-    data-super-flow-root
-    class="super-flow">
+  <div class="super-flow">
     <div
       ref="flow-canvas"
       :style="{width: width + 'px', height: height + 'px'}"
-      @mousemove=""
       @contextmenu.prevent.stop="contextmenu">
 
       <graph-line
@@ -41,10 +38,10 @@
         @node-mouseup="nodeMouseup"
         @side-mousedown="sideMousedown"
         @node-contextmenu="nodeContextmenu">
-        <template v-slot="{node}">
+        <template v-slot="{meta}">
           <slot
             name="node"
-            :node="node">
+            :meta="meta">
           </slot>
         </template>
       </graph-node>
@@ -67,7 +64,8 @@
   import Graph from './Graph'
   import GraphMenu from './menu'
   import GraphNode from './node'
-  import GraphLine from './line'
+  import GraphLine from './link'
+
   import {
     getOffset,
     isBool,
@@ -144,7 +142,7 @@
           visible: false,
           link: null
         },
-        scorllCenterFun: debounce(this.scrollCenter, 400)
+        scorllCenterFun: debounce(this.scrollCenter, 200)
       }
     },
     components: {
@@ -247,14 +245,19 @@
 
       contextmenu(evt) {
         const mouseonLink = this.graph.mouseonLink
+        const position = getOffset(evt)
         let list, source
-        if(mouseonLink ) {
-          list = this.initMenu(this.linkMenu, mouseonLink)
-          source = mouseonLink
+        if (mouseonLink && mouseonLink.isPointInLink(position)) {
+          const link = mouseonLink.interface()
+          list = this.initMenu(this.linkMenu, link)
+          source = link
         } else {
-          list = this.initMenu(this.graphMenu, this.graph)
-          source = this.graph
+          if (mouseonLink) this.graph.mouseonLink = null
+          const graph = this.graph.interface()
+          list = this.initMenu(this.graphMenu, graph)
+          source = graph
         }
+
         this.showContextMenu(
           getOffset(evt, this.$refs['flow-canvas']),
           list,
@@ -270,7 +273,7 @@
 
       nodeMouseenter(evt, node, offset) {
         const link = this.temEdgeConf.link
-        if (this.enterIntercept(link.start, node, this.graph)) {
+        if (this.enterIntercept(link.start, node, this.graph.interface())) {
           link.end = node
           link.endAt = offset
         }
@@ -285,6 +288,7 @@
       },
 
       nodeContextmenu(evt, node) {
+        node = node.interface()
         const list = this.initMenu(this.nodeMenu, node)
         if (!list.length) return
         this.$set(this.menuConf, 'position', getOffset(evt, this.$refs['flow-canvas']))
@@ -304,7 +308,7 @@
       },
 
       nodeIntercept(node) {
-        return () => this.outputIntercept(node, this.graph)
+        return () => this.outputIntercept(node, this.graph.interface())
       },
 
       menuItemSelect() {
@@ -318,7 +322,7 @@
 
     watch: {
       'graph.mouseonLink'() {
-        if(this.graph.mouseonLink) {
+        if (this.graph.mouseonLink) {
           document.body.style.cursor = 'pointer'
         } else {
           document.body.style.cursor = ''

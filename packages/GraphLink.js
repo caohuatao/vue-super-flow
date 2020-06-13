@@ -299,4 +299,15 @@ export default class GraphLink {
   remove() {
     this.graph.removeLink(this)
   }
+  
+  interface() {
+    return {
+      meta: this.meta,
+      remove: this.remove.bind(this),
+      start: this.start.interface(),
+      end: this.end.interface(),
+      startAt: [...this.startAt],
+      endAt: [...this.endAt]
+    }
+  }
 }

@@ -13,7 +13,7 @@
     @mouseleave="nodeMouseleave"
     @mouseup="nodeMouseup"
     @contextmenu.prevent.stop="nodeContextmenu">
-    <slot :node="node"></slot>
+    <slot :meta="node.meta"></slot>
     <div
       v-for="(dir, key) in direction"
       v-show="output"

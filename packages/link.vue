@@ -78,7 +78,6 @@
         this.initLine()
       },
 
-
       changeStyle() {
         this.$el.width = this.right - this.left
         this.$el.height = this.bottom - this.top
@@ -169,12 +168,8 @@
       }
     },
     watch: {
-      'link.pathPointList'() {
-        this.draw()
-      },
-      inPath() {
-        this.initLine()
-      }
+      'link.pathPointList'() {this.draw()},
+      inPath() {this.initLine()}
     }
   }
 </script>

@@ -14,8 +14,7 @@ import {
 } from './utils'
 
 
-
-class Graph extends GraphEvent{
+class Graph extends GraphEvent {
   constructor(options) {
     
     const {
@@ -97,6 +96,18 @@ class Graph extends GraphEvent{
     return new GraphLink(options, this)
   }
   
+  horizontal() {
+    const startList = this.linkList.map(link => link.start)
+    const endList = this.linkList.map(link => link.end)
+    const vertex = startList.find(start => !endList.includes(start))
+      || this.nodeList[0]
+    
+    return vertex
+  }
+  
+  vertical() {
+  
+  }
   
   addNode(options) {
     const node = options.constructor === GraphNode
@@ -136,7 +147,7 @@ class Graph extends GraphEvent{
   removeLink(link) {
     const idx = this.linkList.indexOf(link)
     this.linkList.splice(idx, 1)
-    if(this.mouseonLink === link) {
+    if (this.mouseonLink === link) {
       this.mouseonLink = null
     }
   }
@@ -149,14 +160,14 @@ class Graph extends GraphEvent{
     )
   }
   
-  toJson() {
+  toJSON() {
     return {
       nodeList: this.nodeList.map(node => {
         return {
           id: node.id,
           width: node.width,
           height: node.height,
-          coordinate: node.coordinate,
+          coordinate: [...node.coordinate],
           meta: node.meta
         }
       }),
@@ -164,11 +175,25 @@ class Graph extends GraphEvent{
         return {
           startId: link.start.id,
           endId: link.end.id,
-          startAt: link.startAt,
-          endAt: link.endAt,
+          startAt: [...link.startAt],
+          endAt: [...link.endAt],
           meta: link.meta
         }
       })
+    }
+  }
+  
+  interface() {
+    return {
+      nodeList: this.nodeList.map(node => node.interface()),
+      linkList: this.linkList.map(link => link.interface()),
+      addNode: this.addNode.bind(this),
+      addLink: this.addLink.bind(this),
+      removeNode: this.removeNode.bind(this),
+      removeLink: this.removeLink.bind(this),
+      horizontal: this.horizontal.bind(this),
+      vertical: this.vertical.bind(this),
+      toJSON: this.toJSON.bind(this)
     }
   }
 }

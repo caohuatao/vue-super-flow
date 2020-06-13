@@ -1,56 +1,23 @@
 <template>
   <div id="app">
-    <div class="container">
-
-      <header>
-        <div @click="test">
-          <div>111111111111</div>
+    <super-flow
+      :graph-menu="graphMenuList"
+      :node-menu="nodeMenuList"
+      :link-menu="linkMenuList"
+      :width="4000"
+      :height="3000"
+      :origin="[2000, 1500]"
+      :enter-intercept="enterIntercept"
+      :output-intercept="outputIntercept">
+      <template v-slot:node="{meta}">
+        <div :class="`flow-node flow-node-${meta.prop}`">
+          <header>
+            {{meta.name}}
+          </header>
+          <section></section>
         </div>
-      </header>
-
-      <nav>
-        <el-form
-          size="small"
-          label-position="left"
-          label-width="80px">
-
-          <el-form-item label="width：">
-            {{conf.width}}
-          </el-form-item>
-
-          <el-form-item label="height：">
-            {{conf.height}}
-          </el-form-item>
-
-          <el-form-item label="origin：">
-            {{conf.origin.toString()}}
-          </el-form-item>
-        </el-form>
-      </nav>
-
-      <section>
-        <super-flow
-          :graph-menu="graphMenuList"
-          :node-menu="nodeMenuList"
-          :link-menu="linkMenuList"
-          :width="conf.width"
-          :height="conf.height"
-          :origin="conf.origin"
-          :enter-intercept="enterIntercept"
-          :output-intercept="outputIntercept">
-          <template v-slot:node="{node}">
-            <div :class="`flow-node flow-node-${node.meta.prop}`">
-              <header>
-                {{node.meta.name}}
-              </header>
-              <section></section>
-            </div>
-          </template>
-        </super-flow>
-      </section>
-
-    </div>
-
+      </template>
+    </super-flow>
   </div>
 </template>
 
@@ -63,7 +30,6 @@
         graphMenuList: [
           [
             {
-              prop: 'start',
               label: '开始节点',
               disable(graph) {
                 return !!graph.nodeList.find(
@@ -84,7 +50,6 @@
               }
             },
             {
-              prop: 'approval',
               label: '审批节点',
               disable: false,
               selected(graph, coordinate) {
@@ -101,7 +66,6 @@
               }
             },
             {
-              prop: 'cc',
               label: '抄送节点',
               disable: false,
               selected(graph, coordinate) {
@@ -118,7 +82,6 @@
               }
             },
             {
-              prop: 'end',
               label: '结束节点',
               disable(graph) {
                 return !!graph.nodeList.find(point => point.meta.prop === 'end')
@@ -139,12 +102,10 @@
           ],
           [
             {
-              prop: 'vertical',
               label: '竖向对齐',
               selected(graph, coordinate) {}
             },
             {
-              type: 'horizontal',
               label: '横向对齐',
               selected(graph, coordinate) {}
             }
@@ -153,7 +114,6 @@
         nodeMenuList: [
           [
             {
-              prop: 'remove',
               label: '删除',
               disable: false,
               hidden(node) {
@@ -168,7 +128,6 @@
         linkMenuList: [
           [
             {
-              prop: 'remove',
               label: '删除',
               disable: false,
               selected(link, coordinate) {
@@ -176,15 +135,11 @@
               }
             }
           ]
-        ],
-        conf: {
-          origin: [2000, 1500],
-          width: 4000,
-          height: 3000
-        }
+        ]
       }
     },
-    mounted() {
+    components: {
+      SuperFlow
     },
     methods: {
       enterIntercept(formNode, toNode, graph) {
@@ -209,13 +164,7 @@
       },
       outputIntercept(node, graph) {
         return true
-      },
-      test() {
-        console.log('test')
       }
-    },
-    components: {
-      SuperFlow
     }
   }
 </script>
@@ -232,84 +181,44 @@
     width  : 100%;
     height : 100%;
 
-    > .container {
+    .super-flow__node {
+      .flow-node {
+        > header {
+          font-size   : 14px;
+          height      : 32px;
+          line-height : 32px;
+          padding     : 0 12px;
+          color       : #ffffff;
 
-      @header-height : 50px;
-      @nav-width     : 300px;
-      width          : 100%;
-      height         : 100%;
-
-      > header,
-      > nav,
-      > section {
-        box-sizing : border-box;
-      }
-
-      > header {
-        float         : left;
-        width         : 100%;
-        border-bottom : 1px solid #dddddd;
-        height        : @header-height;
-      }
-
-      > nav {
-        float        : left;
-        width        : @nav-width;
-        height       : calc(100% - @header-height);
-        border-right : 1px solid #dddddd;
-        overflow     : auto;
-
-        > .el-form {
-          padding : 20px 30px;
         }
-      }
 
-      > section {
-        float  : left;
-        width  : calc(100% - @nav-width);
-        height : calc(100% - @header-height);
-      }
-
-      .super-flow__node {
-        .flow-node {
+        &.flow-node-start {
           > header {
-            font-size        : 14px;
-            height           : 32px;
-            line-height      : 32px;
-            padding          : 0 12px;
-            color            : #ffffff;
-
+            background-color : #55abfc;
           }
+        }
 
-          &.flow-node-start {
-            >header {
-              background-color : #55abfc;
-            }
+        &.flow-node-approval {
+          > header {
+            background-color : rgba(188, 181, 58, 0.76);
           }
+        }
 
-          &.flow-node-approval {
-            >header {
-              background-color : rgba(188, 181, 58, 0.76);
-            }
+        &.flow-node-cc {
+          > header {
+            background-color : #30b95c;
           }
+        }
 
-          &.flow-node-cc {
-            >header {
-              background-color : #30b95c;
-            }
-          }
-
-          &.flow-node-end {
-            >header {
-              height: 50px;
-              line-height: 50px;
-              background-color : rgb(0, 0, 0);
-            }
+        &.flow-node-end {
+          > header {
+            height           : 50px;
+            line-height      : 50px;
+            background-color : rgb(0, 0, 0);
           }
         }
       }
     }
   }
-
 
 </style>
