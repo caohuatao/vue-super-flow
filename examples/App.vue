@@ -32,9 +32,7 @@
             {
               label: '开始节点',
               disable(graph) {
-                return !!graph.nodeList.find(
-                  point => point.meta.prop === 'start'
-                )
+                return !!graph.nodeList.find(node => node.meta.prop === 'start')
               },
               selected(graph, coordinate) {
                 graph.addNode({
@@ -42,6 +40,7 @@
                   width: 100,
                   height: 80,
                   coordinate: coordinate,
+                  vertex: true,
                   meta: {
                     prop: 'start',
                     name: '开始节点'
@@ -102,12 +101,15 @@
           ],
           [
             {
-              label: '竖向对齐',
-              selected(graph, coordinate) {}
+              label: '垂直对齐',
+              selected(graph, coordinate) {
+              }
             },
             {
-              label: '横向对齐',
-              selected(graph, coordinate) {}
+              label: '水平对齐',
+              selected(graph, coordinate) {
+                graph.horizontal()
+              }
             }
           ]
         ],

@@ -39,6 +39,8 @@ class Graph extends GraphEvent {
     
     this.mouseonLink = null
     this.mouseonNode = null
+    
+    this.vertex = null
     this.initNode(nodeList)
     this.initLink(linkList)
   }
@@ -96,13 +98,31 @@ class Graph extends GraphEvent {
     return new GraphLink(options, this)
   }
   
-  horizontal() {
-    const startList = this.linkList.map(link => link.start)
-    const endList = this.linkList.map(link => link.end)
-    const vertex = startList.find(start => !endList.includes(start))
-      || this.nodeList[0]
+  getDepth() {
+    const depth = (vertex) => {
+      this.linkList.forEach(link => {
+        if (link.start === vertex) {
+          link.end.depth = vertex.depth + 1
+          depth(link.end)
+        }
+      })
+    }
     
-    return vertex
+    if (this.vertex && this.nodeList.length && this.linkList.length) {
+      this.vertex.depth = 0
+      depth(this.vertex)
+    }
+    
+    return Math.max(...this.nodeList.map(node => node.depth))
+  }
+  
+  horizontal() {
+    const distance = 100
+    const maxDept = this.getDepth()
+    let i = 0
+    while (i <= maxDept) {
+      
+    }
   }
   
   vertical() {

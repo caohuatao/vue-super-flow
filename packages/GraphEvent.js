@@ -36,7 +36,11 @@ export default class GraphEvent {
     event.target = this
     
     if (breakOff) {
-      stack.some(fun => fun.call(this, event))
+      stack.some((fun, idx) => {
+        const result = fun.call(this, event)
+        if(result) stack.unshift(...stack.splice(idx, 1))
+        return result
+      })
     } else {
       stack.forEach(fun => fun.call(this, event))
     }

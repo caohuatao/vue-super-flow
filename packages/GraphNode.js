@@ -5,6 +5,7 @@
  */
 
 import {
+  minus,
   uuid,
   vector
 } from './utils'
@@ -21,8 +22,11 @@ export default class GraphNode {
       width = 180,
       height = 100,
       coordinate = [0, 0],
-      meta = null
+      meta = null,
+      vertex = false
     } = props
+    
+    this.depth = 0
     
     this.key = uuid('node')
     this.graph = graph
@@ -31,8 +35,13 @@ export default class GraphNode {
     this.coordinate = [...coordinate]
     this.meta = meta
     
+    this.vertex = vertex
     this.width = width
     this.height = height
+  }
+  
+  set vertex(bol) {
+    if (bol) this.graph.vertex = this
   }
   
   get position() {
@@ -52,6 +61,13 @@ export default class GraphNode {
       .add([this.width / 2, this.height / 2])
       .end
   }
+  
+  set center(position) {
+    this.coordinate = vector(position)
+      .minus([this.width / 2, this.height / 2])
+      .end
+  }
+  
   
   get width() {
     return this._width

@@ -44,8 +44,10 @@
         set(bol) {
           if (bol && !this.graph.mouseonNode) {
             this.graph.mouseonLink = this.link
+            this.$el.style.zIndex = 1
           } else if (this.inPath) {
             this.graph.mouseonLink = null
+            this.$el.style.zIndex = 0
           }
         }
       }
