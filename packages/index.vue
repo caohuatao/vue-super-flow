@@ -174,8 +174,8 @@
         return {
           width: `${right - left}px`,
           height: `${bottom - top}px`,
-          top: `${top + this.origin[1]}px`,
-          left: `${left + this.origin[0]}px`
+          top: `${top + this.graph.origin[1]}px`,
+          left: `${left + this.graph.origin[0]}px`
         }
       }
     },
@@ -263,7 +263,7 @@
               .differ([evt.clientX, evt.clientY])
               .end
 
-            this.origin = vector(this.moveAllConf.origin)
+            this.graph.origin = vector(this.moveAllConf.origin)
               .add(offset)
               .end
 
