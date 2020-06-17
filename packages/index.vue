@@ -54,8 +54,17 @@
         :source="menuConf.source">
       </graph-menu>
 
+      <div
+        class="select-all__mask"
+        ref="selectAllMask"
+        tabindex="-1"
+        :style="maskStyle"
+        @blur="graph.graphSelected = false"
+        v-show="graph.graphSelected"
+        @mousedown="selectAllMaskMouseDown"
+        @contextmenu.prevent.stop>
+      </div>
     </div>
-
   </div>
 </template>
 
@@ -138,6 +147,10 @@
           node: null,
           offset: null
         },
+        moveAllConf: {
+          isMove: false,
+          downPosition: [0, 0]
+        },
         temEdgeConf: {
           visible: false,
           link: null
@@ -149,6 +162,26 @@
       GraphMenu,
       GraphNode,
       GraphLine
+    },
+    computed: {
+      maskStyle() {
+        const {
+          top,
+          right,
+          bottom,
+          left
+        } = this.graph.maskBoundingClientRect
+        return {
+          width: `${right - left}px`,
+          height: `${bottom - top}px`,
+          top: `${top + this.origin[1]}px`,
+          left: `${left + this.origin[0]}px`
+        }
+      }
+    },
+    created() {
+      this.graph.initNode(this.nodeList)
+      this.graph.initLink(this.linkList)
     },
     mounted() {
       document.addEventListener('mouseup', this.docMouseup)
@@ -207,6 +240,8 @@
 
         this.temEdgeConf.visible = false
         this.temEdgeConf.link = null
+
+        this.moveAllConf.isMove = false
       },
 
       docMousemove(evt) {
@@ -220,6 +255,21 @@
         if (this.temEdgeConf.visible) {
           return this.temEdgeConf.link.movePosition
             = getOffset(evt, this.$refs['flow-canvas'])
+        }
+
+        if (this.graph.graphSelected) {
+          if (this.moveAllConf.isMove) {
+            const offset = vector(this.moveAllConf.downPosition)
+              .differ([evt.clientX, evt.clientY])
+              .end
+
+            this.origin = vector(this.moveAllConf.origin)
+              .add(offset)
+              .end
+
+            return
+          }
+          return
         }
 
         return this.graph.dispatch({
@@ -315,12 +365,24 @@
         this.menuConf.visible = false
       },
 
-      selectAll() {
-
+      selectAllMaskMouseDown(evt) {
+        this.moveAllConf.isMove = true
+        this.moveAllConf.origin = [...this.graph.origin]
+        this.moveAllConf.downPosition = [
+          evt.clientX,
+          evt.clientY
+        ]
       }
     },
 
     watch: {
+      'graph.graphSelected'() {
+        if (this.graph.graphSelected) {
+          this.$nextTick(() => {
+            this.$refs.selectAllMask.focus()
+          })
+        }
+      },
       'graph.mouseonLink'() {
         if (this.graph.mouseonLink) {
           document.body.style.cursor = 'pointer'
@@ -329,10 +391,10 @@
         }
       },
       nodeList() {
-        this.graph.initPoint(this.nodeList)
+        this.graph.initNode(this.nodeList)
       },
       linkList() {
-        this.graph.initEdge(this.linkList)
+        this.graph.initLink(this.linkList)
       },
       width() {
         this.scorllCenterFun()
@@ -348,7 +410,12 @@
 </script>
 
 <style lang="less">
-  .scrollBar(@width:10px, @bg: rgba(0, 0, 0, 0.3), @shadow: inset 6px rgba(0, 0, 0, 0.2)) {
+  .scrollBar(
+    @width  : 10px,
+    @bg     : rgba(0, 0, 0, 0.3),
+    @shadow : inset 6px rgba(0, 0, 0, 0.2)
+  ) {
+
     &::-webkit-scrollbar {
       width  : @width;
       height : @width;
@@ -359,6 +426,7 @@
       background    : @bg;
       box-shadow    : @shadow;
     }
+
   }
 
   .super-flow {
@@ -384,6 +452,15 @@
 
     > div {
       position : relative;
+
+      > .select-all__mask {
+        position         : absolute;
+        background-color : rgba(85, 175, 255, 0.1);
+        z-index          : 20;
+        border           : 1px dashed #55abfc;
+        cursor           : move;
+        outline          : none;
+      }
     }
   }
 </style>

@@ -34,6 +34,9 @@ export function getOffset(evt, target = null) {
   return [clientX - left, clientY - top]
 }
 
+
+
+
 // 向量相加
 export function addVector(vectorA, vectorB) {
   return [vectorA[0] + vectorB[0], vectorA[1] + vectorB[1]]
@@ -99,7 +102,7 @@ export function vector(result) {
   }
   const proxyHandler = {}
   
-  Object.keys(handler).forEach(key=> {
+  Object.keys(handler).forEach(key => {
     Object.defineProperty(proxyHandler, key, {
       get() {
         return function (val) {
@@ -109,13 +112,18 @@ export function vector(result) {
       }
     })
   })
+  
   Object.defineProperty(proxyHandler, 'end', {
     get() {
       return result
     }
   })
+  
   return proxyHandler
 }
+
+
+
 
 export function toRawType(val) {
   return Object.prototype.toString.call(val).slice(8, -1).toLocaleLowerCase()

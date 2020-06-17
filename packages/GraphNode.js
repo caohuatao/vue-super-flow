@@ -23,7 +23,7 @@ export default class GraphNode {
       height = 100,
       coordinate = [0, 0],
       meta = null,
-      vertex = false
+      vertex = 0
     } = props
     
     this.depth = 0
@@ -42,6 +42,10 @@ export default class GraphNode {
   
   set vertex(bol) {
     if (bol) this.graph.vertex = this
+  }
+  
+  get vertex() {
+    return this.graph.vertex === this ? 1 : 0
   }
   
   get position() {

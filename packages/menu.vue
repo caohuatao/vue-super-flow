@@ -28,8 +28,8 @@
           <slot>
             <span class="super-flow__menu-item-icon"></span>
             <span class="super-flow__menu-item-content">
-            {{subItem.label}}
-          </span>
+              {{subItem.label}}
+            </span>
           </slot>
         </li>
         <li class="super-flow__menu-line"></li>

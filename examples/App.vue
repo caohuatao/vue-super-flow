@@ -1,6 +1,13 @@
+<!--
+ * User: CHT
+ * Date: 2020/5/27
+ * Time: 9:52
+-->
 <template>
   <div id="app">
     <super-flow
+      :node-list="nodeList"
+      :link-list="linkList"
       :graph-menu="graphMenuList"
       :node-menu="nodeMenuList"
       :link-menu="linkMenuList"
@@ -103,12 +110,27 @@
             {
               label: '垂直对齐',
               selected(graph, coordinate) {
+                graph.vertical()
               }
             },
             {
               label: '水平对齐',
               selected(graph, coordinate) {
                 graph.horizontal()
+              }
+            }
+          ],
+          [
+            {
+              label: '打印数据',
+              selected(graph, coordinate) {
+                console.log(JSON.stringify(graph.toJSON(), null, 2))
+              }
+            },
+            {
+              label: '选中所有',
+              selected(graph, coordinate) {
+                graph.selectAll()
               }
             }
           ]
@@ -137,6 +159,212 @@
               }
             }
           ]
+        ],
+        nodeList: [
+          {
+            'id': '0.efnsmp46b5o',
+            'vertex': 0,
+            'width': 200,
+            'height': 100,
+            'coordinate': [
+              -204,
+              -391
+            ],
+            'meta': {
+              'prop': 'approval',
+              'name': '审批节点'
+            }
+          },
+          {
+            'id': '0.0v0h61jdbmo',
+            'vertex': 0,
+            'width': 200,
+            'height': 100,
+            'coordinate': [
+              -196,
+              -247
+            ],
+            'meta': {
+              'prop': 'approval',
+              'name': '审批节点'
+            }
+          },
+          {
+            'id': '0.f6a3gt4j1c',
+            'vertex': 0,
+            'width': 200,
+            'height': 100,
+            'coordinate': [
+              -188,
+              -105
+            ],
+            'meta': {
+              'prop': 'approval',
+              'name': '审批节点'
+            }
+          },
+          {
+            'id': '0.p51pjul7l7o',
+            'vertex': 0,
+            'width': 200,
+            'height': 100,
+            'coordinate': [
+              61,
+              -376
+            ],
+            'meta': {
+              'prop': 'cc',
+              'name': '抄送节点'
+            }
+          },
+          {
+            'id': '0.e4cjvkamf1',
+            'vertex': 0,
+            'width': 200,
+            'height': 100,
+            'coordinate': [
+              70,
+              -211
+            ],
+            'meta': {
+              'prop': 'cc',
+              'name': '抄送节点'
+            }
+          },
+          {
+            'id': '0.ghl6ar1lf5g',
+            'vertex': 1,
+            'width': 100,
+            'height': 80,
+            'coordinate': [
+              -395,
+              -212
+            ],
+            'meta': {
+              'prop': 'start',
+              'name': '开始节点'
+            }
+          },
+          {
+            'id': '0.qqtd0ckfmn8',
+            'vertex': 0,
+            'width': 80,
+            'height': 50,
+            'coordinate': [
+              340,
+              -306
+            ],
+            'meta': {
+              'prop': 'end',
+              'name': '结束节点'
+            }
+          }
+        ],
+        linkList: [
+          {
+            'startId': '0.0v0h61jdbmo',
+            'endId': '0.e4cjvkamf1',
+            'startAt': [
+              200,
+              71
+            ],
+            'endAt': [
+              0,
+              58
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.f6a3gt4j1c',
+            'endId': '0.e4cjvkamf1',
+            'startAt': [
+              200,
+              42
+            ],
+            'endAt': [
+              0,
+              67
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.ghl6ar1lf5g',
+            'endId': '0.0v0h61jdbmo',
+            'startAt': [
+              100,
+              40
+            ],
+            'endAt': [
+              0,
+              60
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.ghl6ar1lf5g',
+            'endId': '0.f6a3gt4j1c',
+            'startAt': [
+              100,
+              41
+            ],
+            'endAt': [
+              0,
+              42
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.ghl6ar1lf5g',
+            'endId': '0.efnsmp46b5o',
+            'startAt': [
+              100,
+              29
+            ],
+            'endAt': [
+              0,
+              85
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.efnsmp46b5o',
+            'endId': '0.p51pjul7l7o',
+            'startAt': [
+              200,
+              63
+            ],
+            'endAt': [
+              0,
+              51
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.p51pjul7l7o',
+            'endId': '0.qqtd0ckfmn8',
+            'startAt': [
+              200,
+              66
+            ],
+            'endAt': [
+              0,
+              25
+            ],
+            'meta': null
+          },
+          {
+            'startId': '0.e4cjvkamf1',
+            'endId': '0.qqtd0ckfmn8',
+            'startAt': [
+              200,
+              41
+            ],
+            'endAt': [
+              0,
+              36
+            ],
+            'meta': null
+          }
         ]
       }
     },
@@ -222,5 +450,4 @@
       }
     }
   }
-
 </style>
