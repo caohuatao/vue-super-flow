@@ -19,7 +19,7 @@ export default class GraphLink {
   
   constructor(options, graph) {
     const {
-      id = '',
+      id = uuid('link'),
       start,
       end = null,
       startAt = [0, 0],
@@ -300,12 +300,12 @@ export default class GraphLink {
     this.graph.removeLink(this)
   }
   
-  interface() {
+  getInterface() {
     return {
       meta: this.meta,
       remove: this.remove.bind(this),
-      start: this.start.interface(),
-      end: this.end.interface(),
+      start: this.start.getInterface(),
+      end: this.end.getInterface(),
       startAt: [...this.startAt],
       endAt: [...this.endAt]
     }

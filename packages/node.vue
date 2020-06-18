@@ -45,7 +45,8 @@
     },
     data() {
       return {
-        direction
+        direction,
+        output: this.nodeIntercept()
       }
     },
     computed: {
@@ -62,9 +63,6 @@
           top: position[1] + 'px',
           left: position[0] + 'px'
         }
-      },
-      output() {
-        return this.nodeIntercept()
       }
     },
     methods: {
@@ -75,6 +73,7 @@
       },
 
       nodeMouseenter(evt) {
+        this.output = this.nodeIntercept()
         this.graph.mouseonNode = this.node
         if (!this.isTemEdge) return
         this.$emit('node-mouseenter', evt, this.node, getOffset(evt, this.$el))

@@ -254,6 +254,9 @@ class Graph extends GraphEvent {
   
   toJSON() {
     return {
+      width: this.width,
+      height: this.height,
+      origin: this.origin,
       nodeList: this.nodeList.map(node => {
         return {
           id: node.id,
@@ -266,6 +269,7 @@ class Graph extends GraphEvent {
       }),
       linkList: this.linkList.map(link => {
         return {
+          id: link.id,
           startId: link.start.id,
           endId: link.end.id,
           startAt: [...link.startAt],
@@ -305,10 +309,10 @@ class Graph extends GraphEvent {
     this.graphSelected = true
   }
   
-  interface() {
+  getInterface() {
     return {
-      nodeList: this.nodeList.map(node => node.interface()),
-      linkList: this.linkList.map(link => link.interface()),
+      nodeList: this.nodeList.map(node => node.getInterface()),
+      linkList: this.linkList.map(link => link.getInterface()),
       addNode: this.addNode.bind(this),
       addLink: this.addLink.bind(this),
       removeNode: this.removeNode.bind(this),

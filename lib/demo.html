@@ -1,0 +1,19 @@
+<meta charset="utf-8">
+<title>index demo</title>
+<script src="https://unpkg.com/vue"></script>
+<script src="./index.umd.js"></script>
+
+<link rel="stylesheet" href="./index.css">
+
+
+<div id="app">
+  <demo></demo>
+</div>
+
+<script>
+new Vue({
+  components: {
+    demo: index
+  }
+}).$mount('#app')
+</script>

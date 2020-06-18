@@ -18,7 +18,7 @@ import {
 export default class GraphNode {
   constructor(props, graph) {
     const {
-      id,
+      id = uuid('node'),
       width = 180,
       height = 100,
       coordinate = [0, 0],
@@ -180,7 +180,7 @@ export default class GraphNode {
     this.graph.removeNode(this)
   }
   
-  interface() {
+  getInterface() {
     return {
       width: this.width,
       height: this.height,

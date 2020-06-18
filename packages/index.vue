@@ -85,34 +85,6 @@
 
   export default {
     props: {
-      nodeMenu: {
-        type: Array,
-        default: () => []
-      },
-      graphMenu: {
-        type: Array,
-        default: () => []
-      },
-      linkMenu: {
-        type: Array,
-        default: () => []
-      },
-      nodeList: {
-        type: Array,
-        default: () => []
-      },
-      linkList: {
-        type: Array,
-        default: () => []
-      },
-      enterIntercept: {
-        type: Function,
-        default: () => true
-      },
-      outputIntercept: {
-        type: Function,
-        default: () => true
-      },
       width: {
         type: Number,
         default: 4000
@@ -126,7 +98,36 @@
         default() {
           return [this.width / 2, this.height / 2]
         }
+      },
+      nodeList: {
+        type: Array,
+        default: () => []
+      },
+      linkList: {
+        type: Array,
+        default: () => []
+      },
+      graphMenu: {
+        type: Array,
+        default: () => []
+      },
+      nodeMenu: {
+        type: Array,
+        default: () => []
+      },
+      linkMenu: {
+        type: Array,
+        default: () => []
+      },
+      enterIntercept: {
+        type: Function,
+        default: () => true
+      },
+      outputIntercept: {
+        type: Function,
+        default: () => true
       }
+
     },
     data() {
       return {
@@ -286,10 +287,9 @@
             scrollHeight,
             scrollWidth
           } = this.$el
-          const [x, y] = this.origin
 
-          this.$el.scrollLeft = Math.ceil((x * 2 - clientWidth) / 2)
-          this.$el.scrollTop = Math.ceil((y * 2 - clientHeight) / 2)
+          this.$el.scrollLeft = Math.ceil((scrollWidth - clientWidth) / 2)
+          this.$el.scrollTop = Math.ceil((scrollHeight - clientHeight) / 2)
         }
       },
 
@@ -298,12 +298,12 @@
         const position = getOffset(evt)
         let list, source
         if (mouseonLink && mouseonLink.isPointInLink(position)) {
-          const link = mouseonLink.interface()
+          const link = mouseonLink.getInterface()
           list = this.initMenu(this.linkMenu, link)
           source = link
         } else {
           if (mouseonLink) this.graph.mouseonLink = null
-          const graph = this.graph.interface()
+          const graph = this.graph.getInterface()
           list = this.initMenu(this.graphMenu, graph)
           source = graph
         }
@@ -323,7 +323,7 @@
 
       nodeMouseenter(evt, node, offset) {
         const link = this.temEdgeConf.link
-        if (this.enterIntercept(link.start, node, this.graph.interface())) {
+        if (this.enterIntercept(link.start.getInterface(), node.getInterface(), this.graph.getInterface())) {
           link.end = node
           link.endAt = offset
         }
@@ -338,7 +338,7 @@
       },
 
       nodeContextmenu(evt, node) {
-        node = node.interface()
+        node = node.getInterface()
         const list = this.initMenu(this.nodeMenu, node)
         if (!list.length) return
         this.$set(this.menuConf, 'position', getOffset(evt, this.$refs['flow-canvas']))
@@ -358,7 +358,7 @@
       },
 
       nodeIntercept(node) {
-        return () => this.outputIntercept(node, this.graph.interface())
+        return () => this.outputIntercept(node.getInterface(), this.graph.getInterface())
       },
 
       menuItemSelect() {
@@ -372,6 +372,10 @@
           evt.clientX,
           evt.clientY
         ]
+      },
+
+      toJSON() {
+        return this.graph.toJSON()
       }
     },
 

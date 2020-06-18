@@ -6,6 +6,7 @@
 <template>
   <div id="app">
     <super-flow
+      ref="superFlow"
       :node-list="nodeList"
       :link-list="linkList"
       :graph-menu="graphMenuList"
@@ -34,132 +35,6 @@
   export default {
     data() {
       return {
-        graphMenuList: [
-          [
-            {
-              label: '开始节点',
-              disable(graph) {
-                return !!graph.nodeList.find(node => node.meta.prop === 'start')
-              },
-              selected(graph, coordinate) {
-                graph.addNode({
-                  id: Math.random().toString(32),
-                  width: 100,
-                  height: 80,
-                  coordinate: coordinate,
-                  vertex: true,
-                  meta: {
-                    prop: 'start',
-                    name: '开始节点'
-                  }
-                })
-              }
-            },
-            {
-              label: '审批节点',
-              disable: false,
-              selected(graph, coordinate) {
-                graph.addNode({
-                  id: Math.random().toString(32),
-                  width: 200,
-                  height: 100,
-                  coordinate: coordinate,
-                  meta: {
-                    prop: 'approval',
-                    name: '审批节点'
-                  }
-                })
-              }
-            },
-            {
-              label: '抄送节点',
-              disable: false,
-              selected(graph, coordinate) {
-                graph.addNode({
-                  id: Math.random().toString(32),
-                  width: 200,
-                  height: 100,
-                  coordinate: coordinate,
-                  meta: {
-                    prop: 'cc',
-                    name: '抄送节点'
-                  }
-                })
-              }
-            },
-            {
-              label: '结束节点',
-              disable(graph) {
-                return !!graph.nodeList.find(point => point.meta.prop === 'end')
-              },
-              selected(graph, coordinate) {
-                graph.addNode({
-                  id: Math.random().toString(32),
-                  width: 80,
-                  height: 50,
-                  coordinate: coordinate,
-                  meta: {
-                    prop: 'end',
-                    name: '结束节点'
-                  }
-                })
-              }
-            }
-          ],
-          [
-            {
-              label: '垂直对齐',
-              selected(graph, coordinate) {
-                graph.vertical()
-              }
-            },
-            {
-              label: '水平对齐',
-              selected(graph, coordinate) {
-                graph.horizontal()
-              }
-            }
-          ],
-          [
-            {
-              label: '打印数据',
-              selected(graph, coordinate) {
-                console.log(JSON.stringify(graph.toJSON(), null, 2))
-              }
-            },
-            {
-              label: '选中所有',
-              selected(graph, coordinate) {
-                graph.selectAll()
-              }
-            }
-          ]
-        ],
-        nodeMenuList: [
-          [
-            {
-              label: '删除',
-              disable: false,
-              hidden(node) {
-                return node.meta.prop === 'start'
-              },
-              selected(node, coordinate) {
-                node.remove()
-              }
-            }
-          ]
-        ],
-        linkMenuList: [
-          [
-            {
-              label: '删除',
-              disable: false,
-              selected(link, coordinate) {
-                link.remove()
-              }
-            }
-          ]
-        ],
         nodeList: [
           {
             'id': '0.efnsmp46b5o',
@@ -365,6 +240,133 @@
             ],
             'meta': null
           }
+        ],
+        graphMenuList: [
+          [
+            {
+              label: '开始节点',
+              disable(graph) {
+                return !!graph.nodeList.find(node => node.meta.prop === 'start')
+              },
+              selected: (graph, coordinate) => {
+                graph.addNode({
+                  id: Math.random().toString(32),
+                  width: 100,
+                  height: 80,
+                  coordinate: coordinate,
+                  vertex: true,
+                  meta: {
+                    prop: 'start',
+                    name: '开始节点'
+                  }
+                })
+              }
+            },
+            {
+              label: '审批节点',
+              disable: false,
+              selected: (graph, coordinate) => {
+                graph.addNode({
+                  id: Math.random().toString(32),
+                  width: 200,
+                  height: 100,
+                  coordinate: coordinate,
+                  meta: {
+                    prop: 'approval',
+                    name: '审批节点'
+                  }
+                })
+              }
+            },
+            {
+              label: '抄送节点',
+              disable: false,
+              selected: (graph, coordinate) => {
+                graph.addNode({
+                  id: Math.random().toString(32),
+                  width: 200,
+                  height: 100,
+                  coordinate: coordinate,
+                  meta: {
+                    prop: 'cc',
+                    name: '抄送节点'
+                  }
+                })
+              }
+            },
+            {
+              label: '结束节点',
+              disable(graph) {
+                return !!graph.nodeList.find(point => point.meta.prop === 'end')
+              },
+              selected: (graph, coordinate) => {
+                graph.addNode({
+                  id: Math.random().toString(32),
+                  width: 80,
+                  height: 50,
+                  coordinate: coordinate,
+                  meta: {
+                    prop: 'end',
+                    name: '结束节点'
+                  }
+                })
+              }
+            }
+          ],
+          [
+            {
+              label: '垂直对齐',
+              selected: (graph, coordinate) => {
+                graph.vertical()
+              }
+            },
+            {
+              label: '水平对齐',
+              selected: (graph, coordinate) => {
+                graph.horizontal()
+              }
+            }
+          ],
+          [
+            {
+              label: '打印数据',
+              selected: (graph, coordinate) => {
+                // console.log(graph.toJSON())
+                console.log(this.$refs.superFlow.toJSON())
+              }
+            },
+            {
+              label: '选中所有',
+              selected: (graph, coordinate) => {
+                graph.selectAll()
+              }
+            }
+          ]
+        ],
+        nodeMenuList: [
+          [
+            {
+              label: '删除',
+              disable: false,
+              hidden(node) {
+                return node.meta.prop === 'start'
+              },
+              selected(node, coordinate) {
+                node.remove()
+              }
+            }
+          ]
+        ],
+        linkMenuList: [
+          [
+            {
+              label: '删除',
+              disable: false,
+              selected(link, coordinate) {
+                link.remove()
+              }
+            }
+          ]
         ]
       }
     },
@@ -393,13 +395,14 @@
         }
       },
       outputIntercept(node, graph) {
-        return true
+        return !(node.meta.prop === 'end')
       }
     }
   }
 </script>
 
 <style lang="less">
+
   html, body {
     width   : 100%;
     height  : 100%;
