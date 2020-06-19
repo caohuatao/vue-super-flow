@@ -5,15 +5,30 @@
 ```npm
 
 npm install vue-super-flow
+
 yran add vue-spuer-flow
 
 ```
 
 
+
 ## Example
 
-```vue
+```js
 
+import SuperFlow from 'vue-super-flow'
+import "vue-super-flow/index.css"
+
+Vue.use(SuperFlow)
+
+```
+
+```vue
+<!--
+ * User: CHT
+ * Date: 2020/5/27
+ * Time: 9:52
+-->
 <template>
   <div id="app">
     <super-flow
@@ -40,10 +55,308 @@ yran add vue-spuer-flow
   </div>
 </template>
 
-<script>
+<script> 
   export default {
     data() {
       return {
+        nodeList: [
+          {
+            'id': 'nodeni9QOqT3mI7hsMau',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              -442,
+              -283
+            ],
+            'meta': {
+              'prop': 'condition',
+              'name': '条件节点'
+            }
+          },
+          {
+            'id': 'node7WXbwOR6kSFD53Hf',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              -442,
+              -133
+            ],
+            'meta': {
+              'prop': 'condition',
+              'name': '条件节点'
+            }
+          },
+          {
+            'id': 'nodeG3WeFnzCI15X58Qw',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              -442,
+              17
+            ],
+            'meta': {
+              'prop': 'condition',
+              'name': '条件节点'
+            }
+          },
+          {
+            'id': '0.ghl6ar1lf5g',
+            'width': 100,
+            'height': 80,
+            'vertex': 1,
+            'coordinate': [
+              -642,
+              -123
+            ],
+            'meta': {
+              'prop': 'start',
+              'name': '开始节点'
+            }
+          },
+          {
+            'id': 'nodeZBK0ZPpgMe1exezE',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              -142,
+              -283
+            ],
+            'meta': {
+              'prop': 'approval',
+              'name': '审批节点'
+            }
+          },
+          {
+            'id': 'nodefHsy9uJObPtdHZv1',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              -142,
+              -133
+            ],
+            'meta': {
+              'prop': 'approval',
+              'name': '审批节点'
+            }
+          },
+          {
+            'id': 'node0aiA9VuhjkiAdZCs',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              -142,
+              17
+            ],
+            'meta': {
+              'prop': 'approval',
+              'name': '审批节点'
+            }
+          },
+          {
+            'id': 'nodeqkK9zjcDz53xKRlK',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              158,
+              -208
+            ],
+            'meta': {
+              'prop': 'cc',
+              'name': '抄送节点'
+            }
+          },
+          {
+            'id': 'nodeDhVU6w2KbEnJCjZs',
+            'width': 80,
+            'height': 50,
+            'vertex': 0,
+            'coordinate': [
+              458,
+              -108
+            ],
+            'meta': {
+              'prop': 'end',
+              'name': '结束节点'
+            }
+          },
+          {
+            'id': 'nodesyxisLH1hJDdPsxx',
+            'width': 200,
+            'height': 100,
+            'vertex': 0,
+            'coordinate': [
+              158,
+              -58
+            ],
+            'meta': {
+              'prop': 'cc',
+              'name': '抄送节点'
+            }
+          }
+        ],
+        linkList: [
+          {
+            'id': 'linkQfGI6apBdZm4qHe3',
+            'startId': '0.ghl6ar1lf5g',
+            'endId': 'nodeni9QOqT3mI7hsMau',
+            'startAt': [
+              100,
+              40
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkJalC4dAzpQfu5WMi',
+            'startId': '0.ghl6ar1lf5g',
+            'endId': 'node7WXbwOR6kSFD53Hf',
+            'startAt': [
+              100,
+              40
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkjUVmbLfRhxPfFISJ',
+            'startId': '0.ghl6ar1lf5g',
+            'endId': 'nodeG3WeFnzCI15X58Qw',
+            'startAt': [
+              100,
+              40
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkP3zJNvSKHutesZs4',
+            'startId': 'nodeni9QOqT3mI7hsMau',
+            'endId': 'nodeZBK0ZPpgMe1exezE',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkYlzpeKssBYwxQdLr',
+            'startId': 'node7WXbwOR6kSFD53Hf',
+            'endId': 'nodefHsy9uJObPtdHZv1',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkOwoUKiipYyVz3CYT',
+            'startId': 'nodeG3WeFnzCI15X58Qw',
+            'endId': 'node0aiA9VuhjkiAdZCs',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'link3UhFce4rO4TfAL2K',
+            'startId': 'nodeZBK0ZPpgMe1exezE',
+            'endId': 'nodeqkK9zjcDz53xKRlK',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkMjaKIDuDfbgqSHoz',
+            'startId': 'nodefHsy9uJObPtdHZv1',
+            'endId': 'nodeqkK9zjcDz53xKRlK',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'linkdUBf9aeOoXR3X65Y',
+            'startId': 'node0aiA9VuhjkiAdZCs',
+            'endId': 'nodesyxisLH1hJDdPsxx',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              50
+            ],
+            'meta': null
+          },
+          {
+            'id': 'link02lGIqBJZWrTlCFv',
+            'startId': 'nodeqkK9zjcDz53xKRlK',
+            'endId': 'nodeDhVU6w2KbEnJCjZs',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              25
+            ],
+            'meta': null
+          },
+          {
+            'id': 'link3i9b2ZsNM8wyjRop',
+            'startId': 'nodesyxisLH1hJDdPsxx',
+            'endId': 'nodeDhVU6w2KbEnJCjZs',
+            'startAt': [
+              200,
+              50
+            ],
+            'endAt': [
+              0,
+              25
+            ],
+            'meta': null
+          }
+        ],
         graphMenuList: [
           [
             {
@@ -53,7 +366,6 @@ yran add vue-spuer-flow
               },
               selected: (graph, coordinate) => {
                 graph.addNode({
-                  id: Math.random().toString(32),
                   width: 100,
                   height: 80,
                   coordinate: coordinate,
@@ -66,11 +378,25 @@ yran add vue-spuer-flow
               }
             },
             {
+              label: '条件节点',
+              disable: false,
+              selected: (graph, coordinate) => {
+                graph.addNode({
+                  width: 200,
+                  height: 100,
+                  coordinate: coordinate,
+                  meta: {
+                    prop: 'condition',
+                    name: '条件节点'
+                  }
+                })
+              }
+            },
+            {
               label: '审批节点',
               disable: false,
               selected: (graph, coordinate) => {
                 graph.addNode({
-                  id: Math.random().toString(32),
                   width: 200,
                   height: 100,
                   coordinate: coordinate,
@@ -86,7 +412,6 @@ yran add vue-spuer-flow
               disable: false,
               selected: (graph, coordinate) => {
                 graph.addNode({
-                  id: Math.random().toString(32),
                   width: 200,
                   height: 100,
                   coordinate: coordinate,
@@ -104,7 +429,6 @@ yran add vue-spuer-flow
               },
               selected: (graph, coordinate) => {
                 graph.addNode({
-                  id: Math.random().toString(32),
                   width: 80,
                   height: 50,
                   coordinate: coordinate,
@@ -134,8 +458,8 @@ yran add vue-spuer-flow
             {
               label: '打印数据',
               selected: (graph, coordinate) => {
-                // console.log(graph.toJSON())
-                console.log(this.$refs.superFlow.toJSON())
+                console.log(graph.toJSON())
+                // console.log(this.$refs.superFlow.toJSON())
               }
             },
             {
@@ -170,212 +494,6 @@ yran add vue-spuer-flow
               }
             }
           ]
-        ],
-        nodeList: [
-          {
-            'id': '0.efnsmp46b5o',
-            'vertex': 0,
-            'width': 200,
-            'height': 100,
-            'coordinate': [
-              -204,
-              -391
-            ],
-            'meta': {
-              'prop': 'approval',
-              'name': '审批节点'
-            }
-          },
-          {
-            'id': '0.0v0h61jdbmo',
-            'vertex': 0,
-            'width': 200,
-            'height': 100,
-            'coordinate': [
-              -196,
-              -247
-            ],
-            'meta': {
-              'prop': 'approval',
-              'name': '审批节点'
-            }
-          },
-          {
-            'id': '0.f6a3gt4j1c',
-            'vertex': 0,
-            'width': 200,
-            'height': 100,
-            'coordinate': [
-              -188,
-              -105
-            ],
-            'meta': {
-              'prop': 'approval',
-              'name': '审批节点'
-            }
-          },
-          {
-            'id': '0.p51pjul7l7o',
-            'vertex': 0,
-            'width': 200,
-            'height': 100,
-            'coordinate': [
-              61,
-              -376
-            ],
-            'meta': {
-              'prop': 'cc',
-              'name': '抄送节点'
-            }
-          },
-          {
-            'id': '0.e4cjvkamf1',
-            'vertex': 0,
-            'width': 200,
-            'height': 100,
-            'coordinate': [
-              70,
-              -211
-            ],
-            'meta': {
-              'prop': 'cc',
-              'name': '抄送节点'
-            }
-          },
-          {
-            'id': '0.ghl6ar1lf5g',
-            'vertex': 1,
-            'width': 100,
-            'height': 80,
-            'coordinate': [
-              -395,
-              -212
-            ],
-            'meta': {
-              'prop': 'start',
-              'name': '开始节点'
-            }
-          },
-          {
-            'id': '0.qqtd0ckfmn8',
-            'vertex': 0,
-            'width': 80,
-            'height': 50,
-            'coordinate': [
-              340,
-              -306
-            ],
-            'meta': {
-              'prop': 'end',
-              'name': '结束节点'
-            }
-          }
-        ],
-        linkList: [
-          {
-            'startId': '0.0v0h61jdbmo',
-            'endId': '0.e4cjvkamf1',
-            'startAt': [
-              200,
-              71
-            ],
-            'endAt': [
-              0,
-              58
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.f6a3gt4j1c',
-            'endId': '0.e4cjvkamf1',
-            'startAt': [
-              200,
-              42
-            ],
-            'endAt': [
-              0,
-              67
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.ghl6ar1lf5g',
-            'endId': '0.0v0h61jdbmo',
-            'startAt': [
-              100,
-              40
-            ],
-            'endAt': [
-              0,
-              60
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.ghl6ar1lf5g',
-            'endId': '0.f6a3gt4j1c',
-            'startAt': [
-              100,
-              41
-            ],
-            'endAt': [
-              0,
-              42
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.ghl6ar1lf5g',
-            'endId': '0.efnsmp46b5o',
-            'startAt': [
-              100,
-              29
-            ],
-            'endAt': [
-              0,
-              85
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.efnsmp46b5o',
-            'endId': '0.p51pjul7l7o',
-            'startAt': [
-              200,
-              63
-            ],
-            'endAt': [
-              0,
-              51
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.p51pjul7l7o',
-            'endId': '0.qqtd0ckfmn8',
-            'startAt': [
-              200,
-              66
-            ],
-            'endAt': [
-              0,
-              25
-            ],
-            'meta': null
-          },
-          {
-            'startId': '0.e4cjvkamf1',
-            'endId': '0.qqtd0ckfmn8',
-            'startAt': [
-              200,
-              41
-            ],
-            'endAt': [
-              0,
-              36
-            ],
-            'meta': null
-          }
         ]
       }
     },
@@ -389,6 +507,14 @@ yran add vue-spuer-flow
             return [
               'start',
               'approval',
+              'condition',
+              'cc'
+            ].includes(formType)
+          case 'condition':
+            return [
+              'start',
+              'approval',
+              'condition',
               'cc'
             ].includes(formType)
           case 'end':
@@ -401,13 +527,14 @@ yran add vue-spuer-flow
         }
       },
       outputIntercept(node, graph) {
-        return true
+        return !(node.meta.prop === 'end')
       }
     }
   }
 </script>
 
 <style lang="less">
+
   html, body {
     width   : 100%;
     height  : 100%;
@@ -436,6 +563,12 @@ yran add vue-spuer-flow
           }
         }
 
+        &.flow-node-condition {
+          > header {
+            background-color : #BC1D16;
+          }
+        }
+
         &.flow-node-approval {
           > header {
             background-color : rgba(188, 181, 58, 0.76);
@@ -459,105 +592,20 @@ yran add vue-spuer-flow
     }
   }
 </style>
-
 ```
-
 
 ## Attributes
 
-|参数                                   |说明                |类型               |默认值               |
-|---                                    |---                 |---               |----                |
-|width                                  |编辑区宽度           |number            |4000                |
-|height                                 |编辑区高度           |number            |3000                |
-|origin                                 |编辑区原点           |number[]          |[width/2, height/2] |
-|[nodeList](#nodeList)                  |初始节点             |object[]          |[]                  |
-|[linkList](#linkList)                  |初始链接             |object[]          |[]                  |
-|[graphMenu](#graphMenu)                |菜单配置             |object[]          |[]                  |
-|[nodeMenu](#nodeMenu)                  |节点菜单配置         |object[]          |[]                  |
-|[linkMenu](#linkMenu)                  |链接菜单配置         |object[]          |[]                  |
-|[enterIntercept](#enterIntercept)      |创建链接拦截器       |function          | () => true         |
-|[outputIntercept](#outputIntercept)    |接入链接拦截器       |function          | () => true         |
+
+### nodeList:
 
 
-##### nodeList
-
-1.说明
-
-|参数             |说明                |类型             |可选值             |默认值               |
-|---              |---                |---              |----               |----                |
-|id               |节点唯一标时id      |number/string    |—————              |随机字符串           | 
-|vertex           |是否是顶点          |number           | 0/1               |0                   | 
-|width            |节点宽度            |number           |—————              |180                 | 
-|height           |节点高度            |number           |—————              |100                 | 
-|coordinate       |节点中心点坐        |array            |—————               |[0, 0]              | 
-|meta             |自定义节点携带数据   |object           |—————              |null                | 
-
-2.示例
-```json
-[
-  {
-    "id": "0.efnsmp46b5o",   
-    "vertex": 0,
-    "width": 200,
-    "height": 100,
-    "coordinate": [
-      -204,
-      -391
-    ],
-    "meta": {
-      "prop": "approval",
-      "name": "审批节点"
-    }
-  }
-]
-```
-
-##### linkList
-
-1.说明
-
-|参数             |说明                |类型             |可选值             |默认值               |
-|---              |---                |---              |----               |----                |
-|id               |节点唯一标时id      |number/string    |—————              |随机字符串           | 
-|vertex           |是否是顶点          |number           | 0/1               |0                   | 
-|width            |节点宽度            |number           |—————              |180                 | 
-|height           |节点高度            |number           |—————              |100                 | 
-|coordinate       |节点中心点坐        |array            |—————               |[0, 0]              | 
-|meta             |自定义节点携带数据   |object           |—————              |null                | 
-
-2.示例
-```json
-[
-  {
-    "id": "0.efnsmp46b5o",   
-    "vertex": 0,
-    "width": 200,
-    "height": 100,
-    "coordinate": [
-      -204,
-      -391
-    ],
-    "meta": {
-      "prop": "approval",
-      "name": "审批节点"
-    }
-  }
-]
-```
-
-##### graphMenu
-
-##### nodeMenu
-
-##### linkMenu
-
-##### enterIntercept
-
-##### outputIntercept
+### linkList:
 
 
+### graphMenu:
 
 
-## Events
+### nodeMenu:
 
-
+### 

@@ -12,7 +12,8 @@
   "main": "lib/index.umd.min.js",
   "author": "caohuatao <351995664@qq.com>",
   "files": [
-    "/lib/index.umd.min.js"
+    "/lib/index.umd.min.js",
+    "/lib/index.css"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",

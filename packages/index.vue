@@ -84,6 +84,7 @@
   } from '../packages/utils'
 
   export default {
+    name: 'super-flow',
     props: {
       width: {
         type: Number,
@@ -409,6 +410,9 @@
       origin() {
         this.scorllCenterFun()
       }
+    },
+    install(Vue) {
+      Vue.component(this.name, this)
     }
   }
 </script>
