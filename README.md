@@ -1,5 +1,5 @@
 
-[TOC]
+
 
 # vue-super-flow
 
@@ -601,6 +601,24 @@ Vue.use(SuperFlow)
 
 ## Attributes
 
+<!--ts-->
+   * [width](#width)
+   * [height](#height)
+   * [origin](#origin)
+   * [nodeList](#nodeList)
+      * [STDIN](#stdin)
+      * [Local files](#local-files)
+      * [Remote files](#remote-files)
+      * [Multiple files](#multiple-files)
+      * [Combo](#combo)
+      * [Auto insert and update TOC](#auto-insert-and-update-toc)
+      * [GitHub token](#github-token)
+   * [graphMenu](#graphMenu)
+   * [nodeMenu](#nodeMenu)
+   * [linkMenu](#linkMenu)
+   * [enterIntercept](#enterIntercept)
+   * [outputIntercept](#outputIntercept)
+<!--te-->
 
 ### width:
 
