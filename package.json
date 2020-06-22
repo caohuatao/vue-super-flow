@@ -1,16 +1,16 @@
 {
-  "name": "vue-super-form",
-  "version": "1.0.0",
+  "name": "vue-super-flow",
+  "version": "1.1.0",
   "keywords": [
     "vue",
-    "form",
-    "super form",
-    "vue form",
-    "vue form component",
-    "form"
+    "flow",
+    "super flow",
+    "vue flow",
+    "vue flow component"
   ],
   "main": "lib/index.umd.min.js",
   "author": "caohuatao <351995664@qq.com>",
+  "homepage": "https://github.com/caohuatao/vue-super-flow",
   "files": [
     "/lib/index.umd.min.js",
     "/lib/index.css",
@@ -23,11 +23,9 @@
     "update": "npm run lib && npm publish",
     "update-test": "npm run lib && npm publish --tag=beta"
   },
-  "dependencies": {
-    "core-js": "^3.6.4",
-    "vue": "^2.6.11"
-  },
   "devDependencies": {
+    "core-js": "^3.6.4",
+    "vue": "^2.6.11",
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-service": "~4.3.0",
     "less": "^3.0.4",

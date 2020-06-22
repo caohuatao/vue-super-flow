@@ -1,3 +1,7 @@
+……
+[TOC]
+……
+
 # vue-super-flow
 
 ## Installation
@@ -9,6 +13,7 @@ npm install vue-super-flow
 yran add vue-spuer-flow
 
 ```
+
 
 
 
@@ -636,7 +641,29 @@ Vue.use(SuperFlow)
 
 - 描述：初始节点列表
 
+- item参数说明：
 
+|参数             |说明                             |类型             |可选值           |默认值            |
+|----             |----                             |----             |----             |----             |
+|id               |节点id                           |string/number    |——————           |"随机字符串"      |
+|width            |节点宽度                         |number           |——————           |200              |
+|height           |节点高度                         |number           |——————           |100              |    
+|vertex           |是否是顶节点                      |0/1              |——————           |0                |
+|coordinate       |节点中心点与[origin](#origin)向量 |array            |——————           |[0, 0]           |
+|meta             |节点携带数据                      |any              |——————           |null             |   
+    
+```json5
+[
+    {                                                      
+      "id": "node7WXbwOR6kSFD53Hf", 
+      "width": 200,                 
+      "height": 100,              
+      "vertex": 0,                  
+      "coordinate": [],          
+      "meta": {}           
+    }
+]
+```
 
 ### linkList:
 
@@ -646,7 +673,29 @@ Vue.use(SuperFlow)
 
 - 描述：初始链接列表
 
+- item参数说明：
 
+|参数             |说明                            |类型             |可选值           |默认值            |
+|----             |----                           |----             |----             |----             |
+|id               |链接id                         |string/number    |——————           |——————           |
+|startId          |起始节点的id                    |string/number    |——————           |——————           |
+|endId           |结束节点的id                     |string/number    |——————           |——————           |    
+|startAt         |起始坐标-起始节点左上角的向量     |array            |——————           |——————           |
+|endAt           |结束坐标-结束节点左上角的向量     |array            |——————           |——————           |
+|meta            |链接携带数据                     |any              |——————           |null             |    
+
+```json5
+[
+    {                                                      
+      "id": "node7WXbwOR6kSFD53Hf",     
+      "startId": "nodeni9QOqT3mI7hsMau",  
+      "endId": "nodeZBK0ZPpgMe1exezE",   
+      "startAt": [100, 40],               
+      "endAt": [0, 50],                 
+      "meta": null                 
+    }
+]
+```
 
 ### graphMenu:
 
@@ -655,6 +704,43 @@ Vue.use(SuperFlow)
 - 默认值：[]
 
 - 描述：图的操作菜单配置
+
+- item参数说明：
+
+#### disable:
+
+|参数            |说明                            |类型                           |可选值           |默认值            |
+|----            |----                           |----                           |----             |----             |
+|label           |菜单选项文本                    |string                         |——————           |——————           |
+|disable         |是否禁用选项                    |boolean/Function()=> boolean   |——————           |——————           |
+|endId           |结束节点的id                    |string/number                  |——————           |——————           |    
+|startAt         |起始坐标-起始节点左上角的向量    |array                          |——————           |——————           |
+|endAt           |结束坐标-结束节点左上角的向量    |array                          |——————           |——————           |
+|meta            |链接携带数据                    |any                            |——————           |null             | 
+
+
+```js
+const graphMenu = [
+  {
+    label: "开始节点",        // 菜单选项文本
+    disable: false,   // 是否禁用  boolean | Function(graph) => boolean  默认值 false 
+    selected: (graph, coordinate) => {
+      graph.addNode({
+        width: 100,
+        height: 80,
+        coordinate: coordinate,
+        vertex: true,
+        meta: {
+          prop: 'start',
+          name: '开始节点'
+        }
+      })            
+    }
+  }
+]
+```
+
+
 
 
 
