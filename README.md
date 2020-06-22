@@ -606,7 +606,7 @@ Vue.use(SuperFlow)
    * [height](#height)
    * [origin](#origin)
    * [nodeList](#nodeList)
-      * [id](#id)
+      * [id](#nodeList#id)
       * [width](#width)
       * [height](#height)
       * [vertex](#vertex)
@@ -696,6 +696,8 @@ Vue.use(SuperFlow)
 * 描述：初始链接列表
 
 * item参数说明：
+
+#### id
 
 |参数             |说明                            |类型             |可选值           |默认值            |
 |----             |----                           |----             |----             |----             |
