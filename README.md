@@ -1,6 +1,5 @@
-……
+
 [TOC]
-……
 
 # vue-super-flow
 
