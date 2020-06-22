@@ -594,18 +594,116 @@ Vue.use(SuperFlow)
 </style>
 ```
 
+
 ## Attributes
+
+
+### width:
+
+- 类型：number
+
+- 默认值：4000
+
+- 描述：图宽度
+
+
+
+### height:
+
+- 类型：number
+
+- 默认值：3000
+
+- 描述：图高度
+
+
+
+### origin:
+
+- 类型：number[]
+
+- 默认值：[ width / 2, height / 2 ]
+
+- 描述：图原点坐标
+
 
 
 ### nodeList:
 
+- 类型：object[]
+
+- 默认值：[]
+
+- 描述：初始节点列表
+
+
 
 ### linkList:
+
+- 类型：object[]
+
+- 默认值：[]
+
+- 描述：初始链接列表
+
 
 
 ### graphMenu:
 
+- 类型：object[]
+
+- 默认值：[]
+
+- 描述：图的操作菜单配置
+
+
 
 ### nodeMenu:
+
+- 类型：object[]
+
+- 默认值：[]
+
+- 描述：节点的操作菜单配置
+
+- 示例：
+
+
+
+### linkMenu:
+
+- 类型：object[]
+
+- 默认值：[]
+
+- 描述：链接操作菜单配置
+
+
+
+### enterIntercept:
+
+- 类型：Function
+    
+``` 
+enterIntercept(formNode: object, toNode: object, graph: object): boolean
+```
+
+- 默认值：() => true
+
+- 描述：拖拽连线进入节点时拦截函数接受 boolean 类型返回值
+
+
+
+### outputIntercept: 
+
+- 类型：Function 
+
+```
+outputIntercept(node: object, graph: object): boolean
+```
+
+- 默认值：() => true
+
+- 描述：从节点创建连线时拦截函数接受 boolean 类型返回值
 
 ### 

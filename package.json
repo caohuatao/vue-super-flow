@@ -1,6 +1,6 @@
 {
   "name": "vue-super-form",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "keywords": [
     "vue",
     "form",
@@ -13,7 +13,8 @@
   "author": "caohuatao <351995664@qq.com>",
   "files": [
     "/lib/index.umd.min.js",
-    "/lib/index.css"
+    "/lib/index.css",
+    "README.md"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
