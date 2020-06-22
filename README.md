@@ -606,14 +606,19 @@ Vue.use(SuperFlow)
    * [height](#height)
    * [origin](#origin)
    * [nodeList](#nodeList)
-      * [STDIN](#stdin)
-      * [Local files](#local-files)
-      * [Remote files](#remote-files)
-      * [Multiple files](#multiple-files)
-      * [Combo](#combo)
-      * [Auto insert and update TOC](#auto-insert-and-update-toc)
-      * [GitHub token](#github-token)
+      * [id](#id)
+      * [width](#width)
+      * [height](#height)
+      * [vertex](#vertex)
+      * [coordinate](#coordinate)
+      * [meta](#meta)
    * [graphMenu](#graphMenu)
+      * [id](#id)
+      * [startId](#startId)
+      * [endId](#endId)
+      * [startAt](#startAt)
+      * [endAt](#endAt)
+      * [meta](#meta)
    * [nodeMenu](#nodeMenu)
    * [linkMenu](#linkMenu)
    * [enterIntercept](#enterIntercept)
@@ -622,43 +627,43 @@ Vue.use(SuperFlow)
 
 ### width:
 
-- 类型：number
+* 类型：number
 
-- 默认值：4000
+* 默认值：4000
 
-- 描述：图宽度
+* 描述：图宽度
 
 
 
 ### height:
 
-- 类型：number
+* 类型：number
 
-- 默认值：3000
+* 默认值：3000
 
-- 描述：图高度
+* 描述：图高度
 
 
 
 ### origin:
 
-- 类型：number[]
+* 类型：number[]
 
-- 默认值：[ width / 2, height / 2 ]
+* 默认值：[ width / 2, height / 2 ]
 
-- 描述：图原点坐标
+* 描述：图原点坐标
 
 
 
 ### nodeList:
 
-- 类型：object[]
+* 类型：object[]
 
-- 默认值：[]
+* 默认值：[]
 
-- 描述：初始节点列表
+* 描述：初始节点列表
 
-- item参数说明：
+* item参数说明：
 
 |参数             |说明                             |类型             |可选值           |默认值            |
 |----             |----                             |----             |----             |----             |
@@ -684,13 +689,13 @@ Vue.use(SuperFlow)
 
 ### linkList:
 
-- 类型：object[]
+* 类型：object[]
 
-- 默认值：[]
+* 默认值：[]
 
-- 描述：初始链接列表
+* 描述：初始链接列表
 
-- item参数说明：
+* item参数说明：
 
 |参数             |说明                            |类型             |可选值           |默认值            |
 |----             |----                           |----             |----             |----             |
@@ -716,13 +721,13 @@ Vue.use(SuperFlow)
 
 ### graphMenu:
 
-- 类型：object[]
+* 类型：object[]
 
-- 默认值：[]
+* 默认值：[]
 
-- 描述：图的操作菜单配置
+* 描述：图的操作菜单配置
 
-- item参数说明：
+* item参数说明：
 
 #### disable:
 
@@ -763,43 +768,43 @@ const graphMenu = [
 
 ### nodeMenu:
 
-- 类型：object[]
+* 类型：object[]
 
-- 默认值：[]
+* 默认值：[]
 
-- 描述：节点的操作菜单配置
+* 描述：节点的操作菜单配置
 
-- 示例：
+* 示例：
 
 
 
 ### linkMenu:
 
-- 类型：object[]
+* 类型：object[]
 
-- 默认值：[]
+* 默认值：[]
 
-- 描述：链接操作菜单配置
+* 描述：链接操作菜单配置
 
 
 
 ### enterIntercept:
 
-- 类型：Function
+* 类型：Function
     
 ``` 
 enterIntercept(formNode: object, toNode: object, graph: object): boolean
 ```
 
-- 默认值：() => true
+* 默认值：() => true
 
-- 描述：拖拽连线进入节点时拦截函数接受 boolean 类型返回值
+* 描述：拖拽连线进入节点时拦截函数接受 boolean 类型返回值
 
 
 
 ### outputIntercept: 
 
-- 类型：Function 
+* 类型：Function 
 
 ```
 outputIntercept(node: object, graph: object): boolean
