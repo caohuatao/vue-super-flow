@@ -13,25 +13,25 @@ yran add vue-spuer-flow
 
 ```
 
- * [Example](#Example)
-    * [Demo](#Demo)
- * [Attributes](#Example)
+ * [Example](#example)
+    * [Demo](#demo)
+ * [Attributes](#example)
     * [width](#width)
     * [height](#height)
     * [origin](#origin)
-    * [nodeList](#nodeList)
-    * [graphMenu](#graphMenu)
-    * [nodeMenu](#nodeMenu)
-    * [linkMenu](#linkMenu)
-    * [enterIntercept](#enterIntercept)
-    * [outputIntercept](#outputIntercept)
- * [Params](#Params)   
+    * [nodeList](#nodelist)
+    * [graphMenu](#graphmenu)
+    * [nodeMenu](#nodemenu)
+    * [linkMenu](#linkmenu)
+    * [enterIntercept](#enterintercept)
+    * [outputIntercept](#outputintercept)
+ * [Params](#params)   
     * [graph](#graph)   
     * [node](#node) 
     * [link](#link) 
     * [link](#link) 
- * [Methods](#Methods)   
- * [Slots](#Slots)   
+ * [Methods](#methods)   
+ * [Slots](#slots)   
 
 ## Example
 
