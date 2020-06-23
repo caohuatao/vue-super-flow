@@ -12,6 +12,7 @@ npm install vue-super-flow
 yran add vue-spuer-flow
 
 ```
+
  * [Example](#Example)
  * [Attributes](#Example)
     * [width](#width)
@@ -78,8 +79,6 @@ Vue.use(SuperFlow)
 </template>
 
 <script>
-  import SuperFlow from '../packages/index'
-
   export default {
     data() {
       return {
@@ -521,9 +520,6 @@ Vue.use(SuperFlow)
         ]
       }
     },
-    components: {
-      SuperFlow
-    },
     methods: {
       enterIntercept(formNode, toNode, graph) {
         const formType = formNode.meta.prop
@@ -625,7 +621,7 @@ Vue.use(SuperFlow)
 
 ## Attributes
 
-### width:
+### width
 
 * 类型：number
 
@@ -635,7 +631,7 @@ Vue.use(SuperFlow)
 
 
 
-### height:
+### height
 
 * 类型：number
 
@@ -645,7 +641,7 @@ Vue.use(SuperFlow)
 
 
 
-### origin:
+### origin
 
 * 类型：number[]
 
@@ -655,7 +651,7 @@ Vue.use(SuperFlow)
 
 
 
-### nodeList:
+### nodeList
 
 * 类型：object[]
 
@@ -687,7 +683,7 @@ Vue.use(SuperFlow)
 ]
 ```
 
-### linkList:
+### linkList
 
 * 类型：object[]
 
@@ -719,7 +715,7 @@ Vue.use(SuperFlow)
 ]
 ```
 
-### graphMenu:
+### graphMenu
 
 * 类型：object[][]
 
@@ -854,7 +850,7 @@ graph 参考 [params](#params) graph 说明
 ]
 ```
 
-### nodeMenu:
+### nodeMenu
 
 * 类型：object[][]
 
@@ -892,7 +888,7 @@ node 参考 [params](#params) node 说明
 ```
 
 
-### linkMenu:
+### linkMenu
 
 * 类型：object[]
 
@@ -928,7 +924,7 @@ link 参考 [params](#params) link 说明
 ]
 ```
 
-### enterIntercept:
+### enterIntercept
 
 * 类型：Function
     
@@ -942,7 +938,7 @@ enterIntercept(formNode: object, toNode: object, graph: object): boolean
 
 * 参数：formNode, toNode 参考 [params](#params) 中 node 说明
 
-### outputIntercept: 
+### outputIntercept
 
 * 类型：Function 
 
@@ -958,7 +954,7 @@ outputIntercept(node: object, graph: object): boolean
 
 ## Params
 
-### graph:
+### graph
    
    - nodeList: 当前节点列表 
    
