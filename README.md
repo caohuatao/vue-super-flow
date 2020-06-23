@@ -14,6 +14,7 @@ yran add vue-spuer-flow
 ```
 
  * [Example](#Example)
+    * [Demo](#Demo)
  * [Attributes](#Example)
     * [width](#width)
     * [height](#height)
