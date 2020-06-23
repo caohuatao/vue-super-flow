@@ -52,6 +52,12 @@
         :position="menuConf.position"
         :list="menuConf.list"
         :source="menuConf.source">
+        <template v-slot="{item}">
+          <slot
+            name="menuItem"
+            :item="item">
+          </slot>
+        </template>
       </graph-menu>
 
       <div
@@ -324,10 +330,15 @@
 
       nodeMouseenter(evt, node, offset) {
         const link = this.temEdgeConf.link
-        if (this.enterIntercept(link.start.getInterface(), node.getInterface(), this.graph.getInterface())) {
+        if (this.enterIntercept(
+          link.start.getInterface(),
+          node.getInterface(),
+          this.graph.getInterface()
+        )) {
           link.end = node
           link.endAt = offset
         }
+
       },
 
       nodeMouseleave() {
@@ -373,6 +384,10 @@
           evt.clientX,
           evt.clientY
         ]
+      },
+
+      selectedAll() {
+        this.graph.selectAll()
       },
 
       toJSON() {

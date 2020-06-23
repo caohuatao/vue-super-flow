@@ -315,8 +315,6 @@ class Graph extends GraphEvent {
       linkList: this.linkList.map(link => link.getInterface()),
       addNode: this.addNode.bind(this),
       addLink: this.addLink.bind(this),
-      removeNode: this.removeNode.bind(this),
-      removeLink: this.removeLink.bind(this),
       horizontal: this.horizontal.bind(this),
       vertical: this.vertical.bind(this),
       toJSON: this.toJSON.bind(this),

@@ -25,6 +25,9 @@
           <section></section>
         </div>
       </template>
+      <!--      <template v-slot:menuItem="{item}">-->
+      <!--        <span>{{item.label}}</span>-->
+      <!--      </template>-->
     </super-flow>
   </div>
 </template>

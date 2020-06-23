@@ -12,9 +12,24 @@ npm install vue-super-flow
 yran add vue-spuer-flow
 
 ```
-
-
-
+ * [Example](#Example)
+ * [Attributes](#Example)
+    * [width](#width)
+    * [height](#height)
+    * [origin](#origin)
+    * [nodeList](#nodeList)
+    * [graphMenu](#graphMenu)
+    * [nodeMenu](#nodeMenu)
+    * [linkMenu](#linkMenu)
+    * [enterIntercept](#enterIntercept)
+    * [outputIntercept](#outputIntercept)
+ * [Params](#Params)   
+    * [graph](#graph)   
+    * [node](#node) 
+    * [link](#link) 
+    * [link](#link) 
+ * [Methods](#Methods)   
+ * [Slots](#Slots)   
 
 ## Example
 
@@ -55,11 +70,16 @@ Vue.use(SuperFlow)
           <section></section>
         </div>
       </template>
+      <!--      <template v-slot:menuItem="{item}">-->
+      <!--        <span>{{item.label}}</span>-->
+      <!--      </template>-->
     </super-flow>
   </div>
 </template>
 
-<script> 
+<script>
+  import SuperFlow from '../packages/index'
+
   export default {
     data() {
       return {
@@ -501,6 +521,9 @@ Vue.use(SuperFlow)
         ]
       }
     },
+    components: {
+      SuperFlow
+    },
     methods: {
       enterIntercept(formNode, toNode, graph) {
         const formType = formNode.meta.prop
@@ -596,34 +619,11 @@ Vue.use(SuperFlow)
     }
   }
 </style>
+
 ```
 
 
 ## Attributes
-
-<!--ts-->
-   * [width](#width)
-   * [height](#height)
-   * [origin](#origin)
-   * [nodeList](#nodeList)
-      * [id](#nodeList#id)
-      * [width](#width)
-      * [height](#height)
-      * [vertex](#vertex)
-      * [coordinate](#coordinate)
-      * [meta](#meta)
-   * [graphMenu](#graphMenu)
-      * [id](#id)
-      * [startId](#startId)
-      * [endId](#endId)
-      * [startAt](#startAt)
-      * [endAt](#endAt)
-      * [meta](#meta)
-   * [nodeMenu](#nodeMenu)
-   * [linkMenu](#linkMenu)
-   * [enterIntercept](#enterIntercept)
-   * [outputIntercept](#outputIntercept)
-<!--te-->
 
 ### width:
 
@@ -665,15 +665,13 @@ Vue.use(SuperFlow)
 
 * item参数说明：
 
-#### id
-
 |参数             |说明                             |类型             |可选值           |默认值            |
 |----             |----                             |----             |----             |----             |
 |id               |节点id                           |string/number    |——————           |"随机字符串"      |
 |width            |节点宽度                         |number           |——————           |200              |
 |height           |节点高度                         |number           |——————           |100              |    
 |vertex           |是否是顶节点                      |0/1              |——————           |0                |
-|coordinate       |节点中心点与[origin](#origin)向量 |array            |——————           |[0, 0]           |
+|coordinate       |节点左上角与[origin](#origin)向量 |array            |——————           |[0, 0]           |
 |meta             |节点携带数据                      |any              |——————           |null             |   
     
 ```json5
@@ -699,8 +697,6 @@ Vue.use(SuperFlow)
 
 * item参数说明：
 
-#### id
-
 |参数             |说明                            |类型             |可选值           |默认值            |
 |----             |----                           |----             |----             |----             |
 |id               |链接id                         |string/number    |——————           |——————           |
@@ -725,61 +721,175 @@ Vue.use(SuperFlow)
 
 ### graphMenu:
 
-* 类型：object[]
+* 类型：object[][]
 
 * 默认值：[]
 
-* 描述：图的操作菜单配置
+* 描述：图的操作菜单配置  二维数组 将菜单进行分组
 
-* item参数说明：
+* 菜单 item 说明：
 
-#### disable:
+|参数            |说明                  |类型                                            |可选值          |默认值            |
+|----            |----                 |----                                            |----            |----             |
+|label           |菜单选项文本          |string                                          |——————          |——————           |
+|disable         |是否禁用选项          |boolean/Function(graph: object):boolean         |——————          |false            |
+|hidden          |是否隐藏选项          |boolean/Function(graph: object):boolean         |——————          |false            |   
+|selected        |选项选中时调用函数    |Function(graph: object, coordinate: array):void  |——————         |()=>{}           |    
 
-|参数            |说明                            |类型                           |可选值           |默认值            |
-|----            |----                           |----                           |----             |----             |
-|label           |菜单选项文本                    |string                         |——————           |——————           |
-|disable         |是否禁用选项                    |boolean/Function()=> boolean   |——————           |——————           |
-|endId           |结束节点的id                    |string/number                  |——————           |——————           |    
-|startAt         |起始坐标-起始节点左上角的向量    |array                          |——————           |——————           |
-|endAt           |结束坐标-结束节点左上角的向量    |array                          |——————           |——————           |
-|meta            |链接携带数据                    |any                            |——————           |null             | 
-
+graph 参考 [params](#params) graph 说明 
 
 ```js
-const graphMenu = [
-  {
-    label: "开始节点",        // 菜单选项文本
-    disable: false,   // 是否禁用  boolean | Function(graph) => boolean  默认值 false 
-    selected: (graph, coordinate) => {
-      graph.addNode({
-        width: 100,
-        height: 80,
-        coordinate: coordinate,
-        vertex: true,
-        meta: {
-          prop: 'start',
-          name: '开始节点'
-        }
-      })            
+[
+  [
+    {
+      label: '开始节点',
+      disable(graph) {
+        return !!graph.nodeList.find(node => node.meta.prop === 'start')
+      },
+      selected: (graph, coordinate) => {
+        graph.addNode({
+          width: 100,
+          height: 80,
+          coordinate: coordinate,
+          vertex: true,
+          meta: {
+            prop: 'start',
+            name: '开始节点'
+          }
+        })
+      }
+    },
+    {
+      label: '条件节点',
+      disable: false,
+      selected: (graph, coordinate) => {
+        graph.addNode({
+          width: 200,
+          height: 100,
+          coordinate: coordinate,
+          meta: {
+            prop: 'condition',
+            name: '条件节点'
+          }
+        })
+      }
+    },
+    {
+      label: '审批节点',
+      disable: false,
+      selected: (graph, coordinate) => {
+        graph.addNode({
+          width: 200,
+          height: 100,
+          coordinate: coordinate,
+          meta: {
+            prop: 'approval',
+            name: '审批节点'
+          }
+        })
+      }
+    },
+    {
+      label: '抄送节点',
+      disable: false,
+      selected: (graph, coordinate) => {
+        graph.addNode({
+          width: 200,
+          height: 100,
+          coordinate: coordinate,
+          meta: {
+            prop: 'cc',
+            name: '抄送节点'
+          }
+        })
+      }
+    },
+    {
+      label: '结束节点',
+      disable(graph) {
+        return !!graph.nodeList.find(point => point.meta.prop === 'end')
+      },
+      selected: (graph, coordinate) => {
+        graph.addNode({
+          width: 80,
+          height: 50,
+          coordinate: coordinate,
+          meta: {
+            prop: 'end',
+            name: '结束节点'
+          }
+        })
+      }
     }
-  }
+  ],
+  [
+    {
+      label: '垂直对齐',
+      selected: (graph, coordinate) => {
+        graph.vertical()
+      }
+    },
+    {
+      label: '水平对齐',
+      selected: (graph, coordinate) => {
+        graph.horizontal()
+      }
+    }
+  ],
+  [
+    {
+      label: '打印数据',
+      selected: (graph, coordinate) => {
+        console.log(graph.toJSON())
+        // console.log(this.$refs.superFlow.toJSON())
+      }
+    },
+    {
+      label: '选中所有',
+      selected: (graph, coordinate) => {
+        graph.selectAll()
+      }
+    }
+  ]
 ]
 ```
 
-
-
-
-
 ### nodeMenu:
 
-* 类型：object[]
+* 类型：object[][]
 
 * 默认值：[]
 
-* 描述：节点的操作菜单配置
+* 描述：节点的操作菜单配置  二维数组 将菜单进行分组
 
-* 示例：
+* 菜单 item 说明：
 
+|参数            |说明                  |类型                                            |可选值          |默认值            |
+|----            |----                 |----                                            |----            |----             |
+|label           |菜单选项文本          |string                                          |——————          |——————           |
+|disable         |是否禁用选项          |boolean/Function(node: object):boolean         |——————          |false            |
+|hidden          |是否隐藏选项          |boolean/Function(node: object):boolean         |——————          |false            |   
+|selected        |选项选中时调用函数    |Function(node: object, coordinate: array):void  |——————         |()=>{}           |   
+
+node 参考 [params](#params) node 说明 
+
+```js
+[
+  [
+    {
+      label: '删除',
+      disable: false,
+      hidden(node) {
+        return node.meta.prop === 'start'
+      },
+      selected(node, coordinate) {
+        node.remove()
+      }
+    }
+  ]
+]
+
+```
 
 
 ### linkMenu:
@@ -790,7 +900,33 @@ const graphMenu = [
 
 * 描述：链接操作菜单配置
 
+* 菜单 item 说明：
 
+|参数            |说明                  |类型                                            |可选值          |默认值            |
+|----            |----                 |----                                            |----            |----             |
+|label           |菜单选项文本          |string                                          |——————          |——————           |
+|disable         |是否禁用选项          |boolean/Function(link: object):boolean         |——————          |false            |
+|hidden          |是否隐藏选项          |boolean/Function(link: object):boolean         |——————          |false            |   
+|selected        |选项选中时调用函数    |Function(link: object, coordinate: array):void  |——————         |()=>{}           |   
+
+link 参考 [params](#params) link 说明 
+
+```js
+[
+  [
+    {
+      label: '删除',
+      disable: false,
+      hidden(node) {
+        return node.meta.prop === 'start'
+      },
+      selected(node, coordinate) {
+        node.remove()
+      }
+    }
+  ]
+]
+```
 
 ### enterIntercept:
 
@@ -802,9 +938,9 @@ enterIntercept(formNode: object, toNode: object, graph: object): boolean
 
 * 默认值：() => true
 
-* 描述：拖拽连线进入节点时拦截函数接受 boolean 类型返回值
+* 描述：拖拽连线进入节点时拦截函数接受 boolean 类型返回值  false 阻止连接节点
 
-
+* 参数：formNode, toNode 参考 [params](#params) 中 node 说明
 
 ### outputIntercept: 
 
@@ -814,8 +950,68 @@ enterIntercept(formNode: object, toNode: object, graph: object): boolean
 outputIntercept(node: object, graph: object): boolean
 ```
 
-- 默认值：() => true
+* 默认值：() => true
 
-- 描述：从节点创建连线时拦截函数接受 boolean 类型返回值
+* 描述：从节点创建连线时拦截函数接受 boolean 类型返回值  false 阻止创建
 
-### 
+* 
+
+## Params
+
+### graph:
+   
+   - nodeList: 当前节点列表 
+   
+   - linkList: 当前链接列表
+    
+   - addNode: 添加节点
+   
+   - addLink: 添加链接
+   
+   - horizontal: 水平排列节点
+   
+   - vertical: 垂直排列节点
+   
+   - toJSON: 转 graph 转 json
+     
+   - selectAll: 选中所有节点 可进行拖拽 修改 origin  
+     
+### node
+
+   - width: 节点宽度
+   
+   - height: 节点高度
+   
+   - coordinate: 节点左上角与 origin 向量
+   
+   - meta: 携带数据
+   
+   - remove: 删除当前节点
+
+### link
+ 
+   - start: 起始节点
+   
+   - end: 结束节点
+   
+   - startAt: 开始位置与开始节点  coordinate 的向量
+   
+   - endAt: 结束位置与结束节点 coordinate 的向量
+    
+   - remove: 删除当前链接 
+    
+   - meta: 携带数据
+
+
+## Methods
+
+  - toJSON
+  
+  - selectedAll
+  
+## Slots
+  
+  - node: 控制节点渲染添加 回传 meta  参考 [Example](#Example)
+      
+  - menuItem 控制菜单选项渲染 回传 item 参考 [Example](#Example)
+

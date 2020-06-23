@@ -25,7 +25,7 @@
           v-for="subItem in subList"
           :class="{'is-disabled': subItem.disable}"
           @click="select(subItem)">
-          <slot>
+          <slot :item="subItem">
             <span class="super-flow__menu-item-icon"></span>
             <span class="super-flow__menu-item-content">
               {{subItem.label}}
@@ -132,7 +132,6 @@
       min-height  : @height;
 
       cursor      : pointer;
-      font-size   : 0;
       position    : relative;
       padding     : 0 @padding;
 
