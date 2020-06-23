@@ -619,7 +619,11 @@ Vue.use(SuperFlow)
 ```
 
 
-[查看以上代码 demo](https://caohuatao.github.io/demo/)
+### Demo
+ 
+ [文档地址](https://caohuatao.github.io)
+    
+ [查看以上代码 demo](https://caohuatao.github.io/demo/)
 
 ## Attributes
 
