@@ -345,6 +345,7 @@
               },
               selected: (graph, coordinate) => {
                 graph.addNode({
+                  // id: '',   // 不传 默认会生成一个随机字符串作为 id
                   width: 100,
                   height: 80,
                   coordinate: coordinate,
