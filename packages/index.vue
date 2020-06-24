@@ -338,7 +338,6 @@
           link.end = node
           link.endAt = offset
         }
-
       },
 
       nodeMouseleave() {
@@ -392,6 +391,10 @@
 
       toJSON() {
         return this.graph.toJSON()
+      },
+
+      getMousecoordinates() {
+
       }
     },
 

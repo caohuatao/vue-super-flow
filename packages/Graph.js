@@ -13,7 +13,6 @@ import {
   vector
 } from './utils'
 
-
 class Graph extends GraphEvent {
   constructor(options) {
     
@@ -100,7 +99,7 @@ class Graph extends GraphEvent {
     return new GraphLink(options, this)
   }
   
-  getMatrix(isHorizontal = false) {
+  getMatrix() {
     const matrix = []
     
     this.vertex.colIndex = 0
@@ -137,7 +136,6 @@ class Graph extends GraphEvent {
     const DISTANCE = {x: 50, y: 80}
     
     if (this.nodeList.length && this.vertex) {
-      
       const vertexX = this.vertex.center[0]
       
       this.linkList.forEach(link => {
@@ -181,7 +179,7 @@ class Graph extends GraphEvent {
         link.endAt = [0, Math.ceil(end.height / 2)]
       })
       
-      this.getMatrix(true).reduce((x, col) => {
+      this.getMatrix().reduce((x, col) => {
         const maxWidth = Math.max(...col.map(node => node.width))
         const yList = []
         let height = vertexY

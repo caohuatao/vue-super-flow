@@ -349,7 +349,7 @@
                   width: 100,
                   height: 80,
                   coordinate: coordinate,
-                  vertex: true,
+                  vertex: 1,
                   meta: {
                     prop: 'start',
                     name: '开始节点'

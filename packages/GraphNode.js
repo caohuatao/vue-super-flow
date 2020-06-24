@@ -91,7 +91,7 @@ export default class GraphNode {
   
   set height(h) {
     h = Math.floor(h)
-    this._height = h > 50 ? h : 50
+    this._height = h > 20 ? h : 20
     this.angle()
   }
   
