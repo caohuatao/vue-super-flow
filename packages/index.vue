@@ -106,6 +106,10 @@
           return [this.width / 2, this.height / 2]
         }
       },
+      linkPointLimit: {
+        type: Boolean,
+        default: true
+      },
       nodeList: {
         type: Array,
         default: () => []
@@ -134,7 +138,6 @@
         type: Function,
         default: () => true
       }
-
     },
     data() {
       return {
@@ -143,7 +146,8 @@
           linkList: this.edgeList,
           width: this.width,
           height: this.height,
-          origin: this.origin
+          origin: this.origin,
+          linkPointLimit: this.linkPointLimit
         }),
         menuConf: {
           visible: false,

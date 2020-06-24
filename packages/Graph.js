@@ -45,6 +45,8 @@ class Graph extends GraphEvent {
     this.vertex = null
     this.initNode(nodeList)
     this.initLink(linkList)
+    
+    this.linkPointLimit = true
   }
   
   pointMap() {

@@ -100,7 +100,6 @@ export default class GraphLink {
       .end
   }
   
-  
   get pathPointList() {
     const pointList = this.coordinateList()
       , xList = []

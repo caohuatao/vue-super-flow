@@ -160,19 +160,24 @@ export default class GraphNode {
   }
   
   fixOffset(offset, dir) {
+    const linkPointLimit = this.graph.linkPointLimit
     switch (dir) {
       case direction.top:
+        if (linkPointLimit) offset[0] = this.width / 2
         offset[1] = 0
         break
       case direction.right:
         offset[0] = this.width
+        if (linkPointLimit) offset[1] = this.height / 2
         break
       case direction.bottom:
+        if (linkPointLimit) offset[0] = this.width / 2
         offset[1] = this.height
         break
       case direction.left:
       default:
         offset[0] = 0
+        if (linkPointLimit) offset[1] = this.height / 2
         break
     }
     return offset
