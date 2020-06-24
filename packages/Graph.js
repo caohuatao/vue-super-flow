@@ -88,7 +88,6 @@ class Graph extends GraphEvent {
           })
         )
       }
-      
     })
     arrayReplace(this.linkList, list)
   }
@@ -101,103 +100,107 @@ class Graph extends GraphEvent {
     return new GraphLink(options, this)
   }
   
-  insetGrouping(isHorizontal = false) {
-    const depthGrouping = []
-    const depth = (vertex) => {
-      this.linkList.forEach((link, idx) => {
-        const {start, end} = link
-        if (start === vertex) {
-          end.depth = vertex.depth + 1
-          if (isHorizontal) {
-            link.startAt = [start.width, Math.ceil(start.height / 2)]
-            link.endAt = [0, Math.ceil(end.height / 2)]
-          } else {
-            link.startAt = [Math.ceil(start.width / 2), start.height]
-            link.endAt = [Math.ceil(end.width / 2), 0]
-          }
-          depth(link.end)
-        }
+  getMatrix(isHorizontal = false) {
+    const matrix = []
+    
+    this.vertex.colIndex = 0
+    this.vertex.rowIndex = 0
+    
+    const nest = vertex => this.linkList
+      .filter(link => link.start === vertex)
+      .forEach((link, idx) => {
+        const {end} = link
+        end.colIndex = vertex.colIndex + 1
+        end.rowIndex = vertex.rowIndex + idx
+        nest(link.end)
       })
-    }
-    const insetGrouping = (dep, node) => {
-      const current = depthGrouping[dep]
-      if (current) {
-        current.add(node)
-      } else {
-        depthGrouping[dep] = new Set([node])
-      }
-    }
-    depth(this.vertex)
-    insetGrouping(0, this.vertex)
-    this.nodeList.forEach(node => insetGrouping(node.depth, node))
-    return depthGrouping
+    
+    nest(this.vertex)
+    
+    this.nodeList.forEach(node => {
+      const colIndex = node.colIndex
+      const list = matrix[colIndex]
+        ? matrix[colIndex]
+        : matrix[colIndex] = []
+      list.push(node)
+    })
+    
+    matrix.forEach(subList => {
+      subList.sort((prev, next) => prev.rowIndex - next.rowIndex)
+      subList.forEach((node, idx) => node.rowIndex = idx)
+    })
+    
+    return matrix
   }
   
   vertical() {
-    const DISTANCE = {x: 50, y: 100}
+    const DISTANCE = {x: 50, y: 80}
     
-    if (this.vertex && this.nodeList.length && this.linkList.length) {
-      this.vertex.depth = 0
-      const [vertexX, vertexY] = this.vertex.center
-      this.insetGrouping()
-        .slice(1)
-        .reduce((y, currentSet) => {
-          const currentList = [...currentSet]
-          const maxHeight = Math.max(...currentList.map(node => node.height))
-          const currentY = y + maxHeight / 2 + DISTANCE.y
-          const xList = []
-          let width = vertexX
-          
+    if (this.nodeList.length && this.vertex) {
+      
+      const vertexX = this.vertex.center[0]
+      
+      this.linkList.forEach(link => {
+        const {start, end} = link
+        link.startAt = [Math.ceil(start.width / 2), start.height]
+        link.endAt = [Math.ceil(end.width / 2), 0]
+      })
+      
+      this.getMatrix().reduce((y, col) => {
+        const maxHeight = Math.max(...col.map(node => node.height))
+        const xList = []
+        let width = vertexX
+        
+        xList.push(width)
+        
+        col.reduce((prevNode, currentNode) => {
+          width += Math.ceil(prevNode.width / 2 + DISTANCE.x + currentNode.width / 2)
           xList.push(width)
-          
-          currentList.reduce((prevNode, currentNode) => {
-            width += Math.ceil(prevNode.width / 2 + DISTANCE.x + currentNode.width / 2)
-            xList.push(width)
-            return currentNode
-          })
-          
-          currentList.forEach((node, idx) => {
-            const x = Math.ceil(xList[idx] - width / 2 + vertexX / 2)
-            node.center = [x, currentY]
-          })
-          
-          return y + maxHeight + DISTANCE.y
-        }, vertexY + this.vertex.height / 2)
+          return currentNode
+        })
+        
+        col.forEach((node, idx) => {
+          const x = Math.ceil(xList[idx] - width / 2 + vertexX / 2)
+          node.center = [x, y + maxHeight / 2]
+        })
+        
+        return y + maxHeight + DISTANCE.y
+      }, this.vertex.coordinate[1])
     }
   }
   
   horizontal() {
-    const DISTANCE = {x: 100, y: 50}
+    const DISTANCE = {x: 80, y: 50}
     
-    
-    if (this.vertex && this.nodeList.length && this.linkList.length) {
-      this.vertex.depth = 0
-      const [vertexX, vertexY] = this.vertex.center
+    if (this.nodeList.length  && this.vertex) {
+      const vertexY = this.vertex.center[1]
       
-      this.insetGrouping(true)
-        .slice(1)
-        .reduce((x, currentSet) => {
-          const currentList = [...currentSet]
-          const maxWidth = Math.max(...currentList.map(node => node.width))
-          const currentX = x + maxWidth / 2 + DISTANCE.x
-          const yList = []
-          let height = vertexY
-          
+      this.linkList.forEach(link => {
+        const {start, end} = link
+        link.startAt = [start.width, Math.ceil(start.height / 2)]
+        link.endAt = [0, Math.ceil(end.height / 2)]
+      })
+      
+      this.getMatrix(true).reduce((x, col) => {
+        const maxWidth = Math.max(...col.map(node => node.width))
+        const yList = []
+        let height = vertexY
+        
+        yList.push(height)
+        
+        col.reduce((prevNode, currentNode) => {
+          height += Math.ceil(prevNode.height / 2 + DISTANCE.y + currentNode.height / 2)
           yList.push(height)
-          
-          currentList.reduce((prevNode, currentNode) => {
-            height += Math.ceil(prevNode.height / 2 + DISTANCE.y + currentNode.height / 2)
-            yList.push(height)
-            return currentNode
-          })
-          
-          currentList.forEach((node, idx) => {
-            const y = Math.ceil(yList[idx] - height / 2 + vertexY / 2)
-            node.center = [currentX, y]
-          })
-          
-          return x + maxWidth + DISTANCE.x
-        }, vertexX + this.vertex.width / 2)
+          return currentNode
+        })
+        
+        col.forEach((node, idx) => {
+          const y = Math.ceil(yList[idx] - height / 2 + vertexY / 2)
+          node.center = [x + maxWidth / 2, y]
+        })
+        
+        return x + maxWidth + DISTANCE.x
+      }, this.vertex.coordinate[0])
     }
   }
   

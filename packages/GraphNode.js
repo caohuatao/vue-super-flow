@@ -38,6 +38,9 @@ export default class GraphNode {
     this.vertex = vertex
     this.width = width
     this.height = height
+    
+    this.rowIndex = 0
+    this.colIndex = 0
   }
   
   set vertex(bol) {
@@ -71,7 +74,6 @@ export default class GraphNode {
       .minus([this.width / 2, this.height / 2])
       .end
   }
-  
   
   get width() {
     return this._width
