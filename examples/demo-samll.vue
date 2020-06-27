@@ -6,13 +6,15 @@
 <template>
   <div id="app">
     <super-flow
+      ref="superFlow"
       :width="1000"
       :height="800"
       :graph-menu="graphMenu"
       :node-menu="nodeMenu"
       :link-menu="linkMenu">
       <template v-slot:node="{meta}">
-        <div class="flow-node">
+        <div
+          class="flow-node">
           {{meta.label}}
         </div>
       </template>
@@ -30,6 +32,9 @@
           [
             {
               label: '节点1',
+              disable(graph) {
+                return !!graph.nodeList.find(node => node.meta.label === '1')
+              },
               selected(graph, coordinate) {
                 graph.addNode({
                   width: 120,
@@ -74,14 +79,14 @@
           ],
           [
             {
-              label: '加入花名册',
+              label: '节点4',
               selected(graph, coordinate) {
                 graph.addNode({
                   width: 120,
                   height: 40,
                   coordinate,
                   meta: {
-                    label: '花名册',
+                    label: '4',
                     value: [1, 2, 3, 4]
                   }
                 })
@@ -91,19 +96,19 @@
           [
             {
               label: '全选',
-              selected: (graph, coordinate) => {
+              selected: graph => {
                 graph.selectAll()
               }
             },
             {
               label: '垂直',
-              selected: (graph, coordinate) => {
+              selected: graph => {
                 graph.vertical()
               }
             },
             {
               label: '水平',
-              selected: (graph, coordinate) => {
+              selected: graph => {
                 graph.horizontal()
               }
             }
@@ -113,13 +118,13 @@
           [
             {
               label: '删除',
-              selected: (node, coordinate) => {
+              selected: node => {
                 node.remove()
               }
             },
             {
               label: '编辑',
-              selected: (node, coordinate) => {
+              selected: node => {
                 this.flowNodeClick(node.meta)
               }
             }
@@ -129,7 +134,7 @@
           [
             {
               label: '删除',
-              selected: (link, coordinate) => {
+              selected: link => {
                 link.remove()
               }
             }

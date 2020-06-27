@@ -17,7 +17,9 @@
       padding: {
         type: Number,
         default: 20
-      }
+      },
+      linkColor: String,
+      hoverColor: String
     },
     data() {
       return {
@@ -90,19 +92,19 @@
       initLine() {
         this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
         if (this.inPath) {
-          this.drawLine(2, '#FF0000')
-          this.drawArrow(4, '#FF0000')
+          this.drawLine(2, this.hoverColor)
+          this.drawArrow(4, this.hoverColor)
         } else {
           this.drawLine()
           this.drawArrow()
         }
       },
 
-      drawLine(lineWidth = 2, strokeStyle = '#666666') {
+      drawLine(lineWidth = 2, strokeStyle) {
         const ctx = this.ctx
         ctx.beginPath()
         ctx.lineWidth = lineWidth
-        ctx.strokeStyle = strokeStyle
+        ctx.strokeStyle = strokeStyle || this.linkColor
         this.currentPointList.forEach((point, idx) => {
           if (idx === 0) {
             ctx.moveTo(...point)
@@ -114,7 +116,7 @@
         ctx.save()
       },
 
-      drawArrow(size = 4, fillStyle = '#666666') {
+      drawArrow(size = 4, fillStyle) {
         const len = this.currentPointList.length
 
         if (len < 2) return
@@ -134,9 +136,9 @@
         if (end[1] - start[1] >= 0) {
           ctx.rotate(-ang)
         } else {
-          ctx.rotate(Math.PI - ang)// 加个180度，反过来
+          ctx.rotate(Math.PI - ang) // 加个180度，反过来
         }
-        ctx.fillStyle = fillStyle
+        ctx.fillStyle = fillStyle || this.linkColor
         ctx.lineTo(-size, -size * 2)
         ctx.lineTo(0, -size)
         ctx.lineTo(size, -size * 2)
@@ -156,6 +158,7 @@
           top,
           left
         } = this.$el.getBoundingClientRect()
+
         return [clientX - left, clientY - top]
       },
 
@@ -170,8 +173,12 @@
       }
     },
     watch: {
-      'link.pathPointList'() {this.draw()},
-      inPath() {this.initLine()}
+      'link.pathPointList'() {
+        this.draw()
+      },
+      inPath() {
+        this.initLine()
+      }
     }
   }
 </script>

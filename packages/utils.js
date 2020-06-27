@@ -35,6 +35,19 @@ export function getOffset(evt, target = null) {
 }
 
 
+export function isIntersect({clientX, clientY}, target) {
+  const {
+    top,
+    right,
+    bottom,
+    left
+  } = target.getBoundingClientRect()
+  
+  return top < clientY
+    && right > clientX
+    && bottom > clientY
+    && left < clientX
+}
 
 
 // 向量相加
@@ -121,8 +134,6 @@ export function vector(result) {
   
   return proxyHandler
 }
-
-
 
 
 export function toRawType(val) {

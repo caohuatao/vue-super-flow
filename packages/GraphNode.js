@@ -187,6 +187,10 @@ export default class GraphNode {
     this.graph.removeNode(this)
   }
   
+  setVertex() {
+    this.graph.vertex = this
+  }
+  
   getInterface() {
     return {
       width: this.width,

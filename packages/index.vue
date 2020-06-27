@@ -13,15 +13,24 @@
       <graph-line
         v-if="temEdgeConf.visible"
         :graph="graph"
-        :link="temEdgeConf.link">
+        :link="temEdgeConf.link"
+        :link-color="linkColor"
+        :hover-color="linkHoverColor">
       </graph-line>
 
       <graph-line
         v-for="(edge, idx) in graph.linkList"
         :graph="graph"
         :link="edge"
-        :key="edge.key">
+        :key="edge.key"
+        :link-color="linkColor"
+        :hover-color="linkHoverColor">
       </graph-line>
+
+      <mark-line
+        :width="width"
+        :height="height">
+      </mark-line>
 
       <graph-node
         v-for="(node, idx) in graph.nodeList"
@@ -80,9 +89,11 @@
   import GraphMenu from './menu'
   import GraphNode from './node'
   import GraphLine from './link'
+  import MarkLine from './markLine'
 
   import {
     getOffset,
+    isIntersect,
     isBool,
     isFun,
     vector,
@@ -137,6 +148,14 @@
       outputIntercept: {
         type: Function,
         default: () => true
+      },
+      linkColor: {
+        type: String,
+        default: '#666666'
+      },
+      linkHoverColor: {
+        type: String,
+        default: '#FF0000'
       }
     },
     data() {
@@ -173,16 +192,19 @@
     components: {
       GraphMenu,
       GraphNode,
-      GraphLine
+      GraphLine,
+      MarkLine
     },
     computed: {
       maskStyle() {
+
         const {
           top,
           right,
           bottom,
           left
         } = this.graph.maskBoundingClientRect
+
         return {
           width: `${right - left}px`,
           height: `${bottom - top}px`,
@@ -245,7 +267,12 @@
         this.menuConf.visible = true
       },
 
-      docMouseup() {
+      docMouseup(evt) {
+        if (this.moveNodeConf.isMove) {
+          evt.stopPropagation()
+          evt.preventDefault()
+        }
+
         this.moveNodeConf.isMove = false
         this.moveNodeConf.node = null
         this.moveNodeConf.offset = null
@@ -254,40 +281,46 @@
         this.temEdgeConf.link = null
 
         this.moveAllConf.isMove = false
+
       },
 
       docMousemove(evt) {
         if (this.moveNodeConf.isMove) {
-          return this.moveNodeConf.node.position =
-            vector(this.moveNodeConf.offset)
-              .differ(getOffset(evt, this.$refs['flow-canvas']))
-              .end
+          this.moveNode(evt)
+        } else if (this.temEdgeConf.visible) {
+          this.moveTemEdge(evt)
+        } else if (this.graph.graphSelected) {
+          this.moveWhole(evt)
+        } else {
+          return this.graph.dispatch({
+            type: 'mousemove',
+            evt: evt
+          }, true)
         }
+      },
 
-        if (this.temEdgeConf.visible) {
-          return this.temEdgeConf.link.movePosition
-            = getOffset(evt, this.$refs['flow-canvas'])
+      moveNode(evt) {
+        this.moveNodeConf.node.position =
+          vector(this.moveNodeConf.offset)
+            .differ(getOffset(evt, this.$refs['flow-canvas']))
+            .end
+      },
+
+      moveTemEdge(evt) {
+        this.temEdgeConf.link.movePosition
+          = getOffset(evt, this.$refs['flow-canvas'])
+      },
+
+      moveWhole(evt) {
+        if (this.moveAllConf.isMove) {
+          const offset = vector(this.moveAllConf.downPosition)
+            .differ([evt.clientX, evt.clientY])
+            .end
+
+          this.graph.origin = vector(this.moveAllConf.origin)
+            .add(offset)
+            .end
         }
-
-        if (this.graph.graphSelected) {
-          if (this.moveAllConf.isMove) {
-            const offset = vector(this.moveAllConf.downPosition)
-              .differ([evt.clientX, evt.clientY])
-              .end
-
-            this.graph.origin = vector(this.moveAllConf.origin)
-              .add(offset)
-              .end
-
-            return
-          }
-          return
-        }
-
-        return this.graph.dispatch({
-          type: 'mousemove',
-          evt: evt
-        }, true)
       },
 
       scrollCenter() {
@@ -397,8 +430,18 @@
         return this.graph.toJSON()
       },
 
-      getMousecoordinates() {
-
+      getMouseCoordinate(clientX, clientY) {
+        const interRoot = isIntersect({clientX, clientY}, this.$el)
+        const interCanvas = isIntersect({clientX, clientY}, this.$refs['flow-canvas'])
+        if (!interRoot) return null
+        if (interCanvas) {
+          const offset = getOffset({clientX, clientY}, this.$refs['flow-canvas'])
+          return vector(offset)
+            .minus(this.graph.origin)
+            .end
+        } else {
+          return null
+        }
       }
     },
 
@@ -460,7 +503,7 @@
   }
 
   .super-flow {
-    font-family      : Apple System,
+    font-family : Apple System,
     'SF Pro SC',
     'SF Pro Display',
     'Helvetica Neue',
@@ -475,13 +518,14 @@
     'Source Han Sans CN',
     sans-serif;
 
-    width            : 100%;
-    height           : 100%;
-    background-color : #F4F4F4;
-    overflow         : auto;
+    width       : 100%;
+    height      : 100%;
+    overflow    : auto;
 
     > div {
-      position : relative;
+      position         : relative;
+      background-color : #F4F4F4;
+      overflow         : hidden;
 
       > .select-all__mask {
         position         : absolute;
