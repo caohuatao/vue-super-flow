@@ -41,6 +41,8 @@
         :is-move="node === moveNodeConf.node"
         :is-tem-edge="temEdgeConf.visible"
         :node-intercept="nodeIntercept(node)"
+        :line-drop="lineDrop"
+        :node-drop="nodeDrop"
         @node-mousedown="nodeMousedown"
         @node-mouseenter="nodeMouseenter"
         @node-mouseleave="nodeMouseleave"
@@ -156,6 +158,14 @@
       linkHoverColor: {
         type: String,
         default: '#FF0000'
+      },
+      nodeDrop: {
+        type: Boolean,
+        default: true
+      },
+      lineDrop: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -360,9 +370,11 @@
       },
 
       nodeMousedown(node, offset) {
-        this.moveNodeConf.isMove = true
-        this.moveNodeConf.node = node
-        this.moveNodeConf.offset = offset
+        if (this.nodeDrop) {
+          this.moveNodeConf.isMove = true
+          this.moveNodeConf.node = node
+          this.moveNodeConf.offset = offset
+        }
       },
 
       nodeMouseenter(evt, node, offset) {
@@ -396,13 +408,15 @@
       },
 
       sideMousedown(evt, node, startAt) {
-        const link = this.graph.createLink({
-          start: node,
-          startAt
-        })
-        link.movePosition = getOffset(evt, this.$refs['flow-canvas'])
-        this.$set(this.temEdgeConf, 'link', link)
-        this.temEdgeConf.visible = true
+        if (this.lineDrop) {
+          const link = this.graph.createLink({
+            start: node,
+            startAt
+          })
+          link.movePosition = getOffset(evt, this.$refs['flow-canvas'])
+          this.$set(this.temEdgeConf, 'link', link)
+          this.temEdgeConf.visible = true
+        }
       },
 
       nodeIntercept(node) {

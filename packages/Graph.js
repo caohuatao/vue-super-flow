@@ -58,9 +58,7 @@ class Graph extends GraphEvent {
   }
   
   initNode(nodeList) {
-    
     arrayReplace(this.nodeList, nodeList.map(node => this.createNode(node)))
-    
   }
   
   initLink(linkList) {
@@ -96,7 +94,6 @@ class Graph extends GraphEvent {
     })
     
     arrayReplace(this.linkList, list)
-    
   }
   
   createNode(options) {
@@ -144,8 +141,7 @@ class Graph extends GraphEvent {
   
   vertical() {
     const DISTANCE = {x: 50, y: 80}
-    
-    if (this.nodeList.length && this.vertex) {
+    if (this.linkList.length && this.vertex) {
       const vertexX = this.vertex.center[0]
       
       this.linkList.forEach(link => {
@@ -173,14 +169,15 @@ class Graph extends GraphEvent {
         })
         
         return y + maxHeight + DISTANCE.y
+        
       }, this.vertex.coordinate[1])
     }
   }
   
   horizontal() {
     const DISTANCE = {x: 80, y: 50}
-    
-    if (this.nodeList.length && this.vertex) {
+    if (this.linkList.length && this.vertex) {
+      
       const vertexY = this.vertex.center[1]
       
       this.linkList.forEach(link => {
@@ -208,6 +205,7 @@ class Graph extends GraphEvent {
         })
         
         return x + maxWidth + DISTANCE.x
+        
       }, this.vertex.coordinate[0])
     }
   }
@@ -244,6 +242,10 @@ class Graph extends GraphEvent {
     }).forEach(link => {
       this.removeLink(link)
     })
+    
+    if (this.vertex === node) {
+      this.vertex = null
+    }
     this.nodeList.splice(idx, 1)
   }
   
@@ -321,7 +323,6 @@ class Graph extends GraphEvent {
   }
   
   getInterface() {
-    
     return {
       nodeList: this.nodeList.map(node => node.getInterface()),
       linkList: this.linkList.map(link => link.getInterface()),
@@ -332,7 +333,6 @@ class Graph extends GraphEvent {
       toJSON: this.toJSON.bind(this),
       selectAll: this.selectAll.bind(this)
     }
-    
   }
 }
 

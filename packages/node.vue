@@ -7,6 +7,7 @@
   <div
     tabindex="-1"
     class="super-flow__node"
+    :class="{'can-move': nodeDrop}"
     :style="style"
     @mousedown.left="nodeMousedown"
     @mouseenter="nodeMouseenter"
@@ -16,7 +17,7 @@
     <slot :meta="node.meta"></slot>
     <div
       v-for="(dir, key) in direction"
-      v-show="output"
+      v-show="output && lineDrop"
       :class="`node-side node-side-${key}`"
       @contextmenu.stop.prevent
       @mousedown.left.prevent.stop="evt => sideMousedown(evt, dir)">
@@ -41,7 +42,9 @@
       index: Number,
       isMove: Boolean,
       isTemEdge: Boolean,
-      nodeIntercept: Function
+      nodeIntercept: Function,
+      lineDrop: Boolean,
+      nodeDrop: Boolean
     },
     data() {
       return {
@@ -109,9 +112,12 @@
     position         : absolute;
     background-color : #ffffff;
     border           : 1px solid rgb(180, 180, 180);
-    cursor           : move;
     z-index          : 1;
     outline          : none;
+
+    &.can-move {
+      cursor : move;
+    }
 
     &-header {
       background-color : green;
