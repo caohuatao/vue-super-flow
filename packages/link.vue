@@ -64,12 +64,10 @@
           maxY
         } = this.link.pathPointList
 
-
         this.top = minY - this.padding
         this.right = maxX + this.padding
         this.bottom = maxY + this.padding
         this.left = minX - this.padding
-
 
         this.currentPointList = pointList.map(point => {
           return [

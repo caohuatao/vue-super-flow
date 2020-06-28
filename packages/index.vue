@@ -28,8 +28,11 @@
       </graph-line>
 
       <mark-line
-        :width="width"
-        :height="height">
+        v-if="moveNodeConf.isMove"
+        :width="graph.width"
+        :height="graph.height"
+        :mark-color="markColor"
+        :markLine="moveNodeConf.markLine">
       </mark-line>
 
       <graph-node
@@ -99,7 +102,8 @@
     isBool,
     isFun,
     vector,
-    debounce
+    debounce,
+    arrayReplace
   } from '../packages/utils'
 
   export default {
@@ -116,7 +120,10 @@
       origin: {
         type: Array,
         default() {
-          return [this.width / 2, this.height / 2]
+          return [
+            this.width / 2,
+            this.height / 2
+          ]
         }
       },
       linkPointLimit: {
@@ -166,6 +173,10 @@
       lineDrop: {
         type: Boolean,
         default: true
+      },
+      markColor: {
+        type: String,
+        default: '#55abfc'
       }
     },
     data() {
@@ -185,8 +196,12 @@
           list: []
         },
         moveNodeConf: {
+          isMove: false,
           node: null,
-          offset: null
+          offset: null,
+          verticalList: [],
+          horizontalList: [],
+          markLine: []
         },
         moveAllConf: {
           isMove: false,
@@ -207,14 +222,12 @@
     },
     computed: {
       maskStyle() {
-
         const {
           top,
           right,
           bottom,
           left
         } = this.graph.maskBoundingClientRect
-
         return {
           width: `${right - left}px`,
           height: `${bottom - top}px`,
@@ -286,6 +299,7 @@
         this.moveNodeConf.isMove = false
         this.moveNodeConf.node = null
         this.moveNodeConf.offset = null
+        arrayReplace(this.moveNodeConf.markLine, [])
 
         this.temEdgeConf.visible = false
         this.temEdgeConf.link = null
@@ -310,10 +324,49 @@
       },
 
       moveNode(evt) {
-        this.moveNodeConf.node.position =
-          vector(this.moveNodeConf.offset)
-            .differ(getOffset(evt, this.$refs['flow-canvas']))
-            .end
+        const distance = 10
+        const conf = this.moveNodeConf
+        const origin = this.graph.origin
+        const position = vector(conf.offset)
+          .differ(getOffset(evt, this.$refs['flow-canvas']))
+          .minus(origin)
+          .add([conf.node.width / 2, conf.node.height / 2])
+          .end
+
+        const resultList = []
+
+        conf.verticalList.some(vertical => {
+          const x = position[0]
+          const result = vertical - distance < x && vertical + distance > x
+
+          if (result) {
+            position[0] = vertical
+            vertical += origin[0]
+            resultList.push([
+              [vertical, 0],
+              [vertical, this.height]
+            ])
+          }
+          return result
+        })
+
+        conf.horizontalList.some(horizontal => {
+          const y = position[1]
+          const result = horizontal - distance < y && horizontal + distance > y
+          if (result) {
+            position[1] = horizontal
+            horizontal += origin[1]
+            resultList.push([
+              [0, horizontal],
+              [this.width, horizontal]
+            ])
+          }
+          return result
+        })
+
+        arrayReplace(conf.markLine, resultList)
+        conf.markLine = resultList
+        conf.node.center = position
       },
 
       moveTemEdge(evt) {
@@ -371,6 +424,21 @@
 
       nodeMousedown(node, offset) {
         if (this.nodeDrop) {
+          const verticalList = this.moveNodeConf.verticalList
+          const horizontalList = this.moveNodeConf.horizontalList
+
+          const centerList = this.graph.nodeList
+            .filter(item => item !== node)
+            .map(node => node.center)
+
+          arrayReplace(verticalList, [
+            ...new Set(centerList.map(center => center[0]))
+          ].sort((prev, next) => prev - next))
+
+          arrayReplace(horizontalList, [
+            ...new Set(centerList.map(center => center[1]))
+          ].sort((prev, next) => prev - next))
+
           this.moveNodeConf.isMove = true
           this.moveNodeConf.node = node
           this.moveNodeConf.offset = offset
@@ -456,9 +524,16 @@
         } else {
           return null
         }
+      },
+
+      vertical() {
+        this.graph.vertical()
+      },
+
+      horizontal() {
+        this.graph.horizontal()
       }
     },
-
     watch: {
       'graph.graphSelected'() {
         if (this.graph.graphSelected) {
@@ -479,15 +554,6 @@
       },
       linkList() {
         this.graph.initLink(this.linkList)
-      },
-      width() {
-        this.scorllCenterFun()
-      },
-      height() {
-        this.scorllCenterFun()
-      },
-      origin() {
-        this.scorllCenterFun()
       }
     },
     install(Vue) {

@@ -9,8 +9,7 @@ import GraphNode from './GraphNode'
 import GraphLink from './GraphLink'
 
 import {
-  arrayReplace,
-  vector
+  arrayReplace
 } from './utils'
 
 class Graph extends GraphEvent {
@@ -115,7 +114,7 @@ class Graph extends GraphEvent {
       .forEach((link, idx) => {
         const {end} = link
         const colIndex = vertex.colIndex + 1
-        const rowIndex = vertex.rowIndex + idx
+        const rowIndex = vertex.rowIndex * 100 + idx
         if (colIndex >= end.colIndex) end.colIndex = colIndex
         if (rowIndex >= end.rowIndex) end.rowIndex = rowIndex
         nest(link.end)
