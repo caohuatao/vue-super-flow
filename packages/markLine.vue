@@ -27,7 +27,21 @@
     },
     mounted() {
       const ctx = this.$el.getContext('2d')
-      ctx.translate(0.5, 0.5)
+
+
+      const {top, left} = this.$el.getBoundingClientRect()
+      const translateX = left.toString().split('.')[1] || 0
+      const translateY = top.toString().split('.')[1] || 0
+      console.log(top, left)
+      console.log(
+        top % 2 === 0 ? -0.5 : 0,
+        left % 2 === 0 ? -0.5 : 0
+      )
+      ctx.translate(
+        top % 2 === 0 ? -0.5 : 0,
+        left % 2 === 0 ? -0.5 : 0
+      )
+
       this.draw()
     },
     methods: {

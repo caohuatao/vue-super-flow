@@ -1,10 +1,10 @@
 <!--
  * User: CHT
- * Date: 2020/6/24
- * Time: 17:11
+ * Date: 2020/6/28
+ * Time: 17:48
 -->
 <template>
-  <div id="app">
+  <div id="demo2">
     <super-flow
       ref="superFlow"
       :width="1000"
@@ -152,16 +152,11 @@
 </script>
 
 <style lang="less">
-  html, body {
-    width   : 100%;
-    height  : 100%;
-    margin  : 0;
-    padding : 0;
-  }
-
-  #app {
-    width  : 100%;
-    height : 100%;
+  #demo2 {
+    width     : 100%;
+    height    : 800px;
+    max-width : 1000px;
+    margin    : 0 auto;
 
     .super-flow__node {
       .flow-node {

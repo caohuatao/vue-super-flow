@@ -4,7 +4,7 @@
  * Time: 9:12
 -->
 <template>
-  <div>
+  <div class="super-flow__menu-container">
     <div
       v-show="visible"
       class="flow__menu-mask"
@@ -101,108 +101,112 @@
 </script>
 
 <style lang="less">
-  @z-index: 10;
-  .super-flow__menu {
-    @menu-width      : 180px;
-    @height          : 26px;
 
-    position         : absolute;
-    outline          : none;
-    width            : @menu-width;
-    padding          : 4px 0;
-    border           : 1px solid rgb(180, 180, 180);
-    box-shadow       : 0 8px 16px 0 rgba(0, 0, 0, 0.3);
-    overflow         : hidden;
-    border-radius    : 3px;
-    z-index          : @z-index;
-    background-color : #ffffff;
-    margin           : 0;
+  .super-flow__menu-container {
+    @z-index: 10;
+    .super-flow__menu {
+      @menu-width      : 180px;
+      @height          : 26px;
 
-
-    &-item {
-      @padding    : 4px;
-      @width      : @menu-width - 2px - @padding * 2;
-      @icon-size  : @height;
+      position         : absolute;
+      outline          : none;
+      width            : @menu-width;
+      padding          : 4px 0;
+      border           : 1px solid rgb(180, 180, 180);
+      box-shadow       : 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+      overflow         : hidden;
+      border-radius    : 3px;
+      z-index          : @z-index;
+      background-color : #ffffff;
+      margin           : 0;
 
 
-      user-select : none;
-      box-sizing  : content-box;
+      &-item {
+        @padding    : 4px;
+        @width      : @menu-width - 2px - @padding * 2;
+        @icon-size  : @height;
 
-      width       : @width;
-      min-height  : @height;
 
-      cursor      : pointer;
-      position    : relative;
-      padding     : 0 @padding;
+        user-select : none;
+        box-sizing  : content-box;
 
-      &:last-child {
-        margin : 0;
+        width       : @width;
+        min-height  : @height;
 
-        &:after {
-          display : none;
-        }
-      }
+        cursor      : pointer;
+        position    : relative;
+        padding     : 0 @padding;
 
-      &:hover {
-        background-color : #eeeeee;
-      }
+        &:last-child {
+          margin : 0;
 
-      &-icon {
-        float  : left;
-        width  : @icon-size;
-        height : @icon-size;
-      }
-
-      &-content {
-        float       : left;
-        display     : inline-block;
-        color       : #333333;
-        font-size   : 14px;
-        line-height : @height;
-        width       : @width - @icon-size;
-      }
-
-      > div {
-        position : absolute;
-        top      : 0;
-        left     : 0;
-        right    : 0;
-        bottom   : 0;
-      }
-
-      &.is-disabled {
-        cursor : no-drop;
-
-        > span {
-          color : #999999;
+          &:after {
+            display : none;
+          }
         }
 
         &:hover {
-          background-color : transparent;
+          background-color : #eeeeee;
+        }
+
+        &-icon {
+          float  : left;
+          width  : @icon-size;
+          height : @icon-size;
+        }
+
+        &-content {
+          float       : left;
+          display     : inline-block;
+          color       : #333333;
+          font-size   : 14px;
+          line-height : @height;
+          width       : @width - @icon-size;
+        }
+
+        > div {
+          position : absolute;
+          top      : 0;
+          left     : 0;
+          right    : 0;
+          bottom   : 0;
+        }
+
+        &.is-disabled {
+          cursor : no-drop;
+
+          > span {
+            color : #999999;
+          }
+
+          &:hover {
+            background-color : transparent;
+          }
+        }
+      }
+
+      &-line {
+        width         : 100%;
+        margin        : 4px 0;
+        border-bottom : 1px solid rgb(180, 180, 180);
+        height        : 0;
+
+        &:last-child {
+          display : none;
         }
       }
     }
 
-    &-line {
-      width         : 100%;
-      margin        : 4px 0;
-      border-bottom : 1px solid rgb(180, 180, 180);
-      height        : 0;
-
-      &:last-child {
-        display : none;
-      }
+    .flow__menu-mask {
+      content  : '';
+      position : fixed;
+      top      : 0;
+      bottom   : 0;
+      right    : 0;
+      left     : 0;
+      z-index  : @z-index;
+      background-color: transparent;
     }
   }
 
-  .flow__menu-mask {
-    content  : '';
-    position : fixed;
-    top      : 0;
-    bottom   : 0;
-    right    : 0;
-    left     : 0;
-    z-index  : @z-index;
-    background-color: transparent;
-  }
 </style>

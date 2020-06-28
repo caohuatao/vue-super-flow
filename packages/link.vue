@@ -32,7 +32,12 @@
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
-      this.ctx.translate(0.5, 0.5)
+
+      const {top, left} = this.$el.getBoundingClientRect()
+      const translateX = +left.toString().split('.')[1] || 0
+      const translateY = +top.toString().split('.')[1] || 0
+      this.ctx.translate(-translateX, -translateY)
+
       this.draw()
       this.graph.add('mousemove', this.rootMousemove)
     },
