@@ -12,12 +12,12 @@
 <script>
   export default {
     props: {
-      graph: Object,
-      link: Object,
       padding: {
         type: Number,
         default: 20
       },
+      graph: Object,
+      link: Object,
       linkColor: String,
       hoverColor: String
     },
@@ -32,6 +32,7 @@
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
+      this.ctx.translate(0.5, 0.5)
       this.draw()
       this.graph.add('mousemove', this.rootMousemove)
     },

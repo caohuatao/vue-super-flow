@@ -28,7 +28,7 @@
       </graph-line>
 
       <mark-line
-        v-if="moveNodeConf.isMove"
+        v-if="moveNodeConf.isMove && hasMarkLine"
         :width="graph.width"
         :height="graph.height"
         :mark-color="markColor"
@@ -174,6 +174,10 @@
         type: Boolean,
         default: true
       },
+      hasMarkLine: {
+        type: Boolean,
+        default: true
+      },
       markColor: {
         type: String,
         default: '#55abfc'
@@ -210,8 +214,8 @@
         temEdgeConf: {
           visible: false,
           link: null
-        },
-        scorllCenterFun: debounce(this.scrollCenter, 200)
+        }
+        // scorllCenterFun: debounce(this.scrollCenter, 200)
       }
     },
     components: {
@@ -305,7 +309,6 @@
         this.temEdgeConf.link = null
 
         this.moveAllConf.isMove = false
-
       },
 
       docMousemove(evt) {
@@ -333,39 +336,38 @@
           .add([conf.node.width / 2, conf.node.height / 2])
           .end
 
-        const resultList = []
+        if (this.hasMarkLine) {
+          const resultList = []
+          conf.verticalList.some(vertical => {
+            const x = position[0]
+            const result = vertical - distance < x && vertical + distance > x
 
-        conf.verticalList.some(vertical => {
-          const x = position[0]
-          const result = vertical - distance < x && vertical + distance > x
+            if (result) {
+              position[0] = vertical
+              vertical += origin[0]
+              resultList.push([
+                [vertical, 0],
+                [vertical, this.height]
+              ])
+            }
+            return result
+          })
+          conf.horizontalList.some(horizontal => {
+            const y = position[1]
+            const result = horizontal - distance < y && horizontal + distance > y
+            if (result) {
+              position[1] = horizontal
+              horizontal += origin[1]
+              resultList.push([
+                [0, horizontal],
+                [this.width, horizontal]
+              ])
+            }
+            return result
+          })
+          arrayReplace(conf.markLine, resultList)
+        }
 
-          if (result) {
-            position[0] = vertical
-            vertical += origin[0]
-            resultList.push([
-              [vertical, 0],
-              [vertical, this.height]
-            ])
-          }
-          return result
-        })
-
-        conf.horizontalList.some(horizontal => {
-          const y = position[1]
-          const result = horizontal - distance < y && horizontal + distance > y
-          if (result) {
-            position[1] = horizontal
-            horizontal += origin[1]
-            resultList.push([
-              [0, horizontal],
-              [this.width, horizontal]
-            ])
-          }
-          return result
-        })
-
-        arrayReplace(conf.markLine, resultList)
-        conf.markLine = resultList
         conf.node.center = position
       },
 
