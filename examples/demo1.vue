@@ -4,17 +4,17 @@
  * Time: 9:52
 -->
 <template>
-  <div id="demo1">
+  <div class="super-flow-demo1">
     <super-flow
       ref="superFlow"
       :node-list="nodeList"
       :link-list="linkList"
+      :width="1000"
+      :height="800"
+      :origin="[500, 400]"
       :graph-menu="graphMenuList"
       :node-menu="nodeMenuList"
       :link-menu="linkMenuList"
-      :width="4000"
-      :height="3000"
-      :origin="[2000, 1500]"
       :enter-intercept="enterIntercept"
       :output-intercept="outputIntercept">
       <template v-slot:node="{meta}">
@@ -40,300 +40,194 @@
       return {
         nodeList: [
           {
-            'id': 'nodeni9QOqT3mI7hsMau',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              -442,
-              -283
-            ],
-            'meta': {
-              'prop': 'condition',
-              'name': '条件节点'
+            id: 'nodeni9QOqT3mI7hsMau',
+            width: 200,
+            height: 100,
+            coordinate: [-442, -283],
+            meta: {
+              prop: 'condition',
+              name: '条件节点'
             }
           },
           {
-            'id': 'node7WXbwOR6kSFD53Hf',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              -442,
-              -133
-            ],
-            'meta': {
-              'prop': 'condition',
-              'name': '条件节点'
+            id: 'node7WXbwOR6kSFD53Hf',
+            width: 200,
+            height: 100,
+            coordinate: [-442, -133],
+            meta: {
+              prop: 'condition',
+              name: '条件节点'
             }
           },
           {
-            'id': 'nodeG3WeFnzCI15X58Qw',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              -442,
-              17
-            ],
-            'meta': {
-              'prop': 'condition',
-              'name': '条件节点'
+            id: 'nodeG3WeFnzCI15X58Qw',
+            width: 200,
+            height: 100,
+            coordinate: [-442, 17],
+            meta: {
+              prop: 'condition',
+              name: '条件节点'
             }
           },
           {
-            'id': '0.ghl6ar1lf5g',
-            'width': 100,
-            'height': 80,
-            'vertex': 1,
-            'coordinate': [
-              -642,
-              -123
-            ],
-            'meta': {
-              'prop': 'start',
-              'name': '开始节点'
+            id: '0.ghl6ar1lf5g',
+            width: 100,
+            height: 80,
+            coordinate: [-642, -123],
+            meta: {
+              prop: 'start',
+              name: '开始节点'
             }
           },
           {
-            'id': 'nodeZBK0ZPpgMe1exezE',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              -142,
-              -283
-            ],
-            'meta': {
-              'prop': 'approval',
-              'name': '审批节点'
+            id: 'nodeZBK0ZPpgMe1exezE',
+            width: 200,
+            height: 100,
+            coordinate: [-142, -283],
+            meta: {
+              prop: 'approval',
+              name: '审批节点'
             }
           },
           {
-            'id': 'nodefHsy9uJObPtdHZv1',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              -142,
-              -133
-            ],
-            'meta': {
-              'prop': 'approval',
-              'name': '审批节点'
+            id: 'nodefHsy9uJObPtdHZv1',
+            width: 200,
+            height: 100,
+            coordinate: [-142, -133],
+            meta: {
+              prop: 'approval',
+              name: '审批节点'
             }
           },
           {
-            'id': 'node0aiA9VuhjkiAdZCs',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              -142,
-              17
-            ],
-            'meta': {
-              'prop': 'approval',
-              'name': '审批节点'
+            id: 'node0aiA9VuhjkiAdZCs',
+            width: 200,
+            height: 100,
+            coordinate: [-142, 17],
+            meta: {
+              prop: 'approval',
+              name: '审批节点'
             }
           },
           {
-            'id': 'nodeqkK9zjcDz53xKRlK',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              158,
-              -208
-            ],
-            'meta': {
-              'prop': 'cc',
-              'name': '抄送节点'
+            id: 'nodeqkK9zjcDz53xKRlK',
+            width: 200,
+            height: 100,
+            coordinate: [158, -208],
+            meta: {
+              prop: 'cc',
+              name: '抄送节点'
             }
           },
           {
-            'id': 'nodeDhVU6w2KbEnJCjZs',
-            'width': 80,
-            'height': 50,
-            'vertex': 0,
-            'coordinate': [
-              458,
-              -108
-            ],
-            'meta': {
-              'prop': 'end',
-              'name': '结束节点'
+            id: 'nodeDhVU6w2KbEnJCjZs',
+            width: 80,
+            height: 50,
+            coordinate: [458, -108],
+            meta: {
+              prop: 'end',
+              name: '结束节点'
             }
           },
           {
-            'id': 'nodesyxisLH1hJDdPsxx',
-            'width': 200,
-            'height': 100,
-            'vertex': 0,
-            'coordinate': [
-              158,
-              -58
-            ],
-            'meta': {
-              'prop': 'cc',
-              'name': '抄送节点'
+            id: 'nodesyxisLH1hJDdPsxx',
+            width: 200,
+            height: 100,
+            coordinate: [158, -58],
+            meta: {
+              prop: 'cc',
+              name: '抄送节点'
             }
           }
         ],
         linkList: [
           {
-            'id': 'linkQfGI6apBdZm4qHe3',
-            'startId': '0.ghl6ar1lf5g',
-            'endId': 'nodeni9QOqT3mI7hsMau',
-            'startAt': [
-              100,
-              40
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkQfGI6apBdZm4qHe3',
+            startId: '0.ghl6ar1lf5g',
+            endId: 'nodeni9QOqT3mI7hsMau',
+            startAt: [100, 40],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkJalC4dAzpQfu5WMi',
-            'startId': '0.ghl6ar1lf5g',
-            'endId': 'node7WXbwOR6kSFD53Hf',
-            'startAt': [
-              100,
-              40
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkJalC4dAzpQfu5WMi',
+            startId: '0.ghl6ar1lf5g',
+            endId: 'node7WXbwOR6kSFD53Hf',
+            startAt: [100, 40],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkjUVmbLfRhxPfFISJ',
-            'startId': '0.ghl6ar1lf5g',
-            'endId': 'nodeG3WeFnzCI15X58Qw',
-            'startAt': [
-              100,
-              40
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkjUVmbLfRhxPfFISJ',
+            startId: '0.ghl6ar1lf5g',
+            endId: 'nodeG3WeFnzCI15X58Qw',
+            startAt: [100, 40],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkP3zJNvSKHutesZs4',
-            'startId': 'nodeni9QOqT3mI7hsMau',
-            'endId': 'nodeZBK0ZPpgMe1exezE',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkP3zJNvSKHutesZs4',
+            startId: 'nodeni9QOqT3mI7hsMau',
+            endId: 'nodeZBK0ZPpgMe1exezE',
+            startAt: [200, 50],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkYlzpeKssBYwxQdLr',
-            'startId': 'node7WXbwOR6kSFD53Hf',
-            'endId': 'nodefHsy9uJObPtdHZv1',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkYlzpeKssBYwxQdLr',
+            startId: 'node7WXbwOR6kSFD53Hf',
+            endId: 'nodefHsy9uJObPtdHZv1',
+            startAt: [200, 50],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkOwoUKiipYyVz3CYT',
-            'startId': 'nodeG3WeFnzCI15X58Qw',
-            'endId': 'node0aiA9VuhjkiAdZCs',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkOwoUKiipYyVz3CYT',
+            startId: 'nodeG3WeFnzCI15X58Qw',
+            endId: 'node0aiA9VuhjkiAdZCs',
+            startAt: [200, 50],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'link3UhFce4rO4TfAL2K',
-            'startId': 'nodeZBK0ZPpgMe1exezE',
-            'endId': 'nodeqkK9zjcDz53xKRlK',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'link3UhFce4rO4TfAL2K',
+            startId: 'nodeZBK0ZPpgMe1exezE',
+            endId: 'nodeqkK9zjcDz53xKRlK',
+            startAt: [200, 50],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkMjaKIDuDfbgqSHoz',
-            'startId': 'nodefHsy9uJObPtdHZv1',
-            'endId': 'nodeqkK9zjcDz53xKRlK',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkMjaKIDuDfbgqSHoz',
+            startId: 'nodefHsy9uJObPtdHZv1',
+            endId: 'nodeqkK9zjcDz53xKRlK',
+            startAt: [200, 50],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'linkdUBf9aeOoXR3X65Y',
-            'startId': 'node0aiA9VuhjkiAdZCs',
-            'endId': 'nodesyxisLH1hJDdPsxx',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              50
-            ],
-            'meta': null
+            id: 'linkdUBf9aeOoXR3X65Y',
+            startId: 'node0aiA9VuhjkiAdZCs',
+            endId: 'nodesyxisLH1hJDdPsxx',
+            startAt: [200, 50],
+            endAt: [0, 50],
+            meta: null
           },
           {
-            'id': 'link02lGIqBJZWrTlCFv',
-            'startId': 'nodeqkK9zjcDz53xKRlK',
-            'endId': 'nodeDhVU6w2KbEnJCjZs',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              25
-            ],
-            'meta': null
+            id: 'link02lGIqBJZWrTlCFv',
+            startId: 'nodeqkK9zjcDz53xKRlK',
+            endId: 'nodeDhVU6w2KbEnJCjZs',
+            startAt: [200, 50],
+            endAt: [0, 25],
+            meta: null
           },
           {
-            'id': 'link3i9b2ZsNM8wyjRop',
-            'startId': 'nodesyxisLH1hJDdPsxx',
-            'endId': 'nodeDhVU6w2KbEnJCjZs',
-            'startAt': [
-              200,
-              50
-            ],
-            'endAt': [
-              0,
-              25
-            ],
-            'meta': null
+            id: 'link3i9b2ZsNM8wyjRop',
+            startId: 'nodesyxisLH1hJDdPsxx',
+            endId: 'nodeDhVU6w2KbEnJCjZs',
+            startAt: [200, 50],
+            endAt: [0, 25],
+            meta: null
           }
         ],
         graphMenuList: [
@@ -345,11 +239,9 @@
               },
               selected: (graph, coordinate) => {
                 graph.addNode({
-                  // id: '',   // 不传 默认会生成一个随机字符串作为 id
                   width: 100,
                   height: 80,
                   coordinate: coordinate,
-                  vertex: 1,
                   meta: {
                     prop: 'start',
                     name: '开始节点'
@@ -422,24 +314,9 @@
           ],
           [
             {
-              label: '垂直对齐',
-              selected: (graph, coordinate) => {
-                graph.vertical()
-              }
-            },
-            {
-              label: '水平对齐',
-              selected: (graph, coordinate) => {
-                graph.horizontal()
-              }
-            }
-          ],
-          [
-            {
               label: '打印数据',
               selected: (graph, coordinate) => {
                 console.log(graph.toJSON())
-                // console.log(this.$refs.superFlow.toJSON())
               }
             },
             {
@@ -477,9 +354,7 @@
         ]
       }
     },
-    components: {
-      SuperFlow
-    },
+    components: {SuperFlow},
     methods: {
       enterIntercept(formNode, toNode, graph) {
         const formType = formNode.meta.prop
@@ -517,11 +392,11 @@
 </script>
 
 <style lang="less">
-  #demo1 {
+  .super-flow-demo1 {
     width     : 100%;
     height    : 800px;
     max-width : 1000px;
-    margin: 0 auto;
+    margin    : 0 auto;
 
     .super-flow__node {
       .flow-node {

@@ -4,7 +4,7 @@
  * Time: 17:48
 -->
 <template>
-  <div id="demo2">
+  <div class="super-flow-demo2">
     <super-flow
       ref="superFlow"
       :width="1000"
@@ -39,7 +39,6 @@
                 graph.addNode({
                   width: 120,
                   height: 40,
-                  vertex: 1,
                   coordinate,
                   meta: {
                     label: '1',
@@ -99,18 +98,6 @@
               selected: graph => {
                 graph.selectAll()
               }
-            },
-            {
-              label: '垂直',
-              selected: graph => {
-                graph.vertical()
-              }
-            },
-            {
-              label: '水平',
-              selected: graph => {
-                graph.horizontal()
-              }
             }
           ]
         ],
@@ -152,7 +139,7 @@
 </script>
 
 <style lang="less">
-  #demo2 {
+  .super-flow-demo2 {
     width     : 100%;
     height    : 800px;
     max-width : 1000px;

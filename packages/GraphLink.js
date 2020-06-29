@@ -24,7 +24,11 @@ export default class GraphLink {
       end = null,
       startAt = [0, 0],
       endAt = [0, 0],
-      meta = null
+      meta = null,
+      
+      dotted = false,
+      lineColor = null,
+      onLineColor = null
     } = options
     
     this.key = uuid('link')
@@ -39,6 +43,10 @@ export default class GraphLink {
     this.endDirection = directionVector[direction.top]
     this.startAt = startAt
     this.endAt = endAt
+    
+    this.dotted = dotted
+    this.lineColor = lineColor
+    this.onLineColor = onLineColor
   }
   
   get end() {
@@ -52,7 +60,6 @@ export default class GraphLink {
       this._end = node
     }
   }
-  
   
   get startAt() {
     return this._startAt
@@ -253,8 +260,7 @@ export default class GraphLink {
     }
   }
   
-  isPointInLink(position) {
-    
+  isPointInLink(position, bol) {
     const {
       pointList,
       minX,
@@ -262,7 +268,9 @@ export default class GraphLink {
       maxX,
       maxY
     } = this.pathPointList
+  
     
+  
     const n = 5
     
     if (
@@ -273,7 +281,6 @@ export default class GraphLink {
     ) {
       return false
     }
-    
     
     for (let i = 0; i < pointList.length - 2; i++) {
       const prev = pointList[i]
@@ -291,22 +298,21 @@ export default class GraphLink {
         return true
       }
     }
-    
     return false
   }
   
   remove() {
-    this.graph.removeLink(this)
+    return this.graph.removeLink(this)
   }
   
-  getInterface() {
+  toJSON() {
     return {
-      meta: this.meta,
-      remove: this.remove.bind(this),
-      start: this.start.getInterface(),
-      end: this.end.getInterface(),
-      startAt: [...this.startAt],
-      endAt: [...this.endAt]
+      id: this.id,
+      startId: this.start.id,
+      endId: this.end.id,
+      startAt: this.startAt,
+      endAt: this.endAt,
+      meta: this.meta
     }
   }
 }

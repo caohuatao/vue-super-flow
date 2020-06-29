@@ -103,7 +103,8 @@
 <style lang="less">
 
   .super-flow__menu-container {
-    @z-index: 10;
+    @z-index : 10;
+
     .super-flow__menu {
       @menu-width      : 180px;
       @height          : 26px;
@@ -132,7 +133,7 @@
 
         width       : @width;
         min-height  : @height;
-
+        line-height : @height;
         cursor      : pointer;
         position    : relative;
         padding     : 0 @padding;
@@ -162,6 +163,7 @@
           font-size   : 14px;
           line-height : @height;
           width       : @width - @icon-size;
+          font-weight : normal;
         }
 
         > div {
@@ -198,14 +200,14 @@
     }
 
     .flow__menu-mask {
-      content  : '';
-      position : fixed;
-      top      : 0;
-      bottom   : 0;
-      right    : 0;
-      left     : 0;
-      z-index  : @z-index;
-      background-color: transparent;
+      content          : '';
+      position         : fixed;
+      top              : 0;
+      bottom           : 0;
+      right            : 0;
+      left             : 0;
+      z-index          : @z-index;
+      background-color : transparent;
     }
   }
 

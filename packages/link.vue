@@ -32,8 +32,6 @@
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
-
-
       this.draw()
       this.graph.add('mousemove', this.rootMousemove)
     },
@@ -92,19 +90,28 @@
       initLine() {
         this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
         if (this.inPath) {
-          this.drawLine(2, this.hoverColor)
-          this.drawArrow(4, this.hoverColor)
+          const color = this.link.hoverColor || this.hoverColor
+          this.drawLine(color)
+          this.drawArrow(color)
         } else {
-          this.drawLine()
-          this.drawArrow()
+          const color = this.link.lineColor || this.linkColor
+          this.drawLine(color)
+          this.drawArrow(color)
         }
       },
 
-      drawLine(lineWidth = 2, strokeStyle) {
+      drawLine(strokeStyle) {
+        const lineWidth = 2
         const ctx = this.ctx
         ctx.beginPath()
+
+        if (this.link.dotted) {
+          ctx.setLineDash([4, 4])
+        }
+
         ctx.lineWidth = lineWidth
-        ctx.strokeStyle = strokeStyle || this.linkColor
+        ctx.strokeStyle = strokeStyle
+
         this.currentPointList.forEach((point, idx) => {
           if (idx === 0) {
             ctx.moveTo(...point)
@@ -116,7 +123,8 @@
         ctx.save()
       },
 
-      drawArrow(size = 4, fillStyle) {
+      drawArrow(fillStyle) {
+        const size = 4
         const len = this.currentPointList.length
 
         if (len < 2) return
@@ -138,7 +146,7 @@
         } else {
           ctx.rotate(Math.PI - ang) // 加个180度，反过来
         }
-        ctx.fillStyle = fillStyle || this.linkColor
+        ctx.fillStyle = fillStyle
         ctx.lineTo(-size, -size * 2)
         ctx.lineTo(0, -size)
         ctx.lineTo(size, -size * 2)

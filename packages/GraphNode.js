@@ -22,11 +22,8 @@ export default class GraphNode {
       width = 180,
       height = 100,
       coordinate = [0, 0],
-      meta = null,
-      vertex = 0
+      meta = null
     } = props
-    
-    this.depth = 0
     
     this.key = uuid('node')
     this.graph = graph
@@ -35,20 +32,8 @@ export default class GraphNode {
     this.coordinate = [...coordinate]
     this.meta = meta
     
-    this.vertex = vertex
     this.width = width
     this.height = height
-    
-    this.rowIndex = 0
-    this.colIndex = 0
-  }
-  
-  set vertex(bol) {
-    if (bol) this.graph.vertex = this
-  }
-  
-  get vertex() {
-    return this.graph.vertex === this ? 1 : 0
   }
   
   get position() {
@@ -160,44 +145,40 @@ export default class GraphNode {
   }
   
   fixOffset(offset, dir) {
-    const linkPointLimit = this.graph.linkPointLimit
+    const regular = !this.graph.libertyStart
     switch (dir) {
       case direction.top:
-        if (linkPointLimit) offset[0] = this.width / 2
+        if (regular) offset[0] = this.width / 2
         offset[1] = 0
         break
       case direction.right:
         offset[0] = this.width
-        if (linkPointLimit) offset[1] = this.height / 2
+        if (regular) offset[1] = this.height / 2
         break
       case direction.bottom:
-        if (linkPointLimit) offset[0] = this.width / 2
+        if (regular) offset[0] = this.width / 2
         offset[1] = this.height
         break
       case direction.left:
       default:
         offset[0] = 0
-        if (linkPointLimit) offset[1] = this.height / 2
+        if (regular) offset[1] = this.height / 2
         break
     }
     return offset
   }
   
   remove() {
-    this.graph.removeNode(this)
+    return this.graph.removeNode(this)
   }
   
-  setVertex() {
-    this.graph.vertex = this
-  }
-  
-  getInterface() {
+  toJSON() {
     return {
+      id: this.id,
       width: this.width,
       height: this.height,
       coordinate: [...this.coordinate],
-      meta: this.meta,
-      remove: this.remove.bind(this)
+      meta: this.meta
     }
   }
 }
