@@ -33,10 +33,6 @@
     mounted() {
       this.ctx = this.$el.getContext('2d')
 
-      const {top, left} = this.$el.getBoundingClientRect()
-      const translateX = +left.toString().split('.')[1] || 0
-      const translateY = +top.toString().split('.')[1] || 0
-      this.ctx.translate(-translateX, -translateY)
 
       this.draw()
       this.graph.add('mousemove', this.rootMousemove)
@@ -52,10 +48,10 @@
         set(bol) {
           if (bol && !this.graph.mouseonNode) {
             this.graph.mouseonLink = this.link
-            this.$el.style.zIndex = 1
+            this.$el.style.zIndex = '1'
           } else if (this.inPath) {
             this.graph.mouseonLink = null
-            this.$el.style.zIndex = 0
+            this.$el.style.zIndex = '0'
           }
         }
       }

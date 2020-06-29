@@ -27,21 +27,6 @@
     },
     mounted() {
       const ctx = this.$el.getContext('2d')
-
-
-      const {top, left} = this.$el.getBoundingClientRect()
-      const translateX = left.toString().split('.')[1] || 0
-      const translateY = top.toString().split('.')[1] || 0
-      console.log(top, left)
-      console.log(
-        top % 2 === 0 ? -0.5 : 0,
-        left % 2 === 0 ? -0.5 : 0
-      )
-      ctx.translate(
-        top % 2 === 0 ? -0.5 : 0,
-        left % 2 === 0 ? -0.5 : 0
-      )
-
       this.draw()
     },
     methods: {
@@ -51,7 +36,6 @@
         ctx.strokeStyle = this.markColor
         ctx.lineWidth = 1
         ctx.setLineDash([4, 2])
-
         this.markLine.forEach(([start, end]) => {
           ctx.beginPath()
           ctx.moveTo(...start)

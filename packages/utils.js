@@ -164,4 +164,3 @@ export function debounce(fn, timestamp) {
     timeout = setTimeout(fn, timestamp)
   }
 }
-

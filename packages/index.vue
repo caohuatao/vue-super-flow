@@ -345,6 +345,7 @@
             if (result) {
               position[0] = vertical
               vertical += origin[0]
+              vertical += vertical % 1 === 0 ? 0.5 : 0
               resultList.push([
                 [vertical, 0],
                 [vertical, this.height]
@@ -358,6 +359,7 @@
             if (result) {
               position[1] = horizontal
               horizontal += origin[1]
+              horizontal += horizontal % 1 === 0 ? 0.5 : 0
               resultList.push([
                 [0, horizontal],
                 [this.width, horizontal]
