@@ -144,6 +144,7 @@
     height    : 800px;
     max-width : 1000px;
     margin    : 0 auto;
+    overflow  : auto;
 
     .super-flow__node {
       .flow-node {
