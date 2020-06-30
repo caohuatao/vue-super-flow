@@ -29,31 +29,6 @@ Vue.use(SuperFlow)
 
 ```
 
-```vue
-
-<template>
-  <div>
-    <super-flow></super-flow> 
-  </div>
-</template>
-
-<script >
-  import SuperFlow from 'vue-super-flow'
- 
-  export default {
-    components: {
-       SuperFlow
-    }
-  }
- 
-</script>
-
-<style>
-  @import "~vue-super-flow/lib/index.css";
-</style>
-  
-``` 
-
 ## Attributes
 
 |属性                |类型                |默认值                   |描述                                     | 
