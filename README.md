@@ -20,6 +20,36 @@ npm install vue-super-flow
 yran add vue-spuer-flow
 
 ```
+```js
+import VueSuperFlow from 'vue-super-flow'
+import 'vue-super-flow/lib/index.css'
+
+Vue.use(VueSuperFlow)
+```
+
+```vue
+<template>
+  <div>
+    <super-flow></super-flow> 
+  </div>
+</template>
+
+<script >
+  import SuperFlow from 'vue-super-flow'
+ 
+  export default {
+    components: {
+       SuperFlow
+    }
+  }
+ 
+</script>
+
+<style>
+  @import "~vue-super-flow/lib/index.css";
+</style>
+  
+``` 
 
 ## Attributes
 
@@ -41,4 +71,14 @@ yran add vue-spuer-flow
 |nodeMenu            |`Array`            |`[]`                     | `node` 右键菜单列表配置                  |
 |linkMenu            |`Array`            |`[]`                     | `link` 右键菜单配置                      |
 |enterIntercept      |`Function`         |`() => true`             | 创建连线进入节点限制                     |
-|outputIntercept     |`Function`         |`() => true`             | 节点生成连线调用接受 `Boolean` 返回值    |
+|outputIntercept     |`Function`         |`() => true`             | 节点生成连线限制函数                     |
+
+## Methods
+
+|方法名               |说明                                          |参数                                     | 
+|----                | ----                                        |----                                     |
+|selectedAll         | 选中所有进行拖拽修改 `origin`                 |----                                     |
+|toJSON              | 将 `graph` 对象转为普通 json 对象             |----                                     |
+|getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标            |clientX, clientY                         |
+|addNode             | 添加节点                                      |options                                 |
+

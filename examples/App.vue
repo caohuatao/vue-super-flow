@@ -35,8 +35,9 @@
     padding : 0;
 
     #app {
-      width  : 100%;
+      width  : 1000px;
       height : 100%;
+      margin : 0 auto;
     }
   }
 </style>

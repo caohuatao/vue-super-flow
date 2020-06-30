@@ -243,7 +243,6 @@
         document.removeEventListener('mouseup', this.docMouseup)
         document.removeEventListener('mousemove', this.docMousemove)
       })
-      this.scrollCenter()
       this.$nextTick(() => {
         this.graph.initNode(this.nodeList)
         this.graph.initLink(this.linkList)
@@ -386,20 +385,6 @@
         }
       },
 
-      scrollCenter() {
-        if (this.$el) {
-          const {
-            clientHeight,
-            clientWidth,
-            scrollHeight,
-            scrollWidth
-          } = this.$el
-
-          this.$el.scrollLeft = Math.ceil((scrollWidth - clientWidth) / 2)
-          this.$el.scrollTop = Math.ceil((scrollHeight - clientHeight) / 2)
-        }
-      },
-
       contextmenu(evt) {
         const mouseonLink = this.graph.mouseonLink
         const position = getOffset(evt)
@@ -507,15 +492,10 @@
       },
 
       getMouseCoordinate(clientX, clientY) {
-        const interCanvas = isIntersect({clientX, clientY}, this.$el)
-        if (interCanvas) {
-          const offset = getOffset({clientX, clientY}, this.$el)
-          return vector(offset)
-            .minus(this.graph.origin)
-            .end
-        } else {
-          return null
-        }
+        const offset = getOffset({clientX, clientY}, this.$el)
+        return vector(offset)
+          .minus(this.graph.origin)
+          .end
       },
 
       addNode(options) {
@@ -536,6 +516,9 @@
         } else {
           document.body.style.cursor = ''
         }
+      },
+      origin() {
+        this.graph.origin = this.origin || []
       },
       nodeList() {
         this.graph.initNode(this.nodeList)
