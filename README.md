@@ -21,13 +21,16 @@ yran add vue-spuer-flow
 
 ```
 ```js
-import VueSuperFlow from 'vue-super-flow'
+
+import SuperFlow from 'vue-super-flow'
 import 'vue-super-flow/lib/index.css'
 
-Vue.use(VueSuperFlow)
+Vue.use(SuperFlow)
+
 ```
 
 ```vue
+
 <template>
   <div>
     <super-flow></super-flow> 
@@ -81,4 +84,3 @@ Vue.use(VueSuperFlow)
 |toJSON              | 将 `graph` 对象转为普通 json 对象             |----                                     |
 |getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标            |clientX, clientY                         |
 |addNode             | 添加节点                                      |options                                 |
-
