@@ -13,6 +13,10 @@
 
 ## Installation
 
+```
+v1.3.0
+```
+
 ```npm
 
 npm install vue-super-flow
@@ -59,3 +63,5 @@ Vue.use(SuperFlow)
 |toJSON              | 将 `graph` 对象转为普通 json 对象             |----                                     |
 |getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标            |clientX, clientY                         |
 |addNode             | 添加节点                                      |options                                 |
+
+
