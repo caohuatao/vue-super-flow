@@ -37,8 +37,6 @@ Vue.use(SuperFlow)
 
 |属性                |类型                |默认值                   |描述                                     | 
 |----                | ----              |----                     |----                                     |
-|width               |`Number`           |`1000`                   | `graph` 的宽度                          |
-|height              |`Number`           |`8000`                   | `graph` 的高度                          |
 |draggable           |`Boolean`          |`true`                   | 是否开启节点拖拽                         |
 |linkAddable         |`Boolean`          |`true`                   | 是否开启快捷创建 `link`                  |
 |linkEditable        |`Boolean`          |`true`                   | `link` 是否可编辑                       |

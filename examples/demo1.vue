@@ -7,8 +7,6 @@
   <div class="super-flow-demo1">
     <super-flow
       ref="superFlow"
-      :width="1000"
-      :height="800"
       :graph-menu="graphMenu"
       :node-menu="nodeMenu"
       :link-menu="linkMenu">
@@ -138,9 +136,8 @@
 <style lang="less">
   .super-flow-demo1 {
     width    : 100%;
-    height   : auto;
+    height   : 800px;
     margin   : 0 auto;
-    overflow : auto;
 
     .super-flow__node {
       .flow-node {

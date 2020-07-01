@@ -391,9 +391,8 @@
 <style lang="less">
   .super-flow-demo2 {
     width    : 100%;
-    height   : auto;
+    height   : 800px;
     margin   : 0 auto;
-    overflow : auto;
 
     .super-flow__node {
       .flow-node {

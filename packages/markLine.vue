@@ -26,7 +26,6 @@
       markColor: String
     },
     mounted() {
-      const ctx = this.$el.getContext('2d')
       this.draw()
     },
     methods: {

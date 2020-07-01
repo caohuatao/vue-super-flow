@@ -33,11 +33,5 @@
     height  : 100%;
     margin  : 0;
     padding : 0;
-
-    #app {
-      width  : 1000px;
-      height : 100%;
-      margin : 0 auto;
-    }
   }
 </style>

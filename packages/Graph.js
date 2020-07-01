@@ -17,8 +17,6 @@ class Graph extends GraphEvent {
     const {
       nodeList = [],
       linkList = [],
-      width,
-      height,
       origin,
       libertyStart
     } = options
@@ -27,8 +25,6 @@ class Graph extends GraphEvent {
     
     this.nodeList = []
     this.linkList = []
-    this.width = width
-    this.height = height
     
     this.origin = origin
     
@@ -162,8 +158,6 @@ class Graph extends GraphEvent {
   
   toJSON() {
     return {
-      width: this.width,
-      height: this.height,
       origin: this.origin,
       nodeList: this.nodeList.map(node => node.toJSON()),
       linkList: this.linkList.map(link => link.toJSON())

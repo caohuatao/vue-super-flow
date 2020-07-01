@@ -7,8 +7,6 @@
   <div
     class="super-flow"
     ref="flow-canvas"
-    style="overflow: hidden"
-    :style="{width: width + 'px', height: height + 'px'}"
     @contextmenu.prevent.stop="contextmenu">
 
     <graph-line
@@ -30,8 +28,8 @@
 
     <mark-line
       v-if="moveNodeConf.isMove && hasMarkLine"
-      :width="graph.width"
-      :height="graph.height"
+      :width="clientWidth"
+      :height="clientHeight"
       :mark-color="markLineColor"
       :markLine="moveNodeConf.markLine">
     </mark-line>
@@ -108,14 +106,6 @@
   export default {
     name: 'super-flow',
     props: {
-      width: {
-        type: Number,
-        default: 1000
-      },
-      height: {
-        type: Number,
-        default: 800
-      },
       draggable: {
         type: Boolean,
         default: true
@@ -211,7 +201,9 @@
           visible: false,
           link: null
         },
-        loaded: false
+        loaded: false,
+        clientWidth: 0,
+        clientHeight: 0
       }
     },
     components: {
@@ -343,7 +335,7 @@
               vertical += vertical % 1 === 0 ? 0.5 : 0
               resultList.push([
                 [vertical, 0],
-                [vertical, this.height]
+                [vertical, this.clientHeight]
               ])
             }
             return result
@@ -357,12 +349,14 @@
               horizontal += horizontal % 1 === 0 ? 0.5 : 0
               resultList.push([
                 [0, horizontal],
-                [this.width, horizontal]
+                [this.clientWidth, horizontal]
               ])
             }
             return result
           })
           arrayReplace(conf.markLine, resultList)
+
+          console.log(conf.markLine.toString())
         }
 
         conf.node.center = position
@@ -408,6 +402,9 @@
 
       nodeMousedown(node, offset) {
         if (this.draggable) {
+          this.clientWidth = this.$el.clientWidth
+          this.clientHeight = this.$el.clientHeight
+
           const verticalList = this.moveNodeConf.verticalList
           const horizontalList = this.moveNodeConf.horizontalList
 
@@ -422,6 +419,7 @@
           arrayReplace(horizontalList, [
             ...new Set(centerList.map(center => center[1]))
           ].sort((prev, next) => prev - next))
+
 
           this.moveNodeConf.isMove = true
           this.moveNodeConf.node = node
@@ -552,6 +550,9 @@
 
     position         : relative;
     background-color : #F4F4F4;
+    width            : 100%;
+    height           : 100%;
+    overflow         : auto;
 
     > .select-all__mask {
       position         : absolute;
