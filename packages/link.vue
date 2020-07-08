@@ -103,6 +103,7 @@
       drawLine(strokeStyle) {
         const lineWidth = 2
         const ctx = this.ctx
+        ctx.lineJoin = 'round'
         ctx.beginPath()
 
         if (this.link.dotted) {

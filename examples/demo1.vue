@@ -135,9 +135,10 @@
 
 <style lang="less">
   .super-flow-demo1 {
-    width    : 100%;
-    height   : 800px;
-    margin   : 0 auto;
+    width            : 100%;
+    height           : 800px;
+    margin           : 0 auto;
+    background-color : #f5f5f5;
 
     .super-flow__node {
       .flow-node {

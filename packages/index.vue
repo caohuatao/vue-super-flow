@@ -355,8 +355,6 @@
             return result
           })
           arrayReplace(conf.markLine, resultList)
-
-          console.log(conf.markLine.toString())
         }
 
         conf.node.center = position
@@ -549,7 +547,7 @@
     sans-serif;
 
     position         : relative;
-    background-color : #F4F4F4;
+    background-color : transparent;
     width            : 100%;
     height           : 100%;
     overflow         : auto;
