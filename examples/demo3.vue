@@ -190,7 +190,7 @@
     mounted() {
       document.addEventListener('mousemove', this.docMousemove)
       document.addEventListener('mouseup', this.docMouseup)
-      this.$once('hook:beforeDestroy', ()=> {
+      this.$once('hook:beforeDestroy', () => {
         document.removeEventListener('mousemove', this.docMousemove)
         document.removeEventListener('mouseup', this.docMouseup)
       })
@@ -199,8 +199,15 @@
       flowNodeClick(meta) {
         console.log(`编辑 ${meta.label}`)
       },
-      docMousemove() {
-
+      docMousemove({clientX, clientY}) {
+        const conf = this.dragConf
+        if (conf.isDown && conf.isMove) {
+          conf.clientX = clientX
+          conf.clientY = clientY
+        } else if (conf.isDown) {
+          conf.isMove = Math.abs(clientX - conf.clientX) > 5
+            || Math.abs(clientY - conf.clientY) > 5
+        }
       },
       docMouseup() {
 
@@ -220,6 +227,8 @@
         Object.assign(this.dragConf, {
           offsetLeft: clientX - left,
           offsetTop: clientY - top,
+          clientX: clientX,
+          clientY: clientY,
           info,
           ele: currentTarget,
           isDown: true
@@ -244,23 +253,6 @@
       height           : 100%;
       text-align       : center;
       background-color : #FFFFFF;
-
-      > .node-item {
-        display          : inline-block;
-        height           : 40px;
-        width            : 120px;
-        margin-top       : 20px;
-        background-color : #FFFFFF;
-        line-height      : 40px;
-        box-shadow       : 1px 1px 4px rgba(0, 0, 0, 0.3);
-        border-radius    : 4px;
-        cursor           : pointer;
-        user-select      : none;
-
-        &:hover {
-          box-shadow : 1px 1px 8px rgba(0, 0, 0, 0.4);
-        }
-      }
     }
 
     > .flow-container {
@@ -276,6 +268,23 @@
         line-height : 40px;
         padding     : 0 6px;
         font-size   : 12px;
+      }
+    }
+
+    .node-item {
+      display          : inline-block;
+      height           : 40px;
+      width            : 120px;
+      margin-top       : 20px;
+      background-color : #FFFFFF;
+      line-height      : 40px;
+      box-shadow       : 1px 1px 4px rgba(0, 0, 0, 0.3);
+      border-radius    : 4px;
+      cursor           : pointer;
+      user-select      : none;
+
+      &:hover {
+        box-shadow : 1px 1px 8px rgba(0, 0, 0, 0.4);
       }
     }
   }
