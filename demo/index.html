@@ -1,0 +1,56 @@
+<!--
+ * User: CHT
+ * Date: 2020/7/10
+ * Time: 8:54
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>demo</title>
+</head>
+<body>
+<canvas
+  id="canvas"
+  width="1000"
+  height="1000">
+</canvas>
+<script>
+  const canvas = document.getElementById('canvas')
+
+  const ctx = canvas.getContext('2d')
+
+  const pointA = [0, 0]
+  const pointB = [200, 0]
+
+  function vector(a, b) {
+    return [b[0] - a[0], b[1] - a[1]]
+  }
+
+  function cross(a, x) {
+    return [a[0] * x, a[1] * x]
+  }
+
+  function vectorAdd(a, b) {
+    return [a[0] + b[0], a[1] + b[1]]
+  }
+
+  let t = 0
+  const abVector = vector(pointA, pointB)
+
+  ctx.moveTo(...pointA)
+  function animation() {
+    t += 0.01
+    if (t < 1) {
+      const point = vectorAdd(pointA, cross(abVector, t))
+      requestAnimationFrame(animation)
+      ctx.lineTo(...point)
+      ctx.stroke()
+    }
+  }
+
+  requestAnimationFrame(animation)
+
+</script>
+</body>
+</html>

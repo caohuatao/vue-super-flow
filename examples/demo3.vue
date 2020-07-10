@@ -9,14 +9,15 @@
       <span
         class="node-item"
         v-for="item in nodeItemList"
-        @mousedown="evt => nodeItemMouseDown(evt, item)">
+        @mousedown="evt => nodeItemMouseDown(evt, item.value)">
         {{item.label}}
       </span>
     </div>
-    <div class="flow-container">
+    <div
+      class="flow-container"
+      ref="flowContainer">
       <super-flow
         ref="superFlow"
-        :graph-menu="graphMenu"
         :node-menu="nodeMenu"
         :link-menu="linkMenu">
         <template v-slot:node="{meta}">
@@ -86,79 +87,6 @@
             }
           }
         ],
-        graphMenu: [
-          [
-            {
-              label: '节点1',
-              disable(graph) {
-                return !!graph.nodeList.find(node => node.meta.label === '1')
-              },
-              selected(graph, coordinate) {
-                graph.addNode({
-                  width: 120,
-                  height: 40,
-                  coordinate,
-                  meta: {
-                    label: '1',
-                    value: [1, 2, 3, 4]
-                  }
-                })
-              }
-            },
-            {
-              label: '节点2',
-              selected(graph, coordinate) {
-                graph.addNode({
-                  width: 120,
-                  height: 40,
-                  coordinate,
-                  meta: {
-                    label: '2',
-                    value: [1, 2, 3, 4]
-                  }
-                })
-              }
-            },
-            {
-              label: '节点3',
-              selected(graph, coordinate) {
-                graph.addNode({
-                  width: 120,
-                  height: 40,
-                  coordinate,
-                  meta: {
-                    label: '3',
-                    value: [1, 2, 3, 4]
-                  }
-                })
-              }
-            }
-          ],
-          [
-            {
-              label: '节点4',
-              selected(graph, coordinate) {
-                graph.addNode({
-                  width: 120,
-                  height: 40,
-                  coordinate,
-                  meta: {
-                    label: '4',
-                    value: [1, 2, 3, 4]
-                  }
-                })
-              }
-            }
-          ],
-          [
-            {
-              label: '全选',
-              selected: graph => {
-                graph.selectAll()
-              }
-            }
-          ]
-        ],
         nodeMenu: [
           [
             {
@@ -199,19 +127,63 @@
       flowNodeClick(meta) {
         console.log(`编辑 ${meta.label}`)
       },
+
       docMousemove({clientX, clientY}) {
         const conf = this.dragConf
-        if (conf.isDown && conf.isMove) {
-          conf.clientX = clientX
-          conf.clientY = clientY
+
+        if (conf.isMove) {
+
+          conf.ele.style.top = clientY - conf.offsetTop + 'px'
+          conf.ele.style.left = clientX - conf.offsetLeft + 'px'
+
         } else if (conf.isDown) {
-          conf.isMove = Math.abs(clientX - conf.clientX) > 5
+
+          // 鼠标移动量大于 5 时 移动状态生效
+          conf.isMove =
+            Math.abs(clientX - conf.clientX) > 5
             || Math.abs(clientY - conf.clientY) > 5
+
         }
       },
-      docMouseup() {
 
+      docMouseup({clientX, clientY}) {
+        const conf = this.dragConf
+        conf.isDown = false
+        if (conf.isMove) {
+          const {
+            top,
+            right,
+            bottom,
+            left
+          } = this.$refs.flowContainer.getBoundingClientRect()
+
+          // 判断鼠标是否进入 flow container
+          if (
+            clientX > left
+            && clientX < right
+            && clientY > top
+            && clientY < bottom
+          ) {
+
+            // 获取拖动元素左上角相对 super flow 区域原点坐标
+            const coordinate = this.$refs.superFlow.getMouseCoordinate(
+              clientX - conf.offsetLeft,
+              clientY - conf.offsetTop
+            )
+
+            // 添加节点
+            this.$refs.superFlow.addNode({
+              coordinate,
+              ...conf.info
+            })
+
+          }
+
+          conf.isMove = false
+          conf.ele.remove()
+        }
       },
+
       nodeItemMouseDown(evt, info) {
         const {
           clientX,
@@ -224,15 +196,25 @@
           left
         } = evt.currentTarget.getBoundingClientRect()
 
+        const conf = this.dragConf
+        const ele = currentTarget.cloneNode(true)
+
         Object.assign(this.dragConf, {
           offsetLeft: clientX - left,
           offsetTop: clientY - top,
           clientX: clientX,
           clientY: clientY,
           info,
-          ele: currentTarget,
+          ele,
           isDown: true
         })
+
+        ele.style.position = 'fixed'
+        ele.style.margin = '0'
+        ele.style.top = clientY - conf.offsetTop + 'px'
+        ele.style.left = clientX - conf.offsetLeft + 'px'
+
+        this.$el.appendChild(this.dragConf.ele)
       }
     }
   }
@@ -256,9 +238,10 @@
     }
 
     > .flow-container {
-      width  : calc(100% - @list-width);
-      float  : left;
-      height : 100%;
+      width    : calc(100% - @list-width);
+      float    : left;
+      height   : 100%;
+      overflow : hidden;
     }
 
     .super-flow__node {
@@ -271,17 +254,21 @@
       }
     }
 
+
     .node-item {
-      display          : inline-block;
-      height           : 40px;
-      width            : 120px;
-      margin-top       : 20px;
-      background-color : #FFFFFF;
-      line-height      : 40px;
-      box-shadow       : 1px 1px 4px rgba(0, 0, 0, 0.3);
-      border-radius    : 4px;
-      cursor           : pointer;
-      user-select      : none;
+      @node-item-height : 30px;
+
+      font-size         : 14px;
+      display           : inline-block;
+      height            : @node-item-height;
+      width             : 120px;
+      margin-top        : 20px;
+      background-color  : #FFFFFF;
+      line-height       : @node-item-height;
+      box-shadow        : 1px 1px 4px rgba(0, 0, 0, 0.3);
+      cursor            : pointer;
+      user-select       : none;
+      text-align        : center;
 
       &:hover {
         box-shadow : 1px 1px 8px rgba(0, 0, 0, 0.4);
