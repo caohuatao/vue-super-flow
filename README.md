@@ -1,15 +1,9 @@
 
-
-
 # vue-super-flow
-
-> vue-super-flow 是一款快速方便实现流程图的 vue 插件。
-> [Demo](https://caohuatao.github.io/demo/)
-> [文档](https://caohuatao.github.io)
-
-> Vue-super-flow is a quick and convenient Vue plug-in to realize flow chart. 
-> [Demo](https://caohuatao.github.io/demo/)
-> [Docs](https://caohuatao.github.io)
+* A flowchart editor component base on Vue. 
+* 一个基于 Vue 的在线流程编辑组件。
+* [Demo](https://caohuatao.github.io/demo/)
+* [docs](https://caohuatao.github.io)
 
 ## Installation
 
