@@ -1,12 +1,11 @@
 {
   "name": "vue-super-flow",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "keywords": [
-    "flow",
+    "flowChart",
     "super flow",
-    "flow chart",
-    "vue flow",
-    "vue flow component"
+    "vue flow chart",
+    "vue 流程图"
   ],
   "license": "MIT",
   "description": "Vue-super-flow is a quick and convenient Vue plug-in to realize flow chart. Demo address: https://caohuatao.github.io/demo/;",
