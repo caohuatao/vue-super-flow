@@ -55,33 +55,18 @@ Vue.use(SuperFlow)
 
 ## Methods
 
-|方法名               |说明                                          |参数                                     | 
-|----                | ----                                        |----                                     |
-|selectedAll         | 选中所有进行拖拽修改 `origin`                 |----                                     |
-|toJSON              | 将 `graph` 对象转为普通 json 对象             |----                                     |
-|getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标            |clientX, clientY                         |
-|addNode             | 添加节点                                      |options                                 |
+|方法名               |说明                                        |参数                                    | 
+|----                | ----                                       |----                                    |
+|selectedAll         | 选中所有进行拖拽修改 `origin`               |----                                    |
+|toJSON              | 将 `graph` 对象转为普通 json 对象           |----                                    |
+|getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标          |clientX, clientY                        |
+|addNode             | 添加节点                                    |options                                 |
 
 
 ## Examples
 
-- `graphMenu` 自由配置右键创建节点菜单
-
-- `nodeMenu` 配置节点右键菜单
-
-- `linkMenu` 配置连线右键菜单
-
 ![例1](https://s1.ax1x.com/2020/07/11/UQ3IsJ.gif)
 
-
-- `enterIntercept` 创建连线进入节点限制。如下图对连线至 "起始节点" 时函数返回 `false` 所以无法连线
-
-- `outputIntercept` 节点生成连线限制函数。如下图 "结束节点" 时函数返回 `false` 所以无法创建连线
-
 ![例2](https://s1.ax1x.com/2020/07/11/UQ37ZR.gif)
-
-- `getMouseCoordinate` 获取当前鼠标在 `graph` 坐标系的坐标。下图未设置 `graphMenu` 采用外部拖入通过函数获取坐标
-
-- `addNode` 添加节点。下图在使用外部拖入节点获取坐标后使用函数添加节点进入 `graph`
 
 ![例3](https://s1.ax1x.com/2020/07/11/UQ3oL9.gif)
