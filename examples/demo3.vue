@@ -180,7 +180,10 @@
           }
 
           conf.isMove = false
+        }
+        if (conf.ele.parentNode) {
           conf.ele.remove()
+          console.log(conf.ele)
         }
       },
 
