@@ -67,123 +67,21 @@ Vue.use(SuperFlow)
 
 - `graphMenu` 自由配置右键创建节点菜单
 
-```js
-[
-  [
-    {
-      label: '节点1',
-      disable(graph) {
-        return !!graph.nodeList.find(node => node.meta.label === '1')
-      },
-      selected(graph, coordinate) {
-        graph.addNode({
-          width: 120,
-          height: 40,
-          coordinate,
-          meta: {
-            label: '1',
-            value: [1, 2, 3, 4]
-          }
-        })
-      }
-    },
-    {
-      label: '节点2',
-      selected(graph, coordinate) {
-        graph.addNode({
-          width: 120,
-          height: 40,
-          coordinate,
-          meta: {
-            label: '2',
-            value: [1, 2, 3, 4]
-          }
-        })
-      }
-    },
-    {
-      label: '节点3',
-      selected(graph, coordinate) {
-        graph.addNode({
-          width: 120,
-          height: 40,
-          coordinate,
-          meta: {
-            label: '3',
-            value: [1, 2, 3, 4]
-          }
-        })
-      }
-    }
-  ],
-  [
-    {
-      label: '节点4',
-      selected(graph, coordinate) {
-        graph.addNode({
-          width: 120,
-          height: 40,
-          coordinate,
-          meta: {
-            label: '4',
-            value: [1, 2, 3, 4]
-          }
-        })
-      }
-    }
-  ],
-  [
-    {
-      label: '全选',
-      selected: graph => {
-        graph.selectAll()
-      }
-    }
-  ]
-]
-```
-
 - `nodeMenu` 配置节点右键菜单
 
-```js
-[
-  [
-    {
-      label: '删除',
-      selected: node => {
-        node.remove()
-      }
-    },
-    {
-      label: '编辑',
-      selected: node => {
-        this.flowNodeClick(node.meta)
-      }
-    }
-  ]
-]
-```
-
 - `linkMenu` 配置连线右键菜单
-
-```js
-[
-  [
-    {
-      label: '删除',
-      selected: link => {
-        link.remove()
-      }
-    }
-  ]
-]
-```
 
 ![例1](https://s1.ax1x.com/2020/07/11/UQ3IsJ.gif)
 
 
+- `enterIntercept` 创建连线进入节点限制。如下图对连线至 "起始节点" 时函数返回 `false` 所以无法连线
+
+- `outputIntercept` 节点生成连线限制函数。如下图 "结束节点" 时函数返回 `false` 所以无法创建连线
 
 ![例2](https://s1.ax1x.com/2020/07/11/UQ37ZR.gif)
 
+- `getMouseCoordinate` 获取当前鼠标在 `graph` 坐标系的坐标。下图未设置 `graphMenu` 采用外部拖入通过函数获取坐标
+
+- `addNode` 添加节点。下图在使用外部拖入节点获取坐标后使用函数添加节点进入 `graph`
 
 ![例3](https://s1.ax1x.com/2020/07/11/UQ3oL9.gif)
