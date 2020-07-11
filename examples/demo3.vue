@@ -149,6 +149,7 @@
       docMouseup({clientX, clientY}) {
         const conf = this.dragConf
         conf.isDown = false
+
         if (conf.isMove) {
           const {
             top,
@@ -181,9 +182,10 @@
 
           conf.isMove = false
         }
-        if (conf.ele.parentNode) {
+
+        if (conf.ele) {
           conf.ele.remove()
-          console.log(conf.ele)
+          conf.ele = null
         }
       },
 

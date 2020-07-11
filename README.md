@@ -14,7 +14,7 @@
 ## Installation
 
 ```
-v1.3.0
+v1.3.1
 ```
 
 ```npm
@@ -63,3 +63,19 @@ Vue.use(SuperFlow)
 |addNode             | 添加节点                                      |options                                 |
 
 
+## Examples
+
+- `graphMenu` 自由配置右键创建节点菜单
+
+- `nodeMenu` 配置节点右键菜单
+
+- `linkMenu` 配置连线右键菜单
+
+![图1](https://s1.ax1x.com/2020/07/11/UQ3IsJ.gif)
+
+
+![图2](https://s1.ax1x.com/2020/07/11/UQ37ZR.gif)
+
+
+
+![图3](https://s1.ax1x.com/2020/07/11/UQ3oL9.gif)
