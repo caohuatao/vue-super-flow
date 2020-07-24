@@ -110,6 +110,18 @@
               selected: link => {
                 link.remove()
               }
+            },
+            {
+              label: '编辑',
+              selected: link => {
+                if(link.meta) {
+                  link.meta.info += 1
+                } else {
+                  link.meta = {
+                    info: 1
+                  }
+                }
+              }
             }
           ]
         ]

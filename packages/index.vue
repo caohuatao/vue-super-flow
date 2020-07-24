@@ -13,20 +13,17 @@
       v-if="temEdgeConf.visible"
       :padding="linkPadding"
       :graph="graph"
-      :link="temEdgeConf.link"
-      :link-color="lineColor"
-      :hover-color="onLineColor">
+      :link="temEdgeConf.link">
     </graph-line>
 
     <graph-line
       v-for="(edge, idx) in graph.linkList"
+      :index="idx"
       :padding="linkPadding"
       :graph="graph"
       :link="edge"
       :key="edge.key"
-      :link-color="lineColor"
-      :hover-color="onLineColor"
-      :link-desc="linkDesc">
+      :link-style="linkStyle">
     </graph-line>
 
     <mark-line
@@ -129,13 +126,9 @@
         type: Boolean,
         default: false
       },
-      lineColor: {
-        type: String,
-        default: '#666666'
-      },
-      onLineColor: {
-        type: String,
-        default: '#FF0000'
+      linkStyle: {
+        type: Object,
+        default: ()=> ({})
       },
       markLineColor: {
         type: String,
@@ -168,10 +161,6 @@
       linkPadding: {
         type: Number,
         default: 50,
-      },
-      linkDesc: {
-        type: Object,
-        default: ()=> ({})
       },
       enterIntercept: {
         type: Function,

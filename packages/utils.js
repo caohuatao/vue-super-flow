@@ -162,6 +162,14 @@ export function isUndef(val) {
   return toRawType(val) === 'undefined'
 }
 
+export function isString(val) {
+  return toRawType(val) === 'string'
+}
+
+export function isObject(val) {
+  return toRawType(val) === 'object'
+}
+
 export function arrayReplace(arr1, arr2) {
   arr1.splice(0, arr1.length, ...arr2)
 }

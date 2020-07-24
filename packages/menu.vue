@@ -63,9 +63,6 @@
       }
     },
     computed: {
-      show() {
-        return
-      },
       style() {
         return {
           left: this.position[0] + 'px',

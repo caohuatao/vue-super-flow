@@ -18,14 +18,19 @@
         type: Number,
         default: 50
       },
-      linkDesc: {
+      linkContent: {
+        type: Function,
+        default(link) {
+          return ''
+        }
+      },
+      linkStyle: {
         type: Object,
         default: () => ({})
       },
+      index: Number,
       graph: Object,
-      link: Object,
-      linkColor: String,
-      hoverColor: String
+      link: Object
     },
     data() {
       return {
@@ -35,19 +40,20 @@
         left: 0,
         currentPointList: [],
         currentPathPointList: null,
-        appendTextLen: 0,
-        descConf: Object.assign({
-          content(link) {return ''},
+        styles: Object.assign({
+          hover: '#FF0000',
           color: '#333333',
-          background: 'rgba(255,255,255,0.8)',
-          height: 14,
-          font: '14px Arial'
-        }, this.linkDesc)
+          textColor: '#666666',
+          textHover: '#666666',
+          font: '14px Arial',
+          dotted: false,
+          lineDash: [4, 4],
+          background: 'rgba(255,255,255,0.8)'
+        }, this.linkStyle)
       }
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
-      this.appendTextLen = this.ctx.measureText('...').width
       this.draw()
       this.graph.add('mousemove', this.rootMousemove)
       this.$once('hook:beforeDestroy', () => {
@@ -63,6 +69,7 @@
           if (bol && !this.graph.mouseonNode) {
             this.graph.mouseonLink = this.link
             this.$el.style.zIndex = '1'
+            this.graph.toLastLink(this.index)
           } else if (this.inPath) {
             this.graph.mouseonLink = null
             this.$el.style.zIndex = '0'
@@ -85,7 +92,6 @@
         this.bottom = maxY + this.padding
         this.left = minX - this.padding
 
-
         this.currentPointList = pointList.map(point => {
           return [
             Math.floor(point[0] - this.left),
@@ -106,13 +112,18 @@
 
       initLine() {
         this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
+        Object.assign(this.styles, this.link.style() || {})
         if (this.inPath) {
-          const color = this.link.hoverColor || this.hoverColor
+          const color =  this.styles.hover
+          const textColor = this.styles.textColor
           this.drawLine(color)
+          this.drawDesc(textColor)
           this.drawArrow(color)
         } else {
-          const color = this.link.lineColor || this.linkColor
+          const color = this.styles.color
+          const textColor = this.styles.textHover
           this.drawLine(color)
+          this.drawDesc(textColor)
           this.drawArrow(color)
         }
       },
@@ -120,16 +131,14 @@
       drawLine(strokeStyle) {
         const lineWidth = 2
         const ctx = this.ctx
-        const desc = this.descConf.content(this.link)
 
         ctx.lineJoin = 'round'
         ctx.beginPath()
-        if (this.link.dotted) {
-          ctx.setLineDash([4, 4])
+        if (this.styles.dotted) {
+          ctx.setLineDash(this.styles.lineDash)
         }
         ctx.lineWidth = lineWidth
         ctx.strokeStyle = strokeStyle
-
         this.currentPointList.forEach((point, idx) => {
           if (idx === 0) {
             ctx.moveTo(...point)
@@ -139,15 +148,20 @@
           }
         })
 
+        ctx.save()
+      },
+
+      drawDesc(color) {
+        const desc = this.link.desc(this.link)
+        const ctx = this.ctx
         if (desc) {
           const {
             font,
-            height,
-            background,
-            color
-          } = this.descConf
+            background
+          } = this.styles
 
           const {text, width} = this.descIntercept(desc)
+          const height = parseInt(font.match(/(\d+px)/g)[0])
           const descPosition = this.descPosition()
           const position = vector(descPosition).minus([width / 2, height / 2]).end
 
@@ -160,8 +174,6 @@
           this.ctx.fillStyle = color
           ctx.fillText(text, ...descPosition)
         }
-
-        ctx.save()
       },
 
       descPosition() {

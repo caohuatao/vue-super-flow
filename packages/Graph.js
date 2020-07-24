@@ -155,6 +155,14 @@ class Graph extends GraphEvent {
       ...nodeList.splice(idx, 1)
     )
   }
+
+  toLastLink(idx) {
+    const linkList = this.linkList
+    linkList.splice(
+      linkList.length - 1, 0,
+      ...linkList.splice(idx, 1)
+    )
+  }
   
   toJSON() {
     return {
