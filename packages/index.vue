@@ -23,7 +23,8 @@
       :link="edge"
       :key="edge.key"
       :link-color="lineColor"
-      :hover-color="onLineColor">
+      :hover-color="onLineColor"
+      :link-desc="linkDesc">
     </graph-line>
 
     <mark-line
@@ -161,6 +162,10 @@
       linkMenu: {
         type: Array,
         default: () => []
+      },
+      linkDesc: {
+        type: Object,
+        default: ()=> ({})
       },
       enterIntercept: {
         type: Function,
@@ -550,7 +555,7 @@
     background-color : transparent;
     width            : 100%;
     height           : 100%;
-    overflow: hidden;
+    overflow         : hidden;
 
     > .select-all__mask {
       position         : absolute;

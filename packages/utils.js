@@ -99,6 +99,16 @@ export function parallel(vectorA, vectorB) {
   return vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0] === 0
 }
 
+// 判断 y 轴相等
+export function yAxisEqual(vectorA, vectorB) {
+  return vectorA[1] === vectorB[1]
+}
+
+// 判断 x 轴相等
+export function xAxisEqual(vectorA, vectorB) {
+  return vectorA[0] === vectorB[0]
+}
+
 //
 export function vector(result) {
   const handler = {

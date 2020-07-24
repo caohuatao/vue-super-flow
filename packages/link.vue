@@ -10,11 +10,17 @@
 </template>
 
 <script>
+  import {cross, dotProduct, vector} from './utils'
+
   export default {
     props: {
       padding: {
         type: Number,
-        default: 20
+        default: 50
+      },
+      linkDesc: {
+        type: Object,
+        default: () => ({})
       },
       graph: Object,
       link: Object,
@@ -27,16 +33,26 @@
         right: 0,
         bottom: 0,
         left: 0,
-        currentPointList: []
+        currentPointList: [],
+        currentPathPointList: null,
+        appendTextLen: 0,
+        descConf: Object.assign({
+          content(link) {return '我的苹果'},
+          color: '#333333',
+          background: 'rgba(255,255,255,0.8)',
+          height: 14,
+          font: '14px Arial'
+        }, this.linkDesc)
       }
     },
     mounted() {
       this.ctx = this.$el.getContext('2d')
+      this.appendTextLen = this.ctx.measureText('...').width
       this.draw()
       this.graph.add('mousemove', this.rootMousemove)
-    },
-    beforeDestroy() {
-      this.graph.remove('mousemove', this.rootMousemove)
+      this.$once('hook:beforeDestroy', () => {
+        this.graph.remove('mousemove', this.rootMousemove)
+      })
     },
     computed: {
       inPath: {
@@ -62,12 +78,13 @@
           minY,
           maxX,
           maxY
-        } = this.link.pathPointList
+        } = this.currentPathPointList = this.link.pathPointList
 
         this.top = minY - this.padding
         this.right = maxX + this.padding
         this.bottom = maxY + this.padding
         this.left = minX - this.padding
+
 
         this.currentPointList = pointList.map(point => {
           return [
@@ -103,13 +120,13 @@
       drawLine(strokeStyle) {
         const lineWidth = 2
         const ctx = this.ctx
+        const desc = this.descConf.content(this.link)
+
         ctx.lineJoin = 'round'
         ctx.beginPath()
-
         if (this.link.dotted) {
           ctx.setLineDash([4, 4])
         }
-
         ctx.lineWidth = lineWidth
         ctx.strokeStyle = strokeStyle
 
@@ -121,7 +138,102 @@
             ctx.stroke()
           }
         })
+
+        if (desc) {
+          const {
+            font,
+            height,
+            background,
+            color
+          } = this.descConf
+
+          const {text, width} = this.descIntercept(desc)
+          const descPosition = this.descPosition()
+          const position = vector(descPosition).minus([width / 2, height / 2]).end
+
+          this.ctx.fillStyle = background
+          ctx.fillRect(position[0], position[1], width, height)
+
+          this.ctx.font = font
+          this.ctx.textAlign = 'center'
+          this.ctx.textBaseline = 'middle'
+          this.ctx.fillStyle = color
+          ctx.fillText(text, ...descPosition)
+        }
+
         ctx.save()
+      },
+
+      descPosition() {
+        let lineLen = 0
+        let contrastLen = 0
+        let descPosition = null
+        this.currentPointList.reduce((prev, current) => {
+          const vec = vector(prev)
+            .minus(current)
+            .end
+          lineLen += Math.abs(vec[0]) + Math.abs(vec[1])
+          return current
+        })
+        this.currentPointList.reduce((prev, current) => {
+          const vec = vector(prev)
+            .minus(current)
+            .end
+          const size = Math.abs(vec[0]) + Math.abs(vec[1])
+          const prevLen = contrastLen
+          const middle = lineLen / 2
+          contrastLen += size
+          if (contrastLen >= lineLen / 2 && descPosition === null) {
+            descPosition = prev
+            if (prev[0] === current[0]) {
+              if (prev[1] < current[1]) {
+                descPosition = vector(prev)
+                  .add([0, middle - prevLen])
+                  .end
+              } else {
+                descPosition = vector(prev)
+                  .add([0, -(middle - prevLen)])
+                  .end
+              }
+            } else {
+              if (prev[0] < current[0]) {
+                descPosition = vector(prev)
+                  .add([middle - prevLen, 0])
+                  .end
+              } else {
+                descPosition = vector(prev)
+                  .add([-(middle - prevLen), 0])
+                  .end
+              }
+            }
+          }
+          return current
+        })
+        return descPosition
+      },
+
+      descIntercept(str) {
+        const ctx = this.ctx
+        let strWidth = ctx.measureText(str).width
+        const maxWidth = this.padding * 2
+        const ellipsis = '...'
+        const ellipsisWidth = ctx.measureText(ellipsis).width
+        if (strWidth <= maxWidth || maxWidth <= ellipsisWidth) {
+          return {
+            text: str,
+            width: strWidth
+          }
+        } else {
+          let len = str.length
+          while (strWidth >= maxWidth - ellipsisWidth && len-- > 0) {
+            str = str.slice(0, len)
+            strWidth = ctx.measureText(str).width
+          }
+          return {
+            text: str + ellipsis,
+            width: maxWidth
+          }
+        }
       },
 
       drawArrow(fillStyle) {
@@ -173,7 +285,13 @@
 
       isPointInStroke(evt) {
         const [x, y] = this.getCoordinates(evt)
-        return this.link.isPointInLink([this.left + x, this.top + y])
+        return this.link.isPointInLink(
+          [
+            this.left + x,
+            this.top + y
+          ],
+          this.currentPathPointList
+        )
       },
 
       rootMousemove({evt}) {

@@ -6,7 +6,9 @@
 
 import {
   uuid,
-  vector
+  vector,
+  yAxisEqual,
+  xAxisEqual
 } from './utils'
 
 import {
@@ -25,6 +27,7 @@ export default class GraphLink {
       startAt = [0, 0],
       endAt = [0, 0],
       meta = null,
+      desc = '',
       
       dotted = false,
       lineColor = null,
@@ -37,6 +40,7 @@ export default class GraphLink {
     this.graph = graph
     this.start = start
     this.meta = meta
+    this.desc = desc
     
     this.end = end
     this.startDirection = directionVector[direction.top]
@@ -90,7 +94,6 @@ export default class GraphLink {
   }
   
   set movePosition(offset) {
-    
     this._movePosition = offset
     
     if (this.end) return
@@ -145,7 +148,6 @@ export default class GraphLink {
   }
   
   coordinateList(turnRatio = 0.5) {
-    
     const entryPoint = this.startCoordinate()
     const exitPoint = this.endCoordinate()
     
@@ -205,7 +207,6 @@ export default class GraphLink {
       const point2 = vector(point1)
         .add(endDirection)
         .end
-      
       points.push(point1, point2)
       
     } else {
@@ -224,7 +225,6 @@ export default class GraphLink {
         .end
       
       points.push(point1, point2, point3)
-      
     }
     
     points.push(exitPoint)
@@ -260,17 +260,15 @@ export default class GraphLink {
     }
   }
   
-  isPointInLink(position, bol) {
+  isPointInLink(position, pathPointList) {
     const {
       pointList,
       minX,
       minY,
       maxX,
       maxY
-    } = this.pathPointList
-  
+    } = pathPointList || this.pathPointList
     
-  
     const n = 5
     
     if (
@@ -290,7 +288,6 @@ export default class GraphLink {
       const right = Math.max(prev[0], current[0]) + n
       const bottom = Math.max(prev[1], current[1]) + n
       const left = Math.min(prev[0], current[0]) - n
-      
       
       const [x, y] = position
       
