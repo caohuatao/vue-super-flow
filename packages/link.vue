@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import {cross, dotProduct, vector} from './utils'
+  import { cross, dotProduct, vector } from './utils'
 
   export default {
     props: {
@@ -41,14 +41,14 @@
         currentPointList: [],
         currentPathPointList: null,
         styles: Object.assign({
-          hover: '#FF0000',
-          color: '#333333',
-          textColor: '#666666',
-          textHover: '#666666',
-          font: '14px Arial',
+          hover: '#FF00FF',
+          color: '#FFFF00',
+          textColor: '#333333',
+          textHover: '#FF0000',
+          font: 'bold 14px Arial',
           dotted: false,
           lineDash: [4, 4],
-          background: 'rgba(255,255,255,0.8)'
+          background: 'rgba(255,255,255,1)'
         }, this.linkStyle)
       }
     },
@@ -114,14 +114,14 @@
         this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
         Object.assign(this.styles, this.link.style() || {})
         if (this.inPath) {
-          const color =  this.styles.hover
-          const textColor = this.styles.textColor
+          const color = this.styles.hover
+          const textColor = this.styles.textHover
           this.drawLine(color)
           this.drawDesc(textColor)
           this.drawArrow(color)
         } else {
           const color = this.styles.color
-          const textColor = this.styles.textHover
+          const textColor = this.styles.textColor
           this.drawLine(color)
           this.drawDesc(textColor)
           this.drawArrow(color)
@@ -160,6 +160,10 @@
             background
           } = this.styles
 
+          this.ctx.font = font
+          this.ctx.textAlign = 'center'
+          this.ctx.textBaseline = 'middle'
+
           const {text, width} = this.descIntercept(desc)
           const height = parseInt(font.match(/(\d+px)/g)[0])
           const descPosition = this.descPosition()
@@ -167,10 +171,6 @@
 
           this.ctx.fillStyle = background
           ctx.fillRect(position[0], position[1], width, height)
-
-          this.ctx.font = font
-          this.ctx.textAlign = 'center'
-          this.ctx.textBaseline = 'middle'
           this.ctx.fillStyle = color
           ctx.fillText(text, ...descPosition)
         }
@@ -221,13 +221,15 @@
           }
           return current
         })
+
         return descPosition
       },
 
       descIntercept(str) {
         const ctx = this.ctx
         let strWidth = ctx.measureText(str).width
-        const maxWidth = this.padding * 2
+
+        const maxWidth = this.padding * 2 - 10
         const ellipsis = '...'
         const ellipsisWidth = ctx.measureText(ellipsis).width
         if (strWidth <= maxWidth || maxWidth <= ellipsisWidth) {
@@ -243,7 +245,7 @@
           }
           return {
             text: str + ellipsis,
-            width: maxWidth
+            width: maxWidth + ellipsisWidth
           }
         }
       },

@@ -15,7 +15,7 @@ import {
 } from './types'
 
 function descFun(link) {
-  return link.meta ? link.meta.info : '1111'
+  return link.meta ? link.meta.info : 'No/Yes'
 }
 
 function styleFun(link) {
