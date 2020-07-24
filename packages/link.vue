@@ -37,7 +37,7 @@
         currentPathPointList: null,
         appendTextLen: 0,
         descConf: Object.assign({
-          content(link) {return '我的苹果'},
+          content(link) {return ''},
           color: '#333333',
           background: 'rgba(255,255,255,0.8)',
           height: 14,

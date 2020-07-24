@@ -11,6 +11,7 @@
 
     <graph-line
       v-if="temEdgeConf.visible"
+      :padding="linkPadding"
       :graph="graph"
       :link="temEdgeConf.link"
       :link-color="lineColor"
@@ -19,6 +20,7 @@
 
     <graph-line
       v-for="(edge, idx) in graph.linkList"
+      :padding="linkPadding"
       :graph="graph"
       :link="edge"
       :key="edge.key"
@@ -162,6 +164,10 @@
       linkMenu: {
         type: Array,
         default: () => []
+      },
+      linkPadding: {
+        type: Number,
+        default: 50,
       },
       linkDesc: {
         type: Object,
