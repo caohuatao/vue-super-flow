@@ -12,12 +12,12 @@
       @mousedown="close">
     </div>
     <ul
+      v-show="visible"
       tabindex="-1"
       class="super-flow__menu"
-      v-show="visible"
       @mousemove.stop.prevent
-      @blur="close"
       @contextmenu.prevent.stop
+      @blur="close"
       :style="style">
       <template v-for="subList in list">
         <li
@@ -34,7 +34,6 @@
         </li>
         <li class="super-flow__menu-line"></li>
       </template>
-
     </ul>
   </div>
 

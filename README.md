@@ -1,6 +1,9 @@
 
+
+
 # vue-super-flow
-* A flowchart editor component base on Vue. 
+* A flowchart editor component base on Vue.
+* Vue flowchart.
 * 一个基于 Vue 的在线流程编辑组件。
 * [Demo](https://caohuatao.github.io/demo/)
 * [docs](https://caohuatao.github.io)

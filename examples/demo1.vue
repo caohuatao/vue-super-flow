@@ -127,7 +127,7 @@
     },
     methods: {
       flowNodeClick(meta) {
-        console.log(`编辑 ${meta.label}`)
+        console.log(this.$refs.superFlow.graph)
       }
     }
   }
