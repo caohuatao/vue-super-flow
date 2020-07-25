@@ -10,7 +10,12 @@
 </template>
 
 <script>
-  import {cross, dotProduct, isFun, isObject, isString, vector} from './utils'
+  import {
+    isFun,
+    isObject,
+    isString,
+    vector
+  } from './utils'
 
   export default {
     props: {
@@ -32,17 +37,7 @@
         bottom: 0,
         left: 0,
         currentPointList: [],
-        currentPathPointList: null,
-        styles: Object.assign({
-          hover: '#FF0000',
-          color: '#666666',
-          textColor: '#666666',
-          textHover: '#FF0000',
-          font: '14px Arial',
-          dotted: false,
-          lineDash: [4, 4],
-          background: 'rgba(255,255,255,0.6)'
-        }, this.linkBaseStyle)
+        currentPathPointList: null
       }
     },
     mounted() {
@@ -54,6 +49,18 @@
       })
     },
     computed: {
+      styles() {
+        return Object.assign({
+          hover: '#FF0000',
+          color: '#666666',
+          textColor: '#666666',
+          textHover: '#FF0000',
+          font: '14px Arial',
+          dotted: false,
+          lineDash: [4, 4],
+          background: 'rgba(255,255,255,0.6)'
+        }, this.linkBaseStyle)
+      },
       inPath: {
         get() {
           return this.graph.mouseonLink === this.link

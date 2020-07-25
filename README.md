@@ -87,8 +87,7 @@ function linkDesc(link) {
 ```js
 function linkStyle(link) {
    /**
-     1、根据 link 对象的属性判断定制连线样式
-     2、描述非字符串或为空时不会渲染描述文字
+     根据 link 对象的属性判断定制连线样式
    */
    return {
       // ... 可选属性 参考：[linkBaseStyle](#linkBaseStyle)
