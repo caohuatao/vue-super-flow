@@ -17,6 +17,7 @@ npm install vue-super-flow
 yran add vue-spuer-flow
 
 ```
+
 ```js
 
 import SuperFlow from 'vue-super-flow'
