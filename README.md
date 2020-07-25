@@ -10,10 +10,6 @@
 
 ## Installation
 
-```
-v1.3.1
-```
-
 ```npm
 
 npm install vue-super-flow
