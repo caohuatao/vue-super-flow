@@ -378,7 +378,6 @@
           const offset = vector(this.moveAllConf.downPosition)
             .differ([evt.clientX, evt.clientY])
             .end
-
           arrayReplace(
             this.graph.origin,
             vector(this.moveAllConf.origin)
@@ -483,11 +482,7 @@
 
       selectAllMaskMouseDown(evt) {
         this.moveAllConf.isMove = true
-        arrayReplace(
-          this.moveAllConf.origin,
-          this.graph.origin,
-        )
-        // this.moveAllConf.origin = [...this.graph.origin]
+        this.moveAllConf.origin = [...this.graph.origin]
         this.moveAllConf.downPosition = [
           evt.clientX,
           evt.clientY
