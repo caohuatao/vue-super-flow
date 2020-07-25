@@ -71,9 +71,9 @@ function linkDesc(link) {
    color: '#666666',        // 连线颜色
    textColor: '#666666',    // 连线描述文字颜色
    textHover: '#FF0000',    // 连线 hover 时描述文字颜色
-   font: '14px Arial',      // 连线 描述文字 font 参考 [ctx.font](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/font)
+   font: '14px Arial',      // 连线 描述文字 font 参考 https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/font
    dotted: false,           // 连线 是否是虚线
-   lineDash: [4, 4],        // 为虚线时 虚线参数  参考：[ctx.setLineDash](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+   lineDash: [4, 4],        // 为虚线时 虚线参数  参考：https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash
    background: 'rgba(255,255,255,0.6)'  // 描述文字背景  
 }
 */
