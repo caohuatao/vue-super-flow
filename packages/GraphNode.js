@@ -145,24 +145,23 @@ export default class GraphNode {
   }
   
   fixOffset(offset, dir) {
-    const regular = !this.graph.libertyStart
     switch (dir) {
       case direction.top:
-        if (regular) offset[0] = this.width / 2
+        offset[0] = this.width / 2
         offset[1] = 0
         break
       case direction.right:
         offset[0] = this.width
-        if (regular) offset[1] = this.height / 2
+        offset[1] = this.height / 2
         break
       case direction.bottom:
-        if (regular) offset[0] = this.width / 2
+        offset[0] = this.width / 2
         offset[1] = this.height
         break
       case direction.left:
       default:
         offset[0] = 0
-        if (regular) offset[1] = this.height / 2
+        offset[1] = this.height / 2
         break
     }
     return offset

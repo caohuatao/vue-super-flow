@@ -13,7 +13,10 @@
       v-if="temEdgeConf.visible"
       :padding="linkPadding"
       :graph="graph"
-      :link="temEdgeConf.link">
+      :link="temEdgeConf.link"
+      :link-base-style="linkBaseStyle"
+      :link-desc="linkDesc"
+      :link-style="linkStyle">
     </graph-line>
 
     <graph-line
@@ -23,6 +26,8 @@
       :graph="graph"
       :link="edge"
       :key="edge.key"
+      :link-base-style="linkBaseStyle"
+      :link-desc="linkDesc"
       :link-style="linkStyle">
     </graph-line>
 
@@ -122,13 +127,17 @@
         type: Boolean,
         default: true
       },
-      libertyStartStop: {
-        type: Boolean,
-        default: false
+      linkDesc: {
+        type: [Function, null],
+        default: null
       },
       linkStyle: {
+        type: [Function, null],
+        default: null
+      },
+      linkBaseStyle: {
         type: Object,
-        default: ()=> ({})
+        default: () => ({})
       },
       markLineColor: {
         type: String,
@@ -160,7 +169,7 @@
       },
       linkPadding: {
         type: Number,
-        default: 50,
+        default: 50
       },
       enterIntercept: {
         type: Function,
@@ -176,8 +185,7 @@
         graph: new Graph({
           width: this.width,
           height: this.height,
-          origin: this.origin,
-          libertyStart: this.libertyStartStop
+          origin: this.origin
         }),
         menuConf: {
           visible: false,

@@ -17,8 +17,7 @@ class Graph extends GraphEvent {
     const {
       nodeList = [],
       linkList = [],
-      origin,
-      libertyStart
+      origin
     } = options
     
     super()
@@ -36,8 +35,6 @@ class Graph extends GraphEvent {
     
     this.initNode(nodeList)
     this.initLink(linkList)
-    
-    this.libertyStart = libertyStart
   }
   
   pointMap() {

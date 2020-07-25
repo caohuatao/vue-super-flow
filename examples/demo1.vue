@@ -5,11 +5,15 @@
 -->
 <template>
   <div class="super-flow-demo1">
+
     <super-flow
       ref="superFlow"
       :graph-menu="graphMenu"
       :node-menu="nodeMenu"
-      :link-menu="linkMenu">
+      :link-menu="linkMenu"
+      :link-base-style="linkBaseStyle"
+      :link-style="linkStyle"
+      :link-desc="linkDesc">
       <template v-slot:node="{meta}">
         <div
           class="flow-node">
@@ -120,14 +124,39 @@
               selected: link => {
                 link.remove()
               }
+            },
+            {
+              label: '编辑',
+              selected: link => {
+                if(link.meta) {
+                  link.meta.info += '以'
+                } else {
+                  link.meta = {
+                    info: '123123'
+                  }
+                }
+              }
             }
           ]
-        ]
+        ],
+        linkBaseStyle: {
+          font: '14px Arial',
+          dotted: false,
+          lineDash: [4, 4]
+        }
       }
     },
     methods: {
       flowNodeClick(meta) {
         console.log(this.$refs.superFlow.graph)
+      },
+      linkStyle(link) {
+        return {
+          // hover: '#FF00FF'
+        }
+      },
+      linkDesc(link) {
+        return link.meta ? link.meta.info : ''
       }
     }
   }

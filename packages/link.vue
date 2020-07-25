@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import { cross, dotProduct, vector } from './utils'
+  import {cross, dotProduct, isFun, isObject, isString, vector} from './utils'
 
   export default {
     props: {
@@ -18,16 +18,9 @@
         type: Number,
         default: 50
       },
-      linkContent: {
-        type: Function,
-        default(link) {
-          return ''
-        }
-      },
-      linkStyle: {
-        type: Object,
-        default: () => ({})
-      },
+      linkDesc: [Function, null],
+      linkStyle: [Function, null],
+      linkBaseStyle: Object,
       index: Number,
       graph: Object,
       link: Object
@@ -41,15 +34,15 @@
         currentPointList: [],
         currentPathPointList: null,
         styles: Object.assign({
-          hover: '#FF00FF',
-          color: '#FFFF00',
-          textColor: '#333333',
+          hover: '#FF0000',
+          color: '#666666',
+          textColor: '#666666',
           textHover: '#FF0000',
-          font: 'bold 14px Arial',
+          font: '14px Arial',
           dotted: false,
           lineDash: [4, 4],
-          background: 'rgba(255,255,255,1)'
-        }, this.linkStyle)
+          background: 'rgba(255,255,255,0.6)'
+        }, this.linkBaseStyle)
       }
     },
     mounted() {
@@ -112,7 +105,12 @@
 
       initLine() {
         this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
-        Object.assign(this.styles, this.link.style() || {})
+        if (this.linkStyle) {
+          const style = this.linkStyle()
+          if (isObject(style)) {
+            Object.assign(this.styles, style)
+          }
+        }
         if (this.inPath) {
           const color = this.styles.hover
           const textColor = this.styles.textHover
@@ -152,9 +150,13 @@
       },
 
       drawDesc(color) {
-        const desc = this.link.desc(this.link)
         const ctx = this.ctx
-        if (desc) {
+        let desc
+        if (isFun(this.linkDesc)) {
+          desc = this.linkDesc(this.link)
+        }
+
+        if (isString(desc)) {
           const {
             font,
             background
