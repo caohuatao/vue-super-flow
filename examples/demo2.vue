@@ -1,120 +1,346 @@
 <!--
  * User: CHT
- * Date: 2020/5/27
- * Time: 9:52
+ * Date: 2020/6/28
+ * Time: 17:48
 -->
 <template>
-  <div class="super-flow-demo2">
-    <super-flow
-      ref="superFlow"
-      :node-list="nodeList"
-      :link-list="linkList"
-      :width="1000"
-      :height="800"
-      :origin="[782, 463]"
-      :graph-menu="graphMenuList"
-      :node-menu="nodeMenuList"
-      :link-menu="linkMenuList"
-      :enter-intercept="enterIntercept"
-      :output-intercept="outputIntercept">
-      <template v-slot:node="{meta}">
-        <div :class="`flow-node flow-node-${meta.prop}`">
-          <header>
-            {{meta.name}}
-          </header>
-          <section></section>
-        </div>
-      </template>
-      <!--      <template v-slot:menuItem="{item}">-->
-      <!--        <span>{{item.label}}</span>-->
-      <!--      </template>-->
-    </super-flow>
+  <div>
+    <div>
+      <el-form
+        class="link-base-style-form"
+        ref="linkBaseStyle"
+        label-width="100px"
+        :model="linkBaseStyle">
+        <h4>linkBaseStyle</h4>
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-form-item label="color">
+              <el-color-picker
+                v-model="linkBaseStyle.color">
+              </el-color-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="hover">
+              <el-color-picker
+                v-model="linkBaseStyle.hover">
+              </el-color-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="textColor">
+              <el-color-picker
+                v-model="linkBaseStyle.textColor">
+              </el-color-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="textHover">
+              <el-color-picker
+                v-model="linkBaseStyle.textHover">
+              </el-color-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="font">
+              <el-select
+                size="medium"
+                v-model="linkBaseStyle.font">
+                <el-option
+                  v-for="item in fontList"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="dotted">
+              <el-switch
+                v-model="linkBaseStyle.dotted"
+                active-color="#13ce66"
+                inactive-color="#ff4949">
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="lineDash">
+              <el-select
+                size="medium"
+                style="width: 80px"
+                v-model="linkBaseStyle.lineDash[0]">
+                <el-option
+                  v-for="item in [1,2,3,4,5,6,7,8]"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+              <el-select
+                size="medium"
+                style="width: 80px"
+                v-model="linkBaseStyle.lineDash[1]">
+                <el-option
+                  v-for="item in [1,2,3,4,5,6,7,8]"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="background">
+              <el-color-picker
+                v-model="linkBaseStyle.background">
+              </el-color-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+
+    <div class="super-flow-demo1">
+      <div class="node-container">
+        <span
+          class="node-item"
+          v-for="item in nodeItemList"
+          @mousedown="evt => nodeItemMouseDown(evt, item.value)">
+          {{item.label}}
+        </span>
+      </div>
+      <div
+        class="flow-container"
+        ref="flowContainer">
+        <super-flow
+          ref="superFlow"
+          :graph-menu="graphMenu"
+          :node-menu="nodeMenu"
+          :link-menu="linkMenu"
+          :link-base-style="linkBaseStyle"
+          :link-style="linkStyle"
+          :link-desc="linkDesc">
+          <template v-slot:node="{meta}">
+            <div
+              class="flow-node">
+              {{meta.name}}
+            </div>
+          </template>
+        </super-flow>
+      </div>
+    </div>
+
+    <el-dialog
+      :title="drawerConf.title"
+      :visible.sync="drawerConf.visible"
+      :close-on-click-modal="false"
+      width="500px">
+      <el-form
+        v-show="drawerConf.type === drawerType.node"
+        ref="nodeSetting"
+        :model="nodeSetting">
+        <el-form-item
+          label="节点名称"
+          prop="name">
+          <el-input
+            v-model="nodeSetting.name"
+            placeholder="请输入节点名称"
+            maxlength="30">
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          label="节点描述"
+          prop="desc">
+          <el-input
+            v-model="nodeSetting.desc"
+            placeholder="请输入节点描述"
+            maxlength="30">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <el-form
+        v-show="drawerConf.type === drawerType.link"
+        ref="linkSetting"
+        :model="linkSetting">
+        <el-form-item
+          label="连线描述"
+          prop="desc">
+          <el-input
+            v-model="linkSetting.desc"
+            placeholder="请输入连线描述">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer">
+        <el-button
+          @click="drawerConf.cancel">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="settingSubmit">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+
+  const drawerType = {
+    node: 0,
+    link: 1
+  }
+
   export default {
     data() {
       return {
-        nodeList: [],
-        linkList: [],
-        graphMenuList: [
+        drawerType,
+        drawerConf: {
+          title: '',
+          visible: false,
+          type: null,
+          info: null,
+          open: (type, info) => {
+            const conf = this.drawerConf
+            conf.visible = true
+            conf.type = type
+            conf.info = info
+            if (conf.type === drawerType.node) {
+              conf.title = '节点'
+              if (this.$refs.nodeSetting) this.$refs.nodeSetting.resetFields()
+              this.$set(this.nodeSetting, 'name', info.meta.name)
+              this.$set(this.nodeSetting, 'desc', info.meta.desc)
+            } else {
+              conf.title = '连线'
+              if (this.$refs.linkSetting) this.$refs.linkSetting.resetFields()
+              this.$set(this.linkSetting, 'desc', info.meta ? info.meta.desc : '')
+            }
+          },
+          cancel: () => {
+            this.drawerConf.visible = false
+            if (this.drawerConf.type === drawerType.node) {
+              this.$refs.nodeSetting.clearValidate()
+            } else {
+              this.$refs.linkSetting.clearValidate()
+            }
+          }
+        },
+        linkSetting: {
+          desc: ''
+        },
+        nodeSetting: {
+          name: '',
+          desc: ''
+        },
+
+        dragConf: {
+          isDown: false,
+          isMove: false,
+          offsetTop: 0,
+          offsetLeft: 0,
+          clientX: 0,
+          clientY: 0,
+          ele: null,
+          info: null
+        },
+        nodeItemList: [
+          {
+            label: '节点1',
+            value: {
+              width: 120,
+              height: 40,
+              meta: {
+                label: '1',
+                name: '1'
+              }
+            }
+          },
+          {
+            label: '节点2',
+            value: {
+              width: 120,
+              height: 40,
+              meta: {
+                label: '2',
+                name: '2'
+              }
+            }
+          },
+          {
+            label: '节点3',
+            value: {
+              width: 120,
+              height: 40,
+              meta: {
+                label: '3',
+                name: '3'
+              }
+            }
+          },
+          {
+            label: '节点4',
+            value: {
+              width: 120,
+              height: 40,
+              meta: {
+                label: '4',
+                name: '4'
+              }
+            }
+          }
+        ],
+
+        graphMenu: [
           [
             {
-              label: '开始节点',
+              // 选项 label
+              label: '节点1',
+              // 选项是否禁用
               disable(graph) {
-                return !!graph.nodeList.find(node => node.meta.prop === 'start')
+                return !!graph.nodeList.find(node => node.meta.label === '1')
               },
-              selected: (graph, coordinate) => {
+              // 选项选中后回调函数
+              selected(graph, coordinate) {
                 graph.addNode({
-                  width: 100,
-                  height: 80,
-                  coordinate: coordinate,
+                  width: 120,
+                  height: 40,
+                  coordinate,
                   meta: {
-                    prop: 'start',
-                    name: '开始节点'
+                    label: '1',
+                    name: '1'
                   }
                 })
               }
             },
             {
-              label: '条件节点',
-              disable: false,
-              selected: (graph, coordinate) => {
+              label: '节点2',
+              selected(graph, coordinate) {
                 graph.addNode({
-                  width: 200,
-                  height: 100,
-                  coordinate: coordinate,
+                  width: 120,
+                  height: 40,
+                  coordinate,
                   meta: {
-                    prop: 'condition',
-                    name: '条件节点'
+                    label: '2',
+                    name: '2'
                   }
                 })
               }
             },
             {
-              label: '审批节点',
-              disable: false,
-              selected: (graph, coordinate) => {
+              label: '节点3',
+              selected(graph, coordinate) {
                 graph.addNode({
-                  width: 200,
-                  height: 100,
-                  coordinate: coordinate,
+                  width: 120,
+                  height: 40,
+                  coordinate,
                   meta: {
-                    prop: 'approval',
-                    name: '审批节点'
-                  }
-                })
-              }
-            },
-            {
-              label: '抄送节点',
-              disable: false,
-              selected: (graph, coordinate) => {
-                graph.addNode({
-                  width: 200,
-                  height: 100,
-                  coordinate: coordinate,
-                  meta: {
-                    prop: 'cc',
-                    name: '抄送节点'
-                  }
-                })
-              }
-            },
-            {
-              label: '结束节点',
-              disable(graph) {
-                return !!graph.nodeList.find(point => point.meta.prop === 'end')
-              },
-              selected: (graph, coordinate) => {
-                graph.addNode({
-                  width: 80,
-                  height: 50,
-                  coordinate: coordinate,
-                  meta: {
-                    prop: 'end',
-                    name: '结束节点'
+                    label: '3',
+                    name: '3'
                   }
                 })
               }
@@ -122,331 +348,276 @@
           ],
           [
             {
-              label: '打印数据',
-              selected: (graph, coordinate) => {
-                console.log(JSON.stringify(graph.toJSON(), null, 2))
+              label: '节点4',
+              selected(graph, coordinate) {
+                graph.addNode({
+                  width: 120,
+                  height: 40,
+                  coordinate,
+                  meta: {
+                    label: '4',
+                    name: '4'
+                  }
+                })
               }
-            },
+            }
+          ],
+          [
             {
               label: '全选',
-              selected: (graph, coordinate) => {
+              selected: graph => {
                 graph.selectAll()
               }
             }
           ]
         ],
-        nodeMenuList: [
+        nodeMenu: [
           [
             {
               label: '删除',
-              disable: false,
-              hidden(node) {
-                return node.meta.prop === 'start'
-              },
-              selected(node, coordinate) {
+              selected: node => {
                 node.remove()
+              }
+            },
+            {
+              label: '编辑',
+              selected: node => {
+                this.drawerConf.open(drawerType.node, node)
               }
             }
           ]
         ],
-        linkMenuList: [
+        linkMenu: [
           [
             {
               label: '删除',
-              disable: false,
-              selected(link, coordinate) {
+              selected: link => {
                 link.remove()
+              }
+            },
+            {
+              label: '编辑',
+              selected: link => {
+                this.drawerConf.open(drawerType.link, link)
               }
             }
           ]
+        ],
+
+        linkBaseStyle: {
+          color: '#666666',           // line 颜色
+          hover: '#FF0000',           // line hover 的颜色
+          textColor: '#666666',       // line 描述文字颜色
+          textHover: '#FF0000',       // line 描述文字 hover 颜色
+          font: '14px Arial',         // line 描述文字 字体设置 参考 canvas font
+          dotted: false,              // 是否是虚线
+          lineDash: [4, 4],           // 虚线时生效
+          background: 'rgba(255,255,255,0.6)'    // 描述文字背景色
+        },
+        fontList: [
+          '14px Arial',
+          'italic small-caps bold 12px arial'
         ]
       }
     },
-    created() {
-      const nodeList = [
-        {
-          id: 'nodeni9QOqT3mI7hsMau',
-          width: 200,
-          height: 100,
-          coordinate: [-442, -283],
-          meta: {
-            prop: 'condition',
-            name: '条件节点'
-          }
-        },
-        {
-          id: 'node7WXbwOR6kSFD53Hf',
-          width: 200,
-          height: 100,
-          coordinate: [-442, -133],
-          meta: {
-            prop: 'condition',
-            name: '条件节点'
-          }
-        },
-        {
-          id: 'nodeG3WeFnzCI15X58Qw',
-          width: 200,
-          height: 100,
-          coordinate: [-442, 17],
-          meta: {
-            prop: 'condition',
-            name: '条件节点'
-          }
-        },
-        {
-          id: 'nodeS3WgFnzCI15X58Qw',
-          width: 100,
-          height: 80,
-          coordinate: [-642, -123],
-          meta: {
-            prop: 'start',
-            name: '开始节点'
-          }
-        },
-        {
-          id: 'nodeZBK0ZPpgMe1exezE',
-          width: 200,
-          height: 100,
-          coordinate: [-142, -283],
-          meta: {
-            prop: 'approval',
-            name: '审批节点'
-          }
-        },
-        {
-          id: 'nodefHsy9uJObPtdHZv1',
-          width: 200,
-          height: 100,
-          coordinate: [-142, -133],
-          meta: {
-            prop: 'approval',
-            name: '审批节点'
-          }
-        },
-        {
-          id: 'node0aiA9VuhjkiAdZCs',
-          width: 200,
-          height: 100,
-          coordinate: [-142, 17],
-          meta: {
-            prop: 'approval',
-            name: '审批节点'
-          }
-        },
-        {
-          id: 'nodeqkK9zjcDz53xKRlK',
-          width: 200,
-          height: 100,
-          coordinate: [158, -208],
-          meta: {
-            prop: 'cc',
-            name: '抄送节点'
-          }
-        },
-        {
-          id: 'nodeDhVU6w2KbEnJCjZs',
-          width: 80,
-          height: 50,
-          coordinate: [458, -108],
-          meta: {
-            prop: 'end',
-            name: '结束节点'
-          }
-        },
-        {
-          id: 'nodesyxisLH1hJDdPsxx',
-          width: 200,
-          height: 100,
-          coordinate: [158, -58],
-          meta: {
-            prop: 'cc',
-            name: '抄送节点'
-          }
-        }
-      ]
-      const linkList = [
-        {
-          id: 'linkQfGI6apBdZm4qHe3',
-          startId: 'nodeS3WgFnzCI15X58Qw',
-          endId: 'nodeni9QOqT3mI7hsMau',
-          startAt: [100, 40],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkJalC4dAzpQfu5WMi',
-          startId: 'nodeS3WgFnzCI15X58Qw',
-          endId: 'node7WXbwOR6kSFD53Hf',
-          startAt: [100, 40],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkjUVmbLfRhxPfFISJ',
-          startId: 'nodeS3WgFnzCI15X58Qw',
-          endId: 'nodeG3WeFnzCI15X58Qw',
-          startAt: [100, 40],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkP3zJNvSKHutesZs4',
-          startId: 'nodeni9QOqT3mI7hsMau',
-          endId: 'nodeZBK0ZPpgMe1exezE',
-          startAt: [200, 50],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkYlzpeKssBYwxQdLr',
-          startId: 'node7WXbwOR6kSFD53Hf',
-          endId: 'nodefHsy9uJObPtdHZv1',
-          startAt: [200, 50],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkOwoUKiipYyVz3CYT',
-          startId: 'nodeG3WeFnzCI15X58Qw',
-          endId: 'node0aiA9VuhjkiAdZCs',
-          startAt: [200, 50],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'link3UhFce4rO4TfAL2K',
-          startId: 'nodeZBK0ZPpgMe1exezE',
-          endId: 'nodeqkK9zjcDz53xKRlK',
-          startAt: [200, 50],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkMjaKIDuDfbgqSHoz',
-          startId: 'nodefHsy9uJObPtdHZv1',
-          endId: 'nodeqkK9zjcDz53xKRlK',
-          startAt: [200, 50],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'linkdUBf9aeOoXR3X65Y',
-          startId: 'node0aiA9VuhjkiAdZCs',
-          endId: 'nodesyxisLH1hJDdPsxx',
-          startAt: [200, 50],
-          endAt: [0, 50],
-          meta: null
-        },
-        {
-          id: 'link02lGIqBJZWrTlCFv',
-          startId: 'nodeqkK9zjcDz53xKRlK',
-          endId: 'nodeDhVU6w2KbEnJCjZs',
-          startAt: [200, 50],
-          endAt: [0, 25],
-          meta: null
-        },
-        {
-          id: 'link3i9b2ZsNM8wyjRop',
-          startId: 'nodesyxisLH1hJDdPsxx',
-          endId: 'nodeDhVU6w2KbEnJCjZs',
-          startAt: [200, 50],
-          endAt: [0, 25],
-          meta: null
-        }
-      ]
-
-      setTimeout(()=>{
-        this.nodeList = nodeList
-        this.linkList = linkList
-      }, 3000)
+    mounted() {
+      document.addEventListener('mousemove', this.docMousemove)
+      document.addEventListener('mouseup', this.docMouseup)
+      this.$once('hook:beforeDestroy', () => {
+        document.removeEventListener('mousemove', this.docMousemove)
+        document.removeEventListener('mouseup', this.docMouseup)
+      })
     },
     methods: {
-      enterIntercept(formNode, toNode, graph) {
-        const formType = formNode.meta.prop
-        switch (toNode.meta.prop) {
-          case 'start':
-            return false
-          case 'approval':
-            return [
-              'start',
-              'approval',
-              'condition',
-              'cc'
-            ].includes(formType)
-          case 'condition':
-            return [
-              'start',
-              'approval',
-              'condition',
-              'cc'
-            ].includes(formType)
-          case 'end':
-            return [
-              'approval',
-              'cc'
-            ].includes(formType)
-          default:
-            return true
+      flowNodeClick(meta) {
+        console.log(this.$refs.superFlow.graph)
+      },
+      linkStyle(link) {
+        return {
+          // hover: '#FF00FF'
         }
       },
-      outputIntercept(node, graph) {
-        return !(node.meta.prop === 'end')
+      linkDesc(link) {
+        return link.meta ? link.meta.desc : ''
+      },
+      settingSubmit() {
+        const conf = this.drawerConf
+        if (this.drawerConf.type === drawerType.node) {
+          if (!conf.info.meta) conf.info.meta = {}
+          Object.keys(this.nodeSetting).forEach(key => {
+            this.$set(conf.info.meta, key, this.nodeSetting[key])
+          })
+          this.$refs.nodeSetting.resetFields()
+        } else {
+          if (!conf.info.meta) conf.info.meta = {}
+          Object.keys(this.linkSetting).forEach(key => {
+            this.$set(conf.info.meta, key, this.linkSetting[key])
+          })
+          this.$refs.linkSetting.resetFields()
+        }
+        conf.visible = false
+      },
+
+
+      docMousemove({clientX, clientY}) {
+        const conf = this.dragConf
+
+        if (conf.isMove) {
+
+          conf.ele.style.top = clientY - conf.offsetTop + 'px'
+          conf.ele.style.left = clientX - conf.offsetLeft + 'px'
+
+        } else if (conf.isDown) {
+
+          // 鼠标移动量大于 5 时 移动状态生效
+          conf.isMove =
+            Math.abs(clientX - conf.clientX) > 5
+            || Math.abs(clientY - conf.clientY) > 5
+
+        }
+      },
+
+      docMouseup({clientX, clientY}) {
+        const conf = this.dragConf
+        conf.isDown = false
+
+        if (conf.isMove) {
+          const {
+            top,
+            right,
+            bottom,
+            left
+          } = this.$refs.flowContainer.getBoundingClientRect()
+
+          // 判断鼠标是否进入 flow container
+          if (
+            clientX > left
+            && clientX < right
+            && clientY > top
+            && clientY < bottom
+          ) {
+
+            // 获取拖动元素左上角相对 super flow 区域原点坐标
+            const coordinate = this.$refs.superFlow.getMouseCoordinate(
+              clientX - conf.offsetLeft,
+              clientY - conf.offsetTop
+            )
+
+            // 添加节点
+            this.$refs.superFlow.addNode({
+              coordinate,
+              ...conf.info
+            })
+
+          }
+
+          conf.isMove = false
+        }
+
+        if (conf.ele) {
+          conf.ele.remove()
+          conf.ele = null
+        }
+      },
+
+      nodeItemMouseDown(evt, info) {
+        const {
+          clientX,
+          clientY,
+          currentTarget
+        } = evt
+
+        const {
+          top,
+          left
+        } = evt.currentTarget.getBoundingClientRect()
+
+        const conf = this.dragConf
+        const ele = currentTarget.cloneNode(true)
+
+        Object.assign(this.dragConf, {
+          offsetLeft: clientX - left,
+          offsetTop: clientY - top,
+          clientX: clientX,
+          clientY: clientY,
+          info,
+          ele,
+          isDown: true
+        })
+
+        ele.style.position = 'fixed'
+        ele.style.margin = '0'
+        ele.style.top = clientY - conf.offsetTop + 'px'
+        ele.style.left = clientX - conf.offsetLeft + 'px'
+
+        this.$el.appendChild(this.dragConf.ele)
       }
     }
   }
 </script>
 
 <style lang="less">
-  .super-flow-demo2 {
+  .link-base-style-form {
+    .el-form-item {
+      margin-bottom : 12px;
+    }
+
+    padding-bottom : 20px;
+    border-bottom  : 1px solid #DCDCDC;
+  }
+
+  .super-flow-demo1 {
+    margin-top       : 20px ;
     width            : 100%;
     height           : 800px;
-    margin           : 0 auto;
     background-color : #f5f5f5;
+    @list-width      : 200px;
+
+
+    > .node-container {
+      width            : @list-width;
+      float            : left;
+      height           : 100%;
+      text-align       : center;
+      background-color : #FFFFFF;
+    }
+
+    > .flow-container {
+      width    : calc(100% - @list-width);
+      float    : left;
+      height   : 100%;
+      overflow : hidden;
+    }
 
     .super-flow__node {
       .flow-node {
-        > header {
-          font-size   : 14px;
-          height      : 32px;
-          line-height : 32px;
-          padding     : 0 12px;
-          color       : #ffffff;
-
-        }
-
-        &.flow-node-start {
-          > header {
-            background-color : #55abfc;
-          }
-        }
-
-        &.flow-node-condition {
-          > header {
-            background-color : #BC1D16;
-          }
-        }
-
-        &.flow-node-approval {
-          > header {
-            background-color : rgba(188, 181, 58, 0.76);
-          }
-        }
-
-        &.flow-node-cc {
-          > header {
-            background-color : #30b95c;
-          }
-        }
-
-        &.flow-node-end {
-          > header {
-            height           : 50px;
-            line-height      : 50px;
-            background-color : rgb(0, 0, 0);
-          }
-        }
+        width       : 100%;
+        height      : 100%;
+        line-height : 40px;
+        padding     : 0 6px;
+        font-size   : 12px;
       }
+    }
+  }
+
+  .node-item {
+    @node-item-height : 30px;
+
+    font-size         : 14px;
+    display           : inline-block;
+    height            : @node-item-height;
+    width             : 120px;
+    margin-top        : 20px;
+    background-color  : #FFFFFF;
+    line-height       : @node-item-height;
+    box-shadow        : 1px 1px 4px rgba(0, 0, 0, 0.3);
+    cursor            : pointer;
+    user-select       : none;
+    text-align        : center;
+    z-index           : 6;
+
+    &:hover {
+      box-shadow : 1px 1px 8px rgba(0, 0, 0, 0.4);
     }
   }
 </style>
