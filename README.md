@@ -98,7 +98,7 @@ function linkStyle(link) {
 
 |方法名               |说明                                        |参数                                    | 
 |----                | ----                                       |----                                    |
-|selectedAll         | 选中所有进行拖拽修改 `origin`               |----                                    |
+|selectAll         | 选中所有进行拖拽修改 `origin`               |----                                    |
 |toJSON              | 将 `graph` 对象转为普通 json 对象           |----                                    |
 |getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标          |clientX, clientY                        |
 |addNode             | 添加节点                                    |options                                 |
