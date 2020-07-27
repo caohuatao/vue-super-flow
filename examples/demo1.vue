@@ -5,7 +5,6 @@
 -->
 <template>
   <div class="super-flow-demo1">
-
     <super-flow
       ref="superFlow"
       :graph-menu="graphMenu"

@@ -105,8 +105,7 @@ function linkStyle(link) {
 
 ## Examples
 
-![例1](https://s1.ax1x.com/2020/07/11/UQ3IsJ.gif)
+![默认示例](https://s1.ax1x.com/2020/07/27/ai6iAe.gif)
 
-![例2](https://s1.ax1x.com/2020/07/11/UQ37ZR.gif)
+![进阶示例](https://s1.ax1x.com/2020/07/27/aisqzt.gif)
 
-![例3](https://s1.ax1x.com/2020/07/11/UQ3oL9.gif)

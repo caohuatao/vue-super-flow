@@ -328,6 +328,18 @@
       },
       inPath() {
         this.initLine()
+      },
+      'link.meta': {
+        deep: true,
+        handler() {
+          this.draw()
+        }
+      },
+      'linkBaseStyle': {
+        deep: true,
+        handler() {
+          this.draw()
+        }
       }
     }
   }

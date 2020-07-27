@@ -339,6 +339,7 @@
 
             if (result) {
               position[0] = vertical
+              vertical = Math.floor(vertical)
               vertical += origin[0]
               vertical += vertical % 1 === 0 ? 0.5 : 0
               resultList.push([
@@ -353,6 +354,7 @@
             const result = horizontal - distance < y && horizontal + distance > y
             if (result) {
               position[1] = horizontal
+              horizontal = Math.floor(horizontal)
               horizontal += origin[1]
               horizontal += horizontal % 1 === 0 ? 0.5 : 0
               resultList.push([
@@ -362,6 +364,7 @@
             }
             return result
           })
+
           arrayReplace(conf.markLine, resultList)
         }
 

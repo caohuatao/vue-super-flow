@@ -5,9 +5,8 @@
 -->
 <template>
   <canvas
-    class="super-flow__mark-line"
-    :width="width"
-    :height="height">
+    ref="markLine"
+    class="super-flow__mark-line">
   </canvas>
 </template>
 
@@ -26,6 +25,8 @@
       markColor: String
     },
     mounted() {
+      this.$refs.markLine.height = this.height
+      this.$refs.markLine.width = this.width
       this.draw()
     },
     methods: {
@@ -55,5 +56,6 @@
   .super-flow__mark-line {
     position : absolute;
     z-index  : 0;
+    border: 1px solid transparent;
   }
 </style>
