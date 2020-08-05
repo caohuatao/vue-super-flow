@@ -13,5 +13,13 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+      document.onload = function () {
+        if(navigator.onLine && !Vue){
+          window.location.reload()
+        }
+      }
+
+    </script>
   </body>
 </html>

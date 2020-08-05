@@ -5,28 +5,14 @@
 -->
 <template>
   <div id="app">
-    <br>
-    <demo1></demo1>
-    <br>
-    <br>
-    <br>
-    <demo2></demo2>
-    <br>
-    <br>
-    <br>
 
   </div>
 </template>
 
 <script>
-  import demo1 from './demo1'
-  import demo2 from './demo2'
 
   export default {
-    components: {
-      demo1,
-      demo2
-    }
+    components: {}
   }
 </script>
 
