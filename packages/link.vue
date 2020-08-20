@@ -113,7 +113,7 @@
       initLine() {
         this.ctx.clearRect(0, 0, this.$el.width, this.$el.height)
         if (this.linkStyle) {
-          const style = this.linkStyle()
+          const style = this.linkStyle(this.link)
           if (isObject(style)) {
             Object.assign(this.styles, style)
           }
