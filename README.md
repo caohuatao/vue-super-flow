@@ -14,7 +14,7 @@
 
 npm install vue-super-flow
 
-yarn add vue-spuer-flow
+yarn add vue-super-flow
 
 ```
 
