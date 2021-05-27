@@ -103,7 +103,7 @@ function linkStyle(link) {
 |getMouseCoordinate  | 获取当前鼠标在 `graph` 坐标系的坐标          |clientX, clientY                        |
 |addNode             | 添加节点                                    |options                                 |
 
-## Examples
+## Example
 
 ![默认示例](https://s1.ax1x.com/2020/07/27/ai6iAe.gif)
 
