@@ -111,4 +111,5 @@ function linkStyle(link) {
 
 
 ## 微信群
-![微信群](https://user-images.githubusercontent.com/44050286/124531287-c8055d00-de40-11eb-9e78-8c31dedf49ed.jpg)
+![微信群](https://user-images.githubusercontent.com/44050286/125547577-cf7977d3-165c-4e3d-b1a4-c5f22fb1dde5.png)
+
