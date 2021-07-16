@@ -106,7 +106,7 @@
     vector,
     debounce,
     arrayReplace
-  } from '../packages/utils'
+  } from './utils'
 
   export default {
     name: 'super-flow',
