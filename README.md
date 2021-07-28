@@ -1,8 +1,3 @@
-![6f4fb275d18bd38bcf322c7de568c19](https://user-images.githubusercontent.com/44050286/127303506-f0355630-39c9-48d7-a754-d5b4ac243fa5.jpg)
-![6f4fb275d18bd38bcf322c7de568c19](https://user-images.githubusercontent.com/44050286/127303533-1361da7f-dda9-4962-b4fc-e0c8b80a1f6f.jpg)
-
-
-
 # vue-super-flow
 * A flowchart editor component base on Vue.
 * Vue flowchart.
