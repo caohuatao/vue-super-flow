@@ -106,6 +106,3 @@ function linkStyle(link) {
 
 ![进阶示例](https://s1.ax1x.com/2020/07/27/aisqzt.gif)
 
-
-## 微信群
-![微信群](https://user-images.githubusercontent.com/44050286/131810544-19035175-3b9e-46a2-958a-be0a251b670d.png)
