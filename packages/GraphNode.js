@@ -7,7 +7,8 @@
 import {
   minus,
   uuid,
-  vector
+  vector,
+  mark
 } from './utils'
 
 import {
@@ -15,99 +16,103 @@ import {
   directionVector
 } from './types'
 
+
 export default class GraphNode {
-  constructor(props, graph) {
+  constructor (props, graph) {
     const {
-      id = uuid('node'),
       width = 180,
       height = 100,
       coordinate = [0, 0],
       meta = null
     } = props
-    
+
+    this.$options = props
+
+    const id = props[mark.relationMark] || uuid('node')
+
     this.key = uuid('node')
     this.graph = graph
-    
-    this.id = id
+
+    this[mark.relationMark] = id
     this.coordinate = [...coordinate]
     this.meta = meta
-    
+
     this.width = width
     this.height = height
   }
-  
-  get position() {
+
+  get position () {
     return vector(this.coordinate)
       .add(this.graph.origin)
       .end
   }
-  
-  set position(position) {
+
+  set position (position) {
     this.coordinate = vector(position)
       .minus(this.graph.origin)
       .end
   }
-  
-  get center() {
+
+  get center () {
     return vector(this.coordinate)
       .add([this.width / 2, this.height / 2])
       .end
   }
-  
-  set center(position) {
+
+  set center (position) {
     this.coordinate = vector(position)
       .minus([this.width / 2, this.height / 2])
       .end
   }
-  
-  get width() {
+
+  get width () {
     return this._width
   }
-  
-  set width(w) {
+
+  set width (w) {
     w = Math.floor(w)
     this._width = w > 50 ? w : 50
     this.angle()
   }
-  
-  get height() {
+
+  get height () {
     return this._height
   }
-  
-  set height(h) {
+
+  set height (h) {
     h = Math.floor(h)
     this._height = h > 20 ? h : 20
     this.angle()
   }
-  
-  angle() {
+
+  angle () {
     const
       w = this.width / 2
       , h = this.height / 2
       , center = [0, 0]
-    
+
     const topLeft = vector(center)
       .minus([w, h])
       .angle()
       .end
-    
+
     const topRight = vector(center)
       .add([w, 0])
       .minus([0, h])
       .angle()
       .end
-    
+
     const bottomRight = vector(center)
       .add([w, h])
       .angle()
       .end
-    
+
     const bottomLeft = vector(center)
       .add([0, h])
       .minus([w, 0])
       .angle()
       .end
-    
+
     this.angleList = [
       topLeft,
       topRight,
@@ -115,8 +120,8 @@ export default class GraphNode {
       bottomLeft
     ]
   }
-  
-  relative(offset) {
+
+  relative (offset) {
     const angle = vector(offset)
       .minus([this.width / 2, this.height / 2])
       .angle()
@@ -128,23 +133,23 @@ export default class GraphNode {
       direction.bottom,
       direction.left
     ]
-    
+
     let dir = direction.left
-    
+
     angleList.reduce((prev, current, idx) => {
       if (angle >= prev && angle < current) {
         dir = directionList[idx - 1]
       }
       return current
     })
-    
+
     return {
       position: this.fixOffset(offset, dir),
       direction: directionVector[dir]
     }
   }
-  
-  fixOffset(offset, dir) {
+
+  fixOffset (offset, dir) {
     switch (dir) {
       case direction.top:
         offset[0] = this.width / 2
@@ -166,14 +171,14 @@ export default class GraphNode {
     }
     return offset
   }
-  
-  remove() {
+
+  remove () {
     return this.graph.removeNode(this)
   }
-  
-  toJSON() {
+
+  toJSON () {
     return {
-      id: this.id,
+      [mark.relationMark]: this[mark.relationMark],
       width: this.width,
       height: this.height,
       coordinate: [...this.coordinate],

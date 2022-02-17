@@ -4,6 +4,11 @@
  * Time: 14:03
  */
 
+export const mark = {
+  relationMark: 'id',
+  startMark: 'startId',
+  endMark: 'endId'
+}
 
 export function uuid(before = '', after = '') {
   const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
@@ -23,14 +28,14 @@ export function getOffset(evt, target = null) {
     clientY,
     currentTarget
   } = evt
-  
+
   const current = target || currentTarget
-  
+
   const {
     left,
     top
   } = current.getBoundingClientRect()
-  
+
   return [clientX - left, clientY - top]
 }
 
@@ -42,7 +47,7 @@ export function isIntersect({clientX, clientY}, target) {
     bottom,
     left
   } = target.getBoundingClientRect()
-  
+
   return top < clientY
     && right > clientX
     && bottom > clientY
@@ -124,7 +129,7 @@ export function vector(result) {
     parallel
   }
   const proxyHandler = {}
-  
+
   Object.keys(handler).forEach(key => {
     Object.defineProperty(proxyHandler, key, {
       get() {
@@ -135,13 +140,13 @@ export function vector(result) {
       }
     })
   })
-  
+
   Object.defineProperty(proxyHandler, 'end', {
     get() {
       return result
     }
   })
-  
+
   return proxyHandler
 }
 

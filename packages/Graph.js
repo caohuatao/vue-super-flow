@@ -9,66 +9,76 @@ import GraphNode from './GraphNode'
 import GraphLink from './GraphLink'
 
 import {
+  mark,
   arrayReplace
 } from './utils'
 
+
 class Graph extends GraphEvent {
-  constructor(options) {
+  constructor (options) {
     const {
+      relationMark,
+      startMark,
+      endMark,
       nodeList = [],
       linkList = [],
       origin
     } = options
-    
+
     super()
-    
+
+    Object.assign(mark, {
+      relationMark,
+      startMark,
+      endMark
+    })
+
     this.nodeList = []
     this.linkList = []
-    
+
     this.origin = origin
-    
-    this.mouseonLink = null
+
+    this.mouseOnLink = null
     this.mouseonNode = null
-    
+
     this.graphSelected = false
     this.maskBoundingClientRect = {}
-    
+
     this.initNode(nodeList)
     this.initLink(linkList)
   }
-  
-  pointMap() {
+
+  pointMap () {
     const map = {}
     this.nodeList.forEach(point => {
-      map[point.id] = point
+      map[point[mark.relationMark]] = point
     })
     return map
   }
-  
-  initNode(nodeList) {
+
+  initNode (nodeList) {
     arrayReplace(this.nodeList, nodeList.map(node => this.createNode(node)))
     return this.nodeList
   }
-  
-  initLink(linkList) {
-    
+
+  initLink (linkList) {
+
     const list = []
-    
+
     linkList.forEach(link => {
-      
+
       const {
-        startId = '',
-        endId = '',
         startAt = [0, 0],
         endAt = [0, 0],
         meta = null
       } = link
-      
+
+     const startId = link[mark.startMark] || ''
+     const endId = link[mark.endMark] || ''
       const pointMap = this.pointMap()
-      
+      console.log(startId, endId)
       const start = pointMap[startId]
       const end = pointMap[endId]
-      
       if (start && end) {
         list.push(
           this.createLink({
@@ -81,71 +91,71 @@ class Graph extends GraphEvent {
         )
       }
     })
-    
+
     arrayReplace(this.linkList, list)
-    
+
     return this.linkList
   }
-  
-  createNode(options) {
+
+  createNode (options) {
     return new GraphNode(options, this)
   }
-  
-  createLink(options) {
+
+  createLink (options) {
     return new GraphLink(options, this)
   }
-  
-  addNode(options) {
+
+  addNode (options) {
     const node = options.constructor === GraphNode
       ? options
       : this.createNode(options)
-    
+
     this.nodeList.push(node)
     return node
   }
-  
-  addLink(options) {
+
+  addLink (options) {
     const newLink = options.constructor === GraphLink
       ? options
       : this.createLink(options)
-    
+
     const currentLink = this.linkList.find(item => {
       return item.start === newLink.start && item.end === newLink.end
     })
-    
+
     if (currentLink) {
       currentLink.startAt = newLink.startAt
       currentLink.endAt = newLink.endAt
     } else if (newLink.start && newLink.end) {
       this.linkList.push(newLink)
     }
-    
+
     return newLink
   }
-  
-  removeNode(node) {
+
+  removeNode (node) {
     const idx = this.nodeList.indexOf(node)
     this.linkList.filter(link => {
       return link.start === node || link.end === node
     }).forEach(link => {
       this.removeLink(link)
     })
-    
+
     this.nodeList.splice(idx, 1)
-    
+
     return node
   }
-  
-  removeLink(link) {
+
+  removeLink (link) {
     const idx = this.linkList.indexOf(link)
     this.linkList.splice(idx, 1)
-    if (this.mouseonLink === link) {
-      this.mouseonLink = null
+    if (this.mouseOnLink === link) {
+      this.mouseOnLink = null
     }
     return link
   }
-  
-  toLastNode(idx) {
+
+  toLastNode (idx) {
     const nodeList = this.nodeList
     nodeList.splice(
       nodeList.length - 1, 0,
@@ -153,48 +163,48 @@ class Graph extends GraphEvent {
     )
   }
 
-  toLastLink(idx) {
+  toLastLink (idx) {
     const linkList = this.linkList
     linkList.splice(
       linkList.length - 1, 0,
       ...linkList.splice(idx, 1)
     )
   }
-  
-  toJSON() {
+
+  toJSON () {
     return {
       origin: this.origin,
       nodeList: this.nodeList.map(node => node.toJSON()),
       linkList: this.linkList.map(link => link.toJSON())
     }
   }
-  
-  selectAll() {
+
+  selectAll () {
     const nodeList = this.nodeList
     const margin = 20
-    
+
     this.maskBoundingClientRect = {
       top: Math.min(
         ...nodeList.map(
           node => node.center[1] - node.height / 2)
       ) - margin,
-      
+
       right: Math.max(
         ...nodeList.map(
           node => node.center[0] + node.width / 2)
       ) + margin,
-      
+
       bottom: Math.max(
         ...nodeList.map(
           node => node.center[1] + node.height / 2)
       ) + margin,
-      
+
       left: Math.min(
         ...nodeList.map(
           node => node.center[0] - node.width / 2)
       ) - margin
     }
-    
+
     this.graphSelected = true
   }
 }

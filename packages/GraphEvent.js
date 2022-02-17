@@ -4,18 +4,18 @@
  * Time: 14:53
  */
 export default class GraphEvent {
-  constructor() {
+  constructor () {
     this.listeners = {}
   }
-  
-  add(type, callback) {
+
+  add (type, callback) {
     if (!(type in this.listeners)) {
       this.listeners[type] = []
     }
     this.listeners[type].push(callback)
   }
-  
-  remove(type, callback) {
+
+  remove (type, callback) {
     if (!(type in this.listeners)) {
       return
     }
@@ -27,18 +27,18 @@ export default class GraphEvent {
       }
     }
   }
-  
-  dispatch(event, breakOff = false) {
+
+  dispatch (event, breakOff = false) {
     if (!(event.type in this.listeners)) {
       return
     }
     const stack = this.listeners[event.type]
     event.target = this
-    
+
     if (breakOff) {
       stack.some((fun, idx) => {
         const result = fun.call(this, event)
-        if(result) stack.unshift(...stack.splice(idx, 1))
+        if (result) stack.unshift(...stack.splice(idx, 1))
         return result
       })
     } else {
