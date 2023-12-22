@@ -343,6 +343,12 @@ export default {
         .minus(origin)
         .add([conf.node.width / 2, conf.node.height / 2])
         .end
+      if (position[0] + origin[0] < conf.node.width / 2) {
+        position[0] = conf.node.width / 2 - origin[0]
+      }
+      if (position[1] + origin[1] < conf.node.height / 2) {
+        position[1] = conf.node.height / 2 - origin[1]
+      }
 
       if (this.hasMarkLine) {
         const resultList = []
