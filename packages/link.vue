@@ -166,12 +166,14 @@ export default {
       if (isString(desc)) {
         const {
           font,
-          background
+          background,
+          textAlign,
+          textBaseline
         } = this.styles
 
         this.ctx.font = font
-        this.ctx.textAlign = 'center'
-        this.ctx.textBaseline = 'middle'
+        this.ctx.textAlign = textAlign
+        this.ctx.textBaseline = textBaseline
 
         const { text, width } = this.descIntercept(desc)
         const height = parseInt(font.match(/(\d+px)/g)[0])
