@@ -36,7 +36,9 @@ export function getOffset(evt, target = null) {
     top
   } = current.getBoundingClientRect()
 
-  return [clientX - left, clientY - top]
+  const scrollLeft = target && target.scrollLeft || 0
+  const scrollTop = target && target.scrollTop || 0
+  return [clientX - left + scrollLeft, clientY - top + scrollTop]
 }
 
 
