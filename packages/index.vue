@@ -59,6 +59,7 @@
       <template v-slot="{meta}">
         <slot
           name="node"
+          :node="node"
           :meta="meta">
         </slot>
       </template>
