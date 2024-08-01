@@ -73,10 +73,9 @@ class Graph extends GraphEvent {
         meta = null
       } = link
 
-     const startId = link[mark.startMark] || ''
-     const endId = link[mark.endMark] || ''
+      const startId = link[mark.startMark] || ''
+      const endId = link[mark.endMark] || ''
       const pointMap = this.pointMap()
-      console.log(startId, endId)
       const start = pointMap[startId]
       const end = pointMap[endId]
       if (start && end) {
