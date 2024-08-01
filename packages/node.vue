@@ -14,10 +14,7 @@
     @mouseleave="nodeMouseleave"
     @mouseup="nodeMouseup"
     @contextmenu.prevent.stop="nodeContextmenu">
-    <slot
-      :node="node"
-      :meta="node.meta"
-    />
+    <slot/>
     <div
       v-for="(dir, key) in direction"
       v-show="output && lineDrop"
@@ -124,10 +121,6 @@ export default {
 
   &-header {
     background-color : green;
-  }
-
-  &-body {
-
   }
 
   .node-side {
