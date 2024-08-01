@@ -56,11 +56,12 @@
       @node-mouseup="nodeMouseup"
       @side-mousedown="sideMousedown"
       @node-contextmenu="nodeContextmenu">
-      <template v-slot="{meta}">
+      <template>
         <slot
           name="node"
-          :meta="meta">
-        </slot>
+          :node="node"
+          :meta="node.meta"
+        />
       </template>
     </graph-node>
 
@@ -73,8 +74,8 @@
       <template v-slot="{item}">
         <slot
           name="menuItem"
-          :item="item">
-        </slot>
+          :item="item"
+        />
       </template>
     </graph-menu>
 
@@ -100,11 +101,9 @@ import MarkLine from './markLine'
 
 import {
   getOffset,
-  isIntersect,
   isBool,
   isFun,
   vector,
-  debounce,
   arrayReplace
 } from './utils'
 
