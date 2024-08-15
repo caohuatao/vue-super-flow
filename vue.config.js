@@ -21,7 +21,7 @@ module.exports = {
     output: {
       filename: 'index.js',
       libraryTarget: 'umd',
-      library: 'SuperFrom',
+      library: 'SuperFlow',
       umdNamedDefine: true
     }
   },
